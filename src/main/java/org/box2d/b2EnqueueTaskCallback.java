@@ -2,32 +2,73 @@
 
 package org.box2d;
 
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.VarHandle;
-import java.nio.ByteOrder;
+import java.lang.invoke.*;
 import java.lang.foreign.*;
+import java.nio.ByteOrder;
+import java.util.*;
+import java.util.function.*;
+import java.util.stream.*;
+
 import static java.lang.foreign.ValueLayout.*;
+import static java.lang.foreign.MemoryLayout.PathElement.*;
+
 /**
  * {@snippet lang=c :
- * void* (*b2EnqueueTaskCallback)(void (*task)(int,int,unsigned int,void*),int itemCount,int minRange,void* taskContext,void* userContext);
+ * typedef void *(b2EnqueueTaskCallback)(b2TaskCallback *, int, int, void *, void *)
  * }
  */
-public interface b2EnqueueTaskCallback {
+public final class b2EnqueueTaskCallback {
 
-    java.lang.foreign.MemorySegment apply(java.lang.foreign.MemorySegment task, int itemCount, int minRange, java.lang.foreign.MemorySegment taskContext, java.lang.foreign.MemorySegment userContext);
-    static MemorySegment allocate(b2EnqueueTaskCallback fi, Arena scope) {
-        return RuntimeHelper.upcallStub(constants$103.const$1, fi, constants$103.const$0, scope);
+    private b2EnqueueTaskCallback() {
+        // Should not be called directly
     }
-    static b2EnqueueTaskCallback ofAddress(MemorySegment addr, Arena arena) {
-        MemorySegment symbol = addr.reinterpret(arena, null);
-        return (java.lang.foreign.MemorySegment _task, int _itemCount, int _minRange, java.lang.foreign.MemorySegment _taskContext, java.lang.foreign.MemorySegment _userContext) -> {
-            try {
-                return (java.lang.foreign.MemorySegment)constants$103.const$2.invokeExact(symbol, _task, _itemCount, _minRange, _taskContext, _userContext);
-            } catch (Throwable ex$) {
-                throw new AssertionError("should not reach here", ex$);
-            }
-        };
+
+    /**
+     * The function pointer signature, expressed as a functional interface
+     */
+    public interface Function {
+        MemorySegment apply(MemorySegment task, int itemCount, int minRange, MemorySegment taskContext, MemorySegment userContext);
+    }
+
+    private static final FunctionDescriptor $DESC = FunctionDescriptor.of(
+        Box2D.C_POINTER,
+        Box2D.C_POINTER,
+        Box2D.C_INT,
+        Box2D.C_INT,
+        Box2D.C_POINTER,
+        Box2D.C_POINTER
+    );
+
+    /**
+     * The descriptor of this function pointer
+     */
+    public static FunctionDescriptor descriptor() {
+        return $DESC;
+    }
+
+    private static final MethodHandle UP$MH = Box2D.upcallHandle(b2EnqueueTaskCallback.Function.class, "apply", $DESC);
+
+    /**
+     * Allocates a new upcall stub, whose implementation is defined by {@code fi}.
+     * The lifetime of the returned segment is managed by {@code arena}
+     */
+    public static MemorySegment allocate(b2EnqueueTaskCallback.Function fi, Arena arena) {
+        return Linker.nativeLinker().upcallStub(UP$MH.bindTo(fi), $DESC, arena);
+    }
+
+    private static final MethodHandle DOWN$MH = Linker.nativeLinker().downcallHandle($DESC);
+
+    /**
+     * Invoke the upcall stub {@code funcPtr}, with given parameters
+     */
+    public static MemorySegment invoke(MemorySegment funcPtr, MemorySegment task, int itemCount, int minRange, MemorySegment taskContext, MemorySegment userContext) {
+        try {
+            return (MemorySegment) DOWN$MH.invokeExact(funcPtr, task, itemCount, minRange, taskContext, userContext);
+        } catch (Error | RuntimeException ex) {
+            throw ex;
+        } catch (Throwable ex$) {
+            throw new AssertionError("should not reach here", ex$);
+        }
     }
 }
-
 

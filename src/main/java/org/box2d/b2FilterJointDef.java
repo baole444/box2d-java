@@ -2,92 +2,265 @@
 
 package org.box2d;
 
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.VarHandle;
-import java.nio.ByteOrder;
+import java.lang.invoke.*;
 import java.lang.foreign.*;
+import java.nio.ByteOrder;
+import java.util.*;
+import java.util.function.*;
+import java.util.stream.*;
+
 import static java.lang.foreign.ValueLayout.*;
+import static java.lang.foreign.MemoryLayout.PathElement.*;
+
 /**
  * {@snippet lang=c :
  * struct b2FilterJointDef {
- *     struct b2BodyId bodyIdA;
- *     struct b2BodyId bodyIdB;
- *     void* userData;
+ *     b2BodyId bodyIdA;
+ *     b2BodyId bodyIdB;
+ *     void *userData;
  *     int internalValue;
- * };
+ * }
  * }
  */
 public class b2FilterJointDef {
 
-    public static MemoryLayout $LAYOUT() {
-        return constants$130.const$5;
+    b2FilterJointDef() {
+        // Should not be called directly
     }
-    public static MemorySegment bodyIdA$slice(MemorySegment seg) {
-        return seg.asSlice(0, 8);
-    }
-    public static MemorySegment bodyIdB$slice(MemorySegment seg) {
-        return seg.asSlice(8, 8);
-    }
-    public static VarHandle userData$VH() {
-        return constants$131.const$0;
-    }
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * void* userData;
-     * }
-     */
-    public static MemorySegment userData$get(MemorySegment seg) {
-        return (java.lang.foreign.MemorySegment)constants$131.const$0.get(seg);
-    }
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * void* userData;
-     * }
-     */
-    public static void userData$set(MemorySegment seg, MemorySegment x) {
-        constants$131.const$0.set(seg, x);
-    }
-    public static MemorySegment userData$get(MemorySegment seg, long index) {
-        return (java.lang.foreign.MemorySegment)constants$131.const$0.get(seg.asSlice(index*sizeof()));
-    }
-    public static void userData$set(MemorySegment seg, long index, MemorySegment x) {
-        constants$131.const$0.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static VarHandle internalValue$VH() {
-        return constants$131.const$1;
-    }
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * int internalValue;
-     * }
-     */
-    public static int internalValue$get(MemorySegment seg) {
-        return (int)constants$131.const$1.get(seg);
-    }
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * int internalValue;
-     * }
-     */
-    public static void internalValue$set(MemorySegment seg, int x) {
-        constants$131.const$1.set(seg, x);
-    }
-    public static int internalValue$get(MemorySegment seg, long index) {
-        return (int)constants$131.const$1.get(seg.asSlice(index*sizeof()));
-    }
-    public static void internalValue$set(MemorySegment seg, long index, int x) {
-        constants$131.const$1.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static long sizeof() { return $LAYOUT().byteSize(); }
-    public static MemorySegment allocate(SegmentAllocator allocator) { return allocator.allocate($LAYOUT()); }
-    public static MemorySegment allocateArray(long len, SegmentAllocator allocator) {
-        return allocator.allocate(MemoryLayout.sequenceLayout(len, $LAYOUT()));
-    }
-    public static MemorySegment ofAddress(MemorySegment addr, Arena arena) { return RuntimeHelper.asArray(addr, $LAYOUT(), 1, arena); }
-}
 
+    private static final GroupLayout $LAYOUT = MemoryLayout.structLayout(
+        b2BodyId.layout().withName("bodyIdA"),
+        b2BodyId.layout().withName("bodyIdB"),
+        Box2D.C_POINTER.withName("userData"),
+        Box2D.C_INT.withName("internalValue"),
+        MemoryLayout.paddingLayout(4)
+    ).withName("b2FilterJointDef");
+
+    /**
+     * The layout of this struct
+     */
+    public static final GroupLayout layout() {
+        return $LAYOUT;
+    }
+
+    private static final GroupLayout bodyIdA$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("bodyIdA"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * b2BodyId bodyIdA
+     * }
+     */
+    public static final GroupLayout bodyIdA$layout() {
+        return bodyIdA$LAYOUT;
+    }
+
+    private static final long bodyIdA$OFFSET = $LAYOUT.byteOffset(groupElement("bodyIdA"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * b2BodyId bodyIdA
+     * }
+     */
+    public static final long bodyIdA$offset() {
+        return bodyIdA$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * b2BodyId bodyIdA
+     * }
+     */
+    public static MemorySegment bodyIdA(MemorySegment struct) {
+        return struct.asSlice(bodyIdA$OFFSET, bodyIdA$LAYOUT.byteSize());
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * b2BodyId bodyIdA
+     * }
+     */
+    public static void bodyIdA(MemorySegment struct, MemorySegment fieldValue) {
+        MemorySegment.copy(fieldValue, 0L, struct, bodyIdA$OFFSET, bodyIdA$LAYOUT.byteSize());
+    }
+
+    private static final GroupLayout bodyIdB$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("bodyIdB"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * b2BodyId bodyIdB
+     * }
+     */
+    public static final GroupLayout bodyIdB$layout() {
+        return bodyIdB$LAYOUT;
+    }
+
+    private static final long bodyIdB$OFFSET = $LAYOUT.byteOffset(groupElement("bodyIdB"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * b2BodyId bodyIdB
+     * }
+     */
+    public static final long bodyIdB$offset() {
+        return bodyIdB$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * b2BodyId bodyIdB
+     * }
+     */
+    public static MemorySegment bodyIdB(MemorySegment struct) {
+        return struct.asSlice(bodyIdB$OFFSET, bodyIdB$LAYOUT.byteSize());
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * b2BodyId bodyIdB
+     * }
+     */
+    public static void bodyIdB(MemorySegment struct, MemorySegment fieldValue) {
+        MemorySegment.copy(fieldValue, 0L, struct, bodyIdB$OFFSET, bodyIdB$LAYOUT.byteSize());
+    }
+
+    private static final AddressLayout userData$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("userData"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * void *userData
+     * }
+     */
+    public static final AddressLayout userData$layout() {
+        return userData$LAYOUT;
+    }
+
+    private static final long userData$OFFSET = $LAYOUT.byteOffset(groupElement("userData"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * void *userData
+     * }
+     */
+    public static final long userData$offset() {
+        return userData$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * void *userData
+     * }
+     */
+    public static MemorySegment userData(MemorySegment struct) {
+        return struct.get(userData$LAYOUT, userData$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * void *userData
+     * }
+     */
+    public static void userData(MemorySegment struct, MemorySegment fieldValue) {
+        struct.set(userData$LAYOUT, userData$OFFSET, fieldValue);
+    }
+
+    private static final OfInt internalValue$LAYOUT = (OfInt)$LAYOUT.select(groupElement("internalValue"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * int internalValue
+     * }
+     */
+    public static final OfInt internalValue$layout() {
+        return internalValue$LAYOUT;
+    }
+
+    private static final long internalValue$OFFSET = $LAYOUT.byteOffset(groupElement("internalValue"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * int internalValue
+     * }
+     */
+    public static final long internalValue$offset() {
+        return internalValue$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * int internalValue
+     * }
+     */
+    public static int internalValue(MemorySegment struct) {
+        return struct.get(internalValue$LAYOUT, internalValue$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * int internalValue
+     * }
+     */
+    public static void internalValue(MemorySegment struct, int fieldValue) {
+        struct.set(internalValue$LAYOUT, internalValue$OFFSET, fieldValue);
+    }
+
+    /**
+     * Obtains a slice of {@code arrayParam} which selects the array element at {@code index}.
+     * The returned segment has address {@code arrayParam.address() + index * layout().byteSize()}
+     */
+    public static MemorySegment asSlice(MemorySegment array, long index) {
+        return array.asSlice(layout().byteSize() * index);
+    }
+
+    /**
+     * The size (in bytes) of this struct
+     */
+    public static long sizeof() { return layout().byteSize(); }
+
+    /**
+     * Allocate a segment of size {@code layout().byteSize()} using {@code allocator}
+     */
+    public static MemorySegment allocate(SegmentAllocator allocator) {
+        return allocator.allocate(layout());
+    }
+
+    /**
+     * Allocate an array of size {@code elementCount} using {@code allocator}.
+     * The returned segment has size {@code elementCount * layout().byteSize()}.
+     */
+    public static MemorySegment allocateArray(long elementCount, SegmentAllocator allocator) {
+        return allocator.allocate(MemoryLayout.sequenceLayout(elementCount, layout()));
+    }
+
+    /**
+     * Reinterprets {@code addr} using target {@code arena} and {@code cleanupAction} (if any).
+     * The returned segment has size {@code layout().byteSize()}
+     */
+    public static MemorySegment reinterpret(MemorySegment addr, Arena arena, Consumer<MemorySegment> cleanup) {
+        return reinterpret(addr, 1, arena, cleanup);
+    }
+
+    /**
+     * Reinterprets {@code addr} using target {@code arena} and {@code cleanupAction} (if any).
+     * The returned segment has size {@code elementCount * layout().byteSize()}
+     */
+    public static MemorySegment reinterpret(MemorySegment addr, long elementCount, Arena arena, Consumer<MemorySegment> cleanup) {
+        return addr.reinterpret(layout().byteSize() * elementCount, arena, cleanup);
+    }
+}
 

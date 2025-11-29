@@ -2,11 +2,16 @@
 
 package org.box2d;
 
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.VarHandle;
-import java.nio.ByteOrder;
+import java.lang.invoke.*;
 import java.lang.foreign.*;
+import java.nio.ByteOrder;
+import java.util.*;
+import java.util.function.*;
+import java.util.stream.*;
+
 import static java.lang.foreign.ValueLayout.*;
+import static java.lang.foreign.MemoryLayout.PathElement.*;
+
 /**
  * {@snippet lang=c :
  * struct b2SurfaceMaterial {
@@ -15,183 +20,338 @@ import static java.lang.foreign.ValueLayout.*;
  *     float rollingResistance;
  *     float tangentSpeed;
  *     int userMaterialId;
- *     unsigned int customColor;
- * };
+ *     uint32_t customColor;
+ * }
  * }
  */
 public class b2SurfaceMaterial {
 
-    public static MemoryLayout $LAYOUT() {
-        return constants$113.const$5;
+    b2SurfaceMaterial() {
+        // Should not be called directly
     }
-    public static VarHandle friction$VH() {
-        return constants$114.const$0;
-    }
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * float friction;
-     * }
-     */
-    public static float friction$get(MemorySegment seg) {
-        return (float)constants$114.const$0.get(seg);
-    }
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * float friction;
-     * }
-     */
-    public static void friction$set(MemorySegment seg, float x) {
-        constants$114.const$0.set(seg, x);
-    }
-    public static float friction$get(MemorySegment seg, long index) {
-        return (float)constants$114.const$0.get(seg.asSlice(index*sizeof()));
-    }
-    public static void friction$set(MemorySegment seg, long index, float x) {
-        constants$114.const$0.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static VarHandle restitution$VH() {
-        return constants$114.const$1;
-    }
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * float restitution;
-     * }
-     */
-    public static float restitution$get(MemorySegment seg) {
-        return (float)constants$114.const$1.get(seg);
-    }
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * float restitution;
-     * }
-     */
-    public static void restitution$set(MemorySegment seg, float x) {
-        constants$114.const$1.set(seg, x);
-    }
-    public static float restitution$get(MemorySegment seg, long index) {
-        return (float)constants$114.const$1.get(seg.asSlice(index*sizeof()));
-    }
-    public static void restitution$set(MemorySegment seg, long index, float x) {
-        constants$114.const$1.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static VarHandle rollingResistance$VH() {
-        return constants$114.const$2;
-    }
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * float rollingResistance;
-     * }
-     */
-    public static float rollingResistance$get(MemorySegment seg) {
-        return (float)constants$114.const$2.get(seg);
-    }
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * float rollingResistance;
-     * }
-     */
-    public static void rollingResistance$set(MemorySegment seg, float x) {
-        constants$114.const$2.set(seg, x);
-    }
-    public static float rollingResistance$get(MemorySegment seg, long index) {
-        return (float)constants$114.const$2.get(seg.asSlice(index*sizeof()));
-    }
-    public static void rollingResistance$set(MemorySegment seg, long index, float x) {
-        constants$114.const$2.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static VarHandle tangentSpeed$VH() {
-        return constants$114.const$3;
-    }
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * float tangentSpeed;
-     * }
-     */
-    public static float tangentSpeed$get(MemorySegment seg) {
-        return (float)constants$114.const$3.get(seg);
-    }
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * float tangentSpeed;
-     * }
-     */
-    public static void tangentSpeed$set(MemorySegment seg, float x) {
-        constants$114.const$3.set(seg, x);
-    }
-    public static float tangentSpeed$get(MemorySegment seg, long index) {
-        return (float)constants$114.const$3.get(seg.asSlice(index*sizeof()));
-    }
-    public static void tangentSpeed$set(MemorySegment seg, long index, float x) {
-        constants$114.const$3.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static VarHandle userMaterialId$VH() {
-        return constants$114.const$4;
-    }
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * int userMaterialId;
-     * }
-     */
-    public static int userMaterialId$get(MemorySegment seg) {
-        return (int)constants$114.const$4.get(seg);
-    }
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * int userMaterialId;
-     * }
-     */
-    public static void userMaterialId$set(MemorySegment seg, int x) {
-        constants$114.const$4.set(seg, x);
-    }
-    public static int userMaterialId$get(MemorySegment seg, long index) {
-        return (int)constants$114.const$4.get(seg.asSlice(index*sizeof()));
-    }
-    public static void userMaterialId$set(MemorySegment seg, long index, int x) {
-        constants$114.const$4.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static VarHandle customColor$VH() {
-        return constants$114.const$5;
-    }
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * unsigned int customColor;
-     * }
-     */
-    public static int customColor$get(MemorySegment seg) {
-        return (int)constants$114.const$5.get(seg);
-    }
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * unsigned int customColor;
-     * }
-     */
-    public static void customColor$set(MemorySegment seg, int x) {
-        constants$114.const$5.set(seg, x);
-    }
-    public static int customColor$get(MemorySegment seg, long index) {
-        return (int)constants$114.const$5.get(seg.asSlice(index*sizeof()));
-    }
-    public static void customColor$set(MemorySegment seg, long index, int x) {
-        constants$114.const$5.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static long sizeof() { return $LAYOUT().byteSize(); }
-    public static MemorySegment allocate(SegmentAllocator allocator) { return allocator.allocate($LAYOUT()); }
-    public static MemorySegment allocateArray(long len, SegmentAllocator allocator) {
-        return allocator.allocate(MemoryLayout.sequenceLayout(len, $LAYOUT()));
-    }
-    public static MemorySegment ofAddress(MemorySegment addr, Arena arena) { return RuntimeHelper.asArray(addr, $LAYOUT(), 1, arena); }
-}
 
+    private static final GroupLayout $LAYOUT = MemoryLayout.structLayout(
+        Box2D.C_FLOAT.withName("friction"),
+        Box2D.C_FLOAT.withName("restitution"),
+        Box2D.C_FLOAT.withName("rollingResistance"),
+        Box2D.C_FLOAT.withName("tangentSpeed"),
+        Box2D.C_INT.withName("userMaterialId"),
+        Box2D.C_INT.withName("customColor")
+    ).withName("b2SurfaceMaterial");
+
+    /**
+     * The layout of this struct
+     */
+    public static final GroupLayout layout() {
+        return $LAYOUT;
+    }
+
+    private static final OfFloat friction$LAYOUT = (OfFloat)$LAYOUT.select(groupElement("friction"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * float friction
+     * }
+     */
+    public static final OfFloat friction$layout() {
+        return friction$LAYOUT;
+    }
+
+    private static final long friction$OFFSET = $LAYOUT.byteOffset(groupElement("friction"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * float friction
+     * }
+     */
+    public static final long friction$offset() {
+        return friction$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * float friction
+     * }
+     */
+    public static float friction(MemorySegment struct) {
+        return struct.get(friction$LAYOUT, friction$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * float friction
+     * }
+     */
+    public static void friction(MemorySegment struct, float fieldValue) {
+        struct.set(friction$LAYOUT, friction$OFFSET, fieldValue);
+    }
+
+    private static final OfFloat restitution$LAYOUT = (OfFloat)$LAYOUT.select(groupElement("restitution"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * float restitution
+     * }
+     */
+    public static final OfFloat restitution$layout() {
+        return restitution$LAYOUT;
+    }
+
+    private static final long restitution$OFFSET = $LAYOUT.byteOffset(groupElement("restitution"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * float restitution
+     * }
+     */
+    public static final long restitution$offset() {
+        return restitution$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * float restitution
+     * }
+     */
+    public static float restitution(MemorySegment struct) {
+        return struct.get(restitution$LAYOUT, restitution$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * float restitution
+     * }
+     */
+    public static void restitution(MemorySegment struct, float fieldValue) {
+        struct.set(restitution$LAYOUT, restitution$OFFSET, fieldValue);
+    }
+
+    private static final OfFloat rollingResistance$LAYOUT = (OfFloat)$LAYOUT.select(groupElement("rollingResistance"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * float rollingResistance
+     * }
+     */
+    public static final OfFloat rollingResistance$layout() {
+        return rollingResistance$LAYOUT;
+    }
+
+    private static final long rollingResistance$OFFSET = $LAYOUT.byteOffset(groupElement("rollingResistance"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * float rollingResistance
+     * }
+     */
+    public static final long rollingResistance$offset() {
+        return rollingResistance$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * float rollingResistance
+     * }
+     */
+    public static float rollingResistance(MemorySegment struct) {
+        return struct.get(rollingResistance$LAYOUT, rollingResistance$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * float rollingResistance
+     * }
+     */
+    public static void rollingResistance(MemorySegment struct, float fieldValue) {
+        struct.set(rollingResistance$LAYOUT, rollingResistance$OFFSET, fieldValue);
+    }
+
+    private static final OfFloat tangentSpeed$LAYOUT = (OfFloat)$LAYOUT.select(groupElement("tangentSpeed"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * float tangentSpeed
+     * }
+     */
+    public static final OfFloat tangentSpeed$layout() {
+        return tangentSpeed$LAYOUT;
+    }
+
+    private static final long tangentSpeed$OFFSET = $LAYOUT.byteOffset(groupElement("tangentSpeed"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * float tangentSpeed
+     * }
+     */
+    public static final long tangentSpeed$offset() {
+        return tangentSpeed$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * float tangentSpeed
+     * }
+     */
+    public static float tangentSpeed(MemorySegment struct) {
+        return struct.get(tangentSpeed$LAYOUT, tangentSpeed$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * float tangentSpeed
+     * }
+     */
+    public static void tangentSpeed(MemorySegment struct, float fieldValue) {
+        struct.set(tangentSpeed$LAYOUT, tangentSpeed$OFFSET, fieldValue);
+    }
+
+    private static final OfInt userMaterialId$LAYOUT = (OfInt)$LAYOUT.select(groupElement("userMaterialId"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * int userMaterialId
+     * }
+     */
+    public static final OfInt userMaterialId$layout() {
+        return userMaterialId$LAYOUT;
+    }
+
+    private static final long userMaterialId$OFFSET = $LAYOUT.byteOffset(groupElement("userMaterialId"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * int userMaterialId
+     * }
+     */
+    public static final long userMaterialId$offset() {
+        return userMaterialId$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * int userMaterialId
+     * }
+     */
+    public static int userMaterialId(MemorySegment struct) {
+        return struct.get(userMaterialId$LAYOUT, userMaterialId$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * int userMaterialId
+     * }
+     */
+    public static void userMaterialId(MemorySegment struct, int fieldValue) {
+        struct.set(userMaterialId$LAYOUT, userMaterialId$OFFSET, fieldValue);
+    }
+
+    private static final OfInt customColor$LAYOUT = (OfInt)$LAYOUT.select(groupElement("customColor"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * uint32_t customColor
+     * }
+     */
+    public static final OfInt customColor$layout() {
+        return customColor$LAYOUT;
+    }
+
+    private static final long customColor$OFFSET = $LAYOUT.byteOffset(groupElement("customColor"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * uint32_t customColor
+     * }
+     */
+    public static final long customColor$offset() {
+        return customColor$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * uint32_t customColor
+     * }
+     */
+    public static int customColor(MemorySegment struct) {
+        return struct.get(customColor$LAYOUT, customColor$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * uint32_t customColor
+     * }
+     */
+    public static void customColor(MemorySegment struct, int fieldValue) {
+        struct.set(customColor$LAYOUT, customColor$OFFSET, fieldValue);
+    }
+
+    /**
+     * Obtains a slice of {@code arrayParam} which selects the array element at {@code index}.
+     * The returned segment has address {@code arrayParam.address() + index * layout().byteSize()}
+     */
+    public static MemorySegment asSlice(MemorySegment array, long index) {
+        return array.asSlice(layout().byteSize() * index);
+    }
+
+    /**
+     * The size (in bytes) of this struct
+     */
+    public static long sizeof() { return layout().byteSize(); }
+
+    /**
+     * Allocate a segment of size {@code layout().byteSize()} using {@code allocator}
+     */
+    public static MemorySegment allocate(SegmentAllocator allocator) {
+        return allocator.allocate(layout());
+    }
+
+    /**
+     * Allocate an array of size {@code elementCount} using {@code allocator}.
+     * The returned segment has size {@code elementCount * layout().byteSize()}.
+     */
+    public static MemorySegment allocateArray(long elementCount, SegmentAllocator allocator) {
+        return allocator.allocate(MemoryLayout.sequenceLayout(elementCount, layout()));
+    }
+
+    /**
+     * Reinterprets {@code addr} using target {@code arena} and {@code cleanupAction} (if any).
+     * The returned segment has size {@code layout().byteSize()}
+     */
+    public static MemorySegment reinterpret(MemorySegment addr, Arena arena, Consumer<MemorySegment> cleanup) {
+        return reinterpret(addr, 1, arena, cleanup);
+    }
+
+    /**
+     * Reinterprets {@code addr} using target {@code arena} and {@code cleanupAction} (if any).
+     * The returned segment has size {@code elementCount * layout().byteSize()}
+     */
+    public static MemorySegment reinterpret(MemorySegment addr, long elementCount, Arena arena, Consumer<MemorySegment> cleanup) {
+        return addr.reinterpret(layout().byteSize() * elementCount, arena, cleanup);
+    }
+}
 

@@ -2,236 +2,541 @@
 
 package org.box2d;
 
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.VarHandle;
-import java.nio.ByteOrder;
+import java.lang.invoke.*;
 import java.lang.foreign.*;
+import java.nio.ByteOrder;
+import java.util.*;
+import java.util.function.*;
+import java.util.stream.*;
+
 import static java.lang.foreign.ValueLayout.*;
+import static java.lang.foreign.MemoryLayout.PathElement.*;
+
 /**
  * {@snippet lang=c :
  * struct b2ManifoldPoint {
- *     struct b2Vec2 point;
- *     struct b2Vec2 anchorA;
- *     struct b2Vec2 anchorB;
+ *     b2Vec2 point;
+ *     b2Vec2 anchorA;
+ *     b2Vec2 anchorB;
  *     float separation;
  *     float normalImpulse;
  *     float tangentImpulse;
  *     float totalNormalImpulse;
  *     float normalVelocity;
- *     unsigned short id;
+ *     uint16_t id;
  *     _Bool persisted;
- * };
+ * }
  * }
  */
 public class b2ManifoldPoint {
 
-    public static MemoryLayout $LAYOUT() {
-        return constants$84.const$0;
+    b2ManifoldPoint() {
+        // Should not be called directly
     }
-    public static MemorySegment point$slice(MemorySegment seg) {
-        return seg.asSlice(0, 8);
-    }
-    public static MemorySegment anchorA$slice(MemorySegment seg) {
-        return seg.asSlice(8, 8);
-    }
-    public static MemorySegment anchorB$slice(MemorySegment seg) {
-        return seg.asSlice(16, 8);
-    }
-    public static VarHandle separation$VH() {
-        return constants$84.const$1;
-    }
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * float separation;
-     * }
-     */
-    public static float separation$get(MemorySegment seg) {
-        return (float)constants$84.const$1.get(seg);
-    }
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * float separation;
-     * }
-     */
-    public static void separation$set(MemorySegment seg, float x) {
-        constants$84.const$1.set(seg, x);
-    }
-    public static float separation$get(MemorySegment seg, long index) {
-        return (float)constants$84.const$1.get(seg.asSlice(index*sizeof()));
-    }
-    public static void separation$set(MemorySegment seg, long index, float x) {
-        constants$84.const$1.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static VarHandle normalImpulse$VH() {
-        return constants$84.const$2;
-    }
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * float normalImpulse;
-     * }
-     */
-    public static float normalImpulse$get(MemorySegment seg) {
-        return (float)constants$84.const$2.get(seg);
-    }
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * float normalImpulse;
-     * }
-     */
-    public static void normalImpulse$set(MemorySegment seg, float x) {
-        constants$84.const$2.set(seg, x);
-    }
-    public static float normalImpulse$get(MemorySegment seg, long index) {
-        return (float)constants$84.const$2.get(seg.asSlice(index*sizeof()));
-    }
-    public static void normalImpulse$set(MemorySegment seg, long index, float x) {
-        constants$84.const$2.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static VarHandle tangentImpulse$VH() {
-        return constants$84.const$3;
-    }
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * float tangentImpulse;
-     * }
-     */
-    public static float tangentImpulse$get(MemorySegment seg) {
-        return (float)constants$84.const$3.get(seg);
-    }
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * float tangentImpulse;
-     * }
-     */
-    public static void tangentImpulse$set(MemorySegment seg, float x) {
-        constants$84.const$3.set(seg, x);
-    }
-    public static float tangentImpulse$get(MemorySegment seg, long index) {
-        return (float)constants$84.const$3.get(seg.asSlice(index*sizeof()));
-    }
-    public static void tangentImpulse$set(MemorySegment seg, long index, float x) {
-        constants$84.const$3.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static VarHandle totalNormalImpulse$VH() {
-        return constants$84.const$4;
-    }
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * float totalNormalImpulse;
-     * }
-     */
-    public static float totalNormalImpulse$get(MemorySegment seg) {
-        return (float)constants$84.const$4.get(seg);
-    }
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * float totalNormalImpulse;
-     * }
-     */
-    public static void totalNormalImpulse$set(MemorySegment seg, float x) {
-        constants$84.const$4.set(seg, x);
-    }
-    public static float totalNormalImpulse$get(MemorySegment seg, long index) {
-        return (float)constants$84.const$4.get(seg.asSlice(index*sizeof()));
-    }
-    public static void totalNormalImpulse$set(MemorySegment seg, long index, float x) {
-        constants$84.const$4.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static VarHandle normalVelocity$VH() {
-        return constants$84.const$5;
-    }
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * float normalVelocity;
-     * }
-     */
-    public static float normalVelocity$get(MemorySegment seg) {
-        return (float)constants$84.const$5.get(seg);
-    }
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * float normalVelocity;
-     * }
-     */
-    public static void normalVelocity$set(MemorySegment seg, float x) {
-        constants$84.const$5.set(seg, x);
-    }
-    public static float normalVelocity$get(MemorySegment seg, long index) {
-        return (float)constants$84.const$5.get(seg.asSlice(index*sizeof()));
-    }
-    public static void normalVelocity$set(MemorySegment seg, long index, float x) {
-        constants$84.const$5.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static VarHandle id$VH() {
-        return constants$85.const$0;
-    }
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * unsigned short id;
-     * }
-     */
-    public static short id$get(MemorySegment seg) {
-        return (short)constants$85.const$0.get(seg);
-    }
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * unsigned short id;
-     * }
-     */
-    public static void id$set(MemorySegment seg, short x) {
-        constants$85.const$0.set(seg, x);
-    }
-    public static short id$get(MemorySegment seg, long index) {
-        return (short)constants$85.const$0.get(seg.asSlice(index*sizeof()));
-    }
-    public static void id$set(MemorySegment seg, long index, short x) {
-        constants$85.const$0.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static VarHandle persisted$VH() {
-        return constants$85.const$1;
-    }
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * _Bool persisted;
-     * }
-     */
-    public static boolean persisted$get(MemorySegment seg) {
-        return (boolean)constants$85.const$1.get(seg);
-    }
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * _Bool persisted;
-     * }
-     */
-    public static void persisted$set(MemorySegment seg, boolean x) {
-        constants$85.const$1.set(seg, x);
-    }
-    public static boolean persisted$get(MemorySegment seg, long index) {
-        return (boolean)constants$85.const$1.get(seg.asSlice(index*sizeof()));
-    }
-    public static void persisted$set(MemorySegment seg, long index, boolean x) {
-        constants$85.const$1.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static long sizeof() { return $LAYOUT().byteSize(); }
-    public static MemorySegment allocate(SegmentAllocator allocator) { return allocator.allocate($LAYOUT()); }
-    public static MemorySegment allocateArray(long len, SegmentAllocator allocator) {
-        return allocator.allocate(MemoryLayout.sequenceLayout(len, $LAYOUT()));
-    }
-    public static MemorySegment ofAddress(MemorySegment addr, Arena arena) { return RuntimeHelper.asArray(addr, $LAYOUT(), 1, arena); }
-}
 
+    private static final GroupLayout $LAYOUT = MemoryLayout.structLayout(
+        b2Vec2.layout().withName("point"),
+        b2Vec2.layout().withName("anchorA"),
+        b2Vec2.layout().withName("anchorB"),
+        Box2D.C_FLOAT.withName("separation"),
+        Box2D.C_FLOAT.withName("normalImpulse"),
+        Box2D.C_FLOAT.withName("tangentImpulse"),
+        Box2D.C_FLOAT.withName("totalNormalImpulse"),
+        Box2D.C_FLOAT.withName("normalVelocity"),
+        Box2D.C_SHORT.withName("id"),
+        Box2D.C_BOOL.withName("persisted"),
+        MemoryLayout.paddingLayout(1)
+    ).withName("b2ManifoldPoint");
+
+    /**
+     * The layout of this struct
+     */
+    public static final GroupLayout layout() {
+        return $LAYOUT;
+    }
+
+    private static final GroupLayout point$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("point"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * b2Vec2 point
+     * }
+     */
+    public static final GroupLayout point$layout() {
+        return point$LAYOUT;
+    }
+
+    private static final long point$OFFSET = $LAYOUT.byteOffset(groupElement("point"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * b2Vec2 point
+     * }
+     */
+    public static final long point$offset() {
+        return point$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * b2Vec2 point
+     * }
+     */
+    public static MemorySegment point(MemorySegment struct) {
+        return struct.asSlice(point$OFFSET, point$LAYOUT.byteSize());
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * b2Vec2 point
+     * }
+     */
+    public static void point(MemorySegment struct, MemorySegment fieldValue) {
+        MemorySegment.copy(fieldValue, 0L, struct, point$OFFSET, point$LAYOUT.byteSize());
+    }
+
+    private static final GroupLayout anchorA$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("anchorA"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * b2Vec2 anchorA
+     * }
+     */
+    public static final GroupLayout anchorA$layout() {
+        return anchorA$LAYOUT;
+    }
+
+    private static final long anchorA$OFFSET = $LAYOUT.byteOffset(groupElement("anchorA"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * b2Vec2 anchorA
+     * }
+     */
+    public static final long anchorA$offset() {
+        return anchorA$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * b2Vec2 anchorA
+     * }
+     */
+    public static MemorySegment anchorA(MemorySegment struct) {
+        return struct.asSlice(anchorA$OFFSET, anchorA$LAYOUT.byteSize());
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * b2Vec2 anchorA
+     * }
+     */
+    public static void anchorA(MemorySegment struct, MemorySegment fieldValue) {
+        MemorySegment.copy(fieldValue, 0L, struct, anchorA$OFFSET, anchorA$LAYOUT.byteSize());
+    }
+
+    private static final GroupLayout anchorB$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("anchorB"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * b2Vec2 anchorB
+     * }
+     */
+    public static final GroupLayout anchorB$layout() {
+        return anchorB$LAYOUT;
+    }
+
+    private static final long anchorB$OFFSET = $LAYOUT.byteOffset(groupElement("anchorB"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * b2Vec2 anchorB
+     * }
+     */
+    public static final long anchorB$offset() {
+        return anchorB$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * b2Vec2 anchorB
+     * }
+     */
+    public static MemorySegment anchorB(MemorySegment struct) {
+        return struct.asSlice(anchorB$OFFSET, anchorB$LAYOUT.byteSize());
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * b2Vec2 anchorB
+     * }
+     */
+    public static void anchorB(MemorySegment struct, MemorySegment fieldValue) {
+        MemorySegment.copy(fieldValue, 0L, struct, anchorB$OFFSET, anchorB$LAYOUT.byteSize());
+    }
+
+    private static final OfFloat separation$LAYOUT = (OfFloat)$LAYOUT.select(groupElement("separation"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * float separation
+     * }
+     */
+    public static final OfFloat separation$layout() {
+        return separation$LAYOUT;
+    }
+
+    private static final long separation$OFFSET = $LAYOUT.byteOffset(groupElement("separation"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * float separation
+     * }
+     */
+    public static final long separation$offset() {
+        return separation$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * float separation
+     * }
+     */
+    public static float separation(MemorySegment struct) {
+        return struct.get(separation$LAYOUT, separation$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * float separation
+     * }
+     */
+    public static void separation(MemorySegment struct, float fieldValue) {
+        struct.set(separation$LAYOUT, separation$OFFSET, fieldValue);
+    }
+
+    private static final OfFloat normalImpulse$LAYOUT = (OfFloat)$LAYOUT.select(groupElement("normalImpulse"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * float normalImpulse
+     * }
+     */
+    public static final OfFloat normalImpulse$layout() {
+        return normalImpulse$LAYOUT;
+    }
+
+    private static final long normalImpulse$OFFSET = $LAYOUT.byteOffset(groupElement("normalImpulse"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * float normalImpulse
+     * }
+     */
+    public static final long normalImpulse$offset() {
+        return normalImpulse$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * float normalImpulse
+     * }
+     */
+    public static float normalImpulse(MemorySegment struct) {
+        return struct.get(normalImpulse$LAYOUT, normalImpulse$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * float normalImpulse
+     * }
+     */
+    public static void normalImpulse(MemorySegment struct, float fieldValue) {
+        struct.set(normalImpulse$LAYOUT, normalImpulse$OFFSET, fieldValue);
+    }
+
+    private static final OfFloat tangentImpulse$LAYOUT = (OfFloat)$LAYOUT.select(groupElement("tangentImpulse"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * float tangentImpulse
+     * }
+     */
+    public static final OfFloat tangentImpulse$layout() {
+        return tangentImpulse$LAYOUT;
+    }
+
+    private static final long tangentImpulse$OFFSET = $LAYOUT.byteOffset(groupElement("tangentImpulse"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * float tangentImpulse
+     * }
+     */
+    public static final long tangentImpulse$offset() {
+        return tangentImpulse$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * float tangentImpulse
+     * }
+     */
+    public static float tangentImpulse(MemorySegment struct) {
+        return struct.get(tangentImpulse$LAYOUT, tangentImpulse$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * float tangentImpulse
+     * }
+     */
+    public static void tangentImpulse(MemorySegment struct, float fieldValue) {
+        struct.set(tangentImpulse$LAYOUT, tangentImpulse$OFFSET, fieldValue);
+    }
+
+    private static final OfFloat totalNormalImpulse$LAYOUT = (OfFloat)$LAYOUT.select(groupElement("totalNormalImpulse"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * float totalNormalImpulse
+     * }
+     */
+    public static final OfFloat totalNormalImpulse$layout() {
+        return totalNormalImpulse$LAYOUT;
+    }
+
+    private static final long totalNormalImpulse$OFFSET = $LAYOUT.byteOffset(groupElement("totalNormalImpulse"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * float totalNormalImpulse
+     * }
+     */
+    public static final long totalNormalImpulse$offset() {
+        return totalNormalImpulse$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * float totalNormalImpulse
+     * }
+     */
+    public static float totalNormalImpulse(MemorySegment struct) {
+        return struct.get(totalNormalImpulse$LAYOUT, totalNormalImpulse$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * float totalNormalImpulse
+     * }
+     */
+    public static void totalNormalImpulse(MemorySegment struct, float fieldValue) {
+        struct.set(totalNormalImpulse$LAYOUT, totalNormalImpulse$OFFSET, fieldValue);
+    }
+
+    private static final OfFloat normalVelocity$LAYOUT = (OfFloat)$LAYOUT.select(groupElement("normalVelocity"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * float normalVelocity
+     * }
+     */
+    public static final OfFloat normalVelocity$layout() {
+        return normalVelocity$LAYOUT;
+    }
+
+    private static final long normalVelocity$OFFSET = $LAYOUT.byteOffset(groupElement("normalVelocity"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * float normalVelocity
+     * }
+     */
+    public static final long normalVelocity$offset() {
+        return normalVelocity$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * float normalVelocity
+     * }
+     */
+    public static float normalVelocity(MemorySegment struct) {
+        return struct.get(normalVelocity$LAYOUT, normalVelocity$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * float normalVelocity
+     * }
+     */
+    public static void normalVelocity(MemorySegment struct, float fieldValue) {
+        struct.set(normalVelocity$LAYOUT, normalVelocity$OFFSET, fieldValue);
+    }
+
+    private static final OfShort id$LAYOUT = (OfShort)$LAYOUT.select(groupElement("id"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * uint16_t id
+     * }
+     */
+    public static final OfShort id$layout() {
+        return id$LAYOUT;
+    }
+
+    private static final long id$OFFSET = $LAYOUT.byteOffset(groupElement("id"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * uint16_t id
+     * }
+     */
+    public static final long id$offset() {
+        return id$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * uint16_t id
+     * }
+     */
+    public static short id(MemorySegment struct) {
+        return struct.get(id$LAYOUT, id$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * uint16_t id
+     * }
+     */
+    public static void id(MemorySegment struct, short fieldValue) {
+        struct.set(id$LAYOUT, id$OFFSET, fieldValue);
+    }
+
+    private static final OfBoolean persisted$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("persisted"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * _Bool persisted
+     * }
+     */
+    public static final OfBoolean persisted$layout() {
+        return persisted$LAYOUT;
+    }
+
+    private static final long persisted$OFFSET = $LAYOUT.byteOffset(groupElement("persisted"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * _Bool persisted
+     * }
+     */
+    public static final long persisted$offset() {
+        return persisted$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * _Bool persisted
+     * }
+     */
+    public static boolean persisted(MemorySegment struct) {
+        return struct.get(persisted$LAYOUT, persisted$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * _Bool persisted
+     * }
+     */
+    public static void persisted(MemorySegment struct, boolean fieldValue) {
+        struct.set(persisted$LAYOUT, persisted$OFFSET, fieldValue);
+    }
+
+    /**
+     * Obtains a slice of {@code arrayParam} which selects the array element at {@code index}.
+     * The returned segment has address {@code arrayParam.address() + index * layout().byteSize()}
+     */
+    public static MemorySegment asSlice(MemorySegment array, long index) {
+        return array.asSlice(layout().byteSize() * index);
+    }
+
+    /**
+     * The size (in bytes) of this struct
+     */
+    public static long sizeof() { return layout().byteSize(); }
+
+    /**
+     * Allocate a segment of size {@code layout().byteSize()} using {@code allocator}
+     */
+    public static MemorySegment allocate(SegmentAllocator allocator) {
+        return allocator.allocate(layout());
+    }
+
+    /**
+     * Allocate an array of size {@code elementCount} using {@code allocator}.
+     * The returned segment has size {@code elementCount * layout().byteSize()}.
+     */
+    public static MemorySegment allocateArray(long elementCount, SegmentAllocator allocator) {
+        return allocator.allocate(MemoryLayout.sequenceLayout(elementCount, layout()));
+    }
+
+    /**
+     * Reinterprets {@code addr} using target {@code arena} and {@code cleanupAction} (if any).
+     * The returned segment has size {@code layout().byteSize()}
+     */
+    public static MemorySegment reinterpret(MemorySegment addr, Arena arena, Consumer<MemorySegment> cleanup) {
+        return reinterpret(addr, 1, arena, cleanup);
+    }
+
+    /**
+     * Reinterprets {@code addr} using target {@code arena} and {@code cleanupAction} (if any).
+     * The returned segment has size {@code elementCount * layout().byteSize()}
+     */
+    public static MemorySegment reinterpret(MemorySegment addr, long elementCount, Arena arena, Consumer<MemorySegment> cleanup) {
+        return addr.reinterpret(layout().byteSize() * elementCount, arena, cleanup);
+    }
+}
 

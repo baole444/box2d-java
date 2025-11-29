@@ -2,7 +2,7 @@ plugins {
     id 'java'
 }
 
-def targetJavaVersion = 21
+def targetJavaVersion = 25
 
 group = 'io.github.baole444'
 version = '3.1.1'

@@ -2,32 +2,69 @@
 
 package org.box2d;
 
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.VarHandle;
-import java.nio.ByteOrder;
+import java.lang.invoke.*;
 import java.lang.foreign.*;
+import java.nio.ByteOrder;
+import java.util.*;
+import java.util.function.*;
+import java.util.stream.*;
+
 import static java.lang.foreign.ValueLayout.*;
+import static java.lang.foreign.MemoryLayout.PathElement.*;
+
 /**
  * {@snippet lang=c :
- * void (*b2FinishTaskCallback)(void* userTask,void* userContext);
+ * typedef void (b2FinishTaskCallback)(void *, void *)
  * }
  */
-public interface b2FinishTaskCallback {
+public final class b2FinishTaskCallback {
 
-    void apply(java.lang.foreign.MemorySegment userTask, java.lang.foreign.MemorySegment userContext);
-    static MemorySegment allocate(b2FinishTaskCallback fi, Arena scope) {
-        return RuntimeHelper.upcallStub(constants$103.const$3, fi, constants$3.const$1, scope);
+    private b2FinishTaskCallback() {
+        // Should not be called directly
     }
-    static b2FinishTaskCallback ofAddress(MemorySegment addr, Arena arena) {
-        MemorySegment symbol = addr.reinterpret(arena, null);
-        return (java.lang.foreign.MemorySegment _userTask, java.lang.foreign.MemorySegment _userContext) -> {
-            try {
-                constants$103.const$4.invokeExact(symbol, _userTask, _userContext);
-            } catch (Throwable ex$) {
-                throw new AssertionError("should not reach here", ex$);
-            }
-        };
+
+    /**
+     * The function pointer signature, expressed as a functional interface
+     */
+    public interface Function {
+        void apply(MemorySegment userTask, MemorySegment userContext);
+    }
+
+    private static final FunctionDescriptor $DESC = FunctionDescriptor.ofVoid(
+        Box2D.C_POINTER,
+        Box2D.C_POINTER
+    );
+
+    /**
+     * The descriptor of this function pointer
+     */
+    public static FunctionDescriptor descriptor() {
+        return $DESC;
+    }
+
+    private static final MethodHandle UP$MH = Box2D.upcallHandle(b2FinishTaskCallback.Function.class, "apply", $DESC);
+
+    /**
+     * Allocates a new upcall stub, whose implementation is defined by {@code fi}.
+     * The lifetime of the returned segment is managed by {@code arena}
+     */
+    public static MemorySegment allocate(b2FinishTaskCallback.Function fi, Arena arena) {
+        return Linker.nativeLinker().upcallStub(UP$MH.bindTo(fi), $DESC, arena);
+    }
+
+    private static final MethodHandle DOWN$MH = Linker.nativeLinker().downcallHandle($DESC);
+
+    /**
+     * Invoke the upcall stub {@code funcPtr}, with given parameters
+     */
+    public static void invoke(MemorySegment funcPtr, MemorySegment userTask, MemorySegment userContext) {
+        try {
+             DOWN$MH.invokeExact(funcPtr, userTask, userContext);
+        } catch (Error | RuntimeException ex) {
+            throw ex;
+        } catch (Throwable ex$) {
+            throw new AssertionError("should not reach here", ex$);
+        }
     }
 }
-
 

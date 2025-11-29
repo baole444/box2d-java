@@ -2,120 +2,310 @@
 
 package org.box2d;
 
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.VarHandle;
-import java.nio.ByteOrder;
+import java.lang.invoke.*;
 import java.lang.foreign.*;
+import java.nio.ByteOrder;
+import java.util.*;
+import java.util.function.*;
+import java.util.stream.*;
+
 import static java.lang.foreign.ValueLayout.*;
+import static java.lang.foreign.MemoryLayout.PathElement.*;
+
 /**
  * {@snippet lang=c :
  * struct b2SegmentDistanceResult {
- *     struct b2Vec2 closest1;
- *     struct b2Vec2 closest2;
+ *     b2Vec2 closest1;
+ *     b2Vec2 closest2;
  *     float fraction1;
  *     float fraction2;
  *     float distanceSquared;
- * };
+ * }
  * }
  */
 public class b2SegmentDistanceResult {
 
-    public static MemoryLayout $LAYOUT() {
-        return constants$77.const$4;
+    b2SegmentDistanceResult() {
+        // Should not be called directly
     }
-    public static MemorySegment closest1$slice(MemorySegment seg) {
-        return seg.asSlice(0, 8);
-    }
-    public static MemorySegment closest2$slice(MemorySegment seg) {
-        return seg.asSlice(8, 8);
-    }
-    public static VarHandle fraction1$VH() {
-        return constants$77.const$5;
-    }
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * float fraction1;
-     * }
-     */
-    public static float fraction1$get(MemorySegment seg) {
-        return (float)constants$77.const$5.get(seg);
-    }
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * float fraction1;
-     * }
-     */
-    public static void fraction1$set(MemorySegment seg, float x) {
-        constants$77.const$5.set(seg, x);
-    }
-    public static float fraction1$get(MemorySegment seg, long index) {
-        return (float)constants$77.const$5.get(seg.asSlice(index*sizeof()));
-    }
-    public static void fraction1$set(MemorySegment seg, long index, float x) {
-        constants$77.const$5.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static VarHandle fraction2$VH() {
-        return constants$78.const$0;
-    }
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * float fraction2;
-     * }
-     */
-    public static float fraction2$get(MemorySegment seg) {
-        return (float)constants$78.const$0.get(seg);
-    }
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * float fraction2;
-     * }
-     */
-    public static void fraction2$set(MemorySegment seg, float x) {
-        constants$78.const$0.set(seg, x);
-    }
-    public static float fraction2$get(MemorySegment seg, long index) {
-        return (float)constants$78.const$0.get(seg.asSlice(index*sizeof()));
-    }
-    public static void fraction2$set(MemorySegment seg, long index, float x) {
-        constants$78.const$0.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static VarHandle distanceSquared$VH() {
-        return constants$78.const$1;
-    }
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * float distanceSquared;
-     * }
-     */
-    public static float distanceSquared$get(MemorySegment seg) {
-        return (float)constants$78.const$1.get(seg);
-    }
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * float distanceSquared;
-     * }
-     */
-    public static void distanceSquared$set(MemorySegment seg, float x) {
-        constants$78.const$1.set(seg, x);
-    }
-    public static float distanceSquared$get(MemorySegment seg, long index) {
-        return (float)constants$78.const$1.get(seg.asSlice(index*sizeof()));
-    }
-    public static void distanceSquared$set(MemorySegment seg, long index, float x) {
-        constants$78.const$1.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static long sizeof() { return $LAYOUT().byteSize(); }
-    public static MemorySegment allocate(SegmentAllocator allocator) { return allocator.allocate($LAYOUT()); }
-    public static MemorySegment allocateArray(long len, SegmentAllocator allocator) {
-        return allocator.allocate(MemoryLayout.sequenceLayout(len, $LAYOUT()));
-    }
-    public static MemorySegment ofAddress(MemorySegment addr, Arena arena) { return RuntimeHelper.asArray(addr, $LAYOUT(), 1, arena); }
-}
 
+    private static final GroupLayout $LAYOUT = MemoryLayout.structLayout(
+        b2Vec2.layout().withName("closest1"),
+        b2Vec2.layout().withName("closest2"),
+        Box2D.C_FLOAT.withName("fraction1"),
+        Box2D.C_FLOAT.withName("fraction2"),
+        Box2D.C_FLOAT.withName("distanceSquared")
+    ).withName("b2SegmentDistanceResult");
+
+    /**
+     * The layout of this struct
+     */
+    public static final GroupLayout layout() {
+        return $LAYOUT;
+    }
+
+    private static final GroupLayout closest1$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("closest1"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * b2Vec2 closest1
+     * }
+     */
+    public static final GroupLayout closest1$layout() {
+        return closest1$LAYOUT;
+    }
+
+    private static final long closest1$OFFSET = $LAYOUT.byteOffset(groupElement("closest1"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * b2Vec2 closest1
+     * }
+     */
+    public static final long closest1$offset() {
+        return closest1$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * b2Vec2 closest1
+     * }
+     */
+    public static MemorySegment closest1(MemorySegment struct) {
+        return struct.asSlice(closest1$OFFSET, closest1$LAYOUT.byteSize());
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * b2Vec2 closest1
+     * }
+     */
+    public static void closest1(MemorySegment struct, MemorySegment fieldValue) {
+        MemorySegment.copy(fieldValue, 0L, struct, closest1$OFFSET, closest1$LAYOUT.byteSize());
+    }
+
+    private static final GroupLayout closest2$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("closest2"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * b2Vec2 closest2
+     * }
+     */
+    public static final GroupLayout closest2$layout() {
+        return closest2$LAYOUT;
+    }
+
+    private static final long closest2$OFFSET = $LAYOUT.byteOffset(groupElement("closest2"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * b2Vec2 closest2
+     * }
+     */
+    public static final long closest2$offset() {
+        return closest2$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * b2Vec2 closest2
+     * }
+     */
+    public static MemorySegment closest2(MemorySegment struct) {
+        return struct.asSlice(closest2$OFFSET, closest2$LAYOUT.byteSize());
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * b2Vec2 closest2
+     * }
+     */
+    public static void closest2(MemorySegment struct, MemorySegment fieldValue) {
+        MemorySegment.copy(fieldValue, 0L, struct, closest2$OFFSET, closest2$LAYOUT.byteSize());
+    }
+
+    private static final OfFloat fraction1$LAYOUT = (OfFloat)$LAYOUT.select(groupElement("fraction1"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * float fraction1
+     * }
+     */
+    public static final OfFloat fraction1$layout() {
+        return fraction1$LAYOUT;
+    }
+
+    private static final long fraction1$OFFSET = $LAYOUT.byteOffset(groupElement("fraction1"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * float fraction1
+     * }
+     */
+    public static final long fraction1$offset() {
+        return fraction1$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * float fraction1
+     * }
+     */
+    public static float fraction1(MemorySegment struct) {
+        return struct.get(fraction1$LAYOUT, fraction1$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * float fraction1
+     * }
+     */
+    public static void fraction1(MemorySegment struct, float fieldValue) {
+        struct.set(fraction1$LAYOUT, fraction1$OFFSET, fieldValue);
+    }
+
+    private static final OfFloat fraction2$LAYOUT = (OfFloat)$LAYOUT.select(groupElement("fraction2"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * float fraction2
+     * }
+     */
+    public static final OfFloat fraction2$layout() {
+        return fraction2$LAYOUT;
+    }
+
+    private static final long fraction2$OFFSET = $LAYOUT.byteOffset(groupElement("fraction2"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * float fraction2
+     * }
+     */
+    public static final long fraction2$offset() {
+        return fraction2$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * float fraction2
+     * }
+     */
+    public static float fraction2(MemorySegment struct) {
+        return struct.get(fraction2$LAYOUT, fraction2$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * float fraction2
+     * }
+     */
+    public static void fraction2(MemorySegment struct, float fieldValue) {
+        struct.set(fraction2$LAYOUT, fraction2$OFFSET, fieldValue);
+    }
+
+    private static final OfFloat distanceSquared$LAYOUT = (OfFloat)$LAYOUT.select(groupElement("distanceSquared"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * float distanceSquared
+     * }
+     */
+    public static final OfFloat distanceSquared$layout() {
+        return distanceSquared$LAYOUT;
+    }
+
+    private static final long distanceSquared$OFFSET = $LAYOUT.byteOffset(groupElement("distanceSquared"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * float distanceSquared
+     * }
+     */
+    public static final long distanceSquared$offset() {
+        return distanceSquared$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * float distanceSquared
+     * }
+     */
+    public static float distanceSquared(MemorySegment struct) {
+        return struct.get(distanceSquared$LAYOUT, distanceSquared$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * float distanceSquared
+     * }
+     */
+    public static void distanceSquared(MemorySegment struct, float fieldValue) {
+        struct.set(distanceSquared$LAYOUT, distanceSquared$OFFSET, fieldValue);
+    }
+
+    /**
+     * Obtains a slice of {@code arrayParam} which selects the array element at {@code index}.
+     * The returned segment has address {@code arrayParam.address() + index * layout().byteSize()}
+     */
+    public static MemorySegment asSlice(MemorySegment array, long index) {
+        return array.asSlice(layout().byteSize() * index);
+    }
+
+    /**
+     * The size (in bytes) of this struct
+     */
+    public static long sizeof() { return layout().byteSize(); }
+
+    /**
+     * Allocate a segment of size {@code layout().byteSize()} using {@code allocator}
+     */
+    public static MemorySegment allocate(SegmentAllocator allocator) {
+        return allocator.allocate(layout());
+    }
+
+    /**
+     * Allocate an array of size {@code elementCount} using {@code allocator}.
+     * The returned segment has size {@code elementCount * layout().byteSize()}.
+     */
+    public static MemorySegment allocateArray(long elementCount, SegmentAllocator allocator) {
+        return allocator.allocate(MemoryLayout.sequenceLayout(elementCount, layout()));
+    }
+
+    /**
+     * Reinterprets {@code addr} using target {@code arena} and {@code cleanupAction} (if any).
+     * The returned segment has size {@code layout().byteSize()}
+     */
+    public static MemorySegment reinterpret(MemorySegment addr, Arena arena, Consumer<MemorySegment> cleanup) {
+        return reinterpret(addr, 1, arena, cleanup);
+    }
+
+    /**
+     * Reinterprets {@code addr} using target {@code arena} and {@code cleanupAction} (if any).
+     * The returned segment has size {@code elementCount * layout().byteSize()}
+     */
+    public static MemorySegment reinterpret(MemorySegment addr, long elementCount, Arena arena, Consumer<MemorySegment> cleanup) {
+        return addr.reinterpret(layout().byteSize() * elementCount, arena, cleanup);
+    }
+}
 

@@ -2,18 +2,23 @@
 
 package org.box2d;
 
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.VarHandle;
-import java.nio.ByteOrder;
+import java.lang.invoke.*;
 import java.lang.foreign.*;
+import java.nio.ByteOrder;
+import java.util.*;
+import java.util.function.*;
+import java.util.stream.*;
+
 import static java.lang.foreign.ValueLayout.*;
+import static java.lang.foreign.MemoryLayout.PathElement.*;
+
 /**
  * {@snippet lang=c :
  * struct b2ShapeDef {
- *     void* userData;
- *     struct b2SurfaceMaterial material;
+ *     void *userData;
+ *     b2SurfaceMaterial material;
  *     float density;
- *     struct b2Filter filter;
+ *     b2Filter filter;
  *     _Bool isSensor;
  *     _Bool enableSensorEvents;
  *     _Bool enableContactEvents;
@@ -22,296 +27,610 @@ import static java.lang.foreign.ValueLayout.*;
  *     _Bool invokeContactCreation;
  *     _Bool updateBodyMass;
  *     int internalValue;
- * };
+ * }
  * }
  */
 public class b2ShapeDef {
 
-    public static MemoryLayout $LAYOUT() {
-        return constants$115.const$2;
+    b2ShapeDef() {
+        // Should not be called directly
     }
-    public static VarHandle userData$VH() {
-        return constants$115.const$3;
-    }
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * void* userData;
-     * }
-     */
-    public static MemorySegment userData$get(MemorySegment seg) {
-        return (java.lang.foreign.MemorySegment)constants$115.const$3.get(seg);
-    }
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * void* userData;
-     * }
-     */
-    public static void userData$set(MemorySegment seg, MemorySegment x) {
-        constants$115.const$3.set(seg, x);
-    }
-    public static MemorySegment userData$get(MemorySegment seg, long index) {
-        return (java.lang.foreign.MemorySegment)constants$115.const$3.get(seg.asSlice(index*sizeof()));
-    }
-    public static void userData$set(MemorySegment seg, long index, MemorySegment x) {
-        constants$115.const$3.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static MemorySegment material$slice(MemorySegment seg) {
-        return seg.asSlice(8, 24);
-    }
-    public static VarHandle density$VH() {
-        return constants$115.const$4;
-    }
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * float density;
-     * }
-     */
-    public static float density$get(MemorySegment seg) {
-        return (float)constants$115.const$4.get(seg);
-    }
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * float density;
-     * }
-     */
-    public static void density$set(MemorySegment seg, float x) {
-        constants$115.const$4.set(seg, x);
-    }
-    public static float density$get(MemorySegment seg, long index) {
-        return (float)constants$115.const$4.get(seg.asSlice(index*sizeof()));
-    }
-    public static void density$set(MemorySegment seg, long index, float x) {
-        constants$115.const$4.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static MemorySegment filter$slice(MemorySegment seg) {
-        return seg.asSlice(40, 24);
-    }
-    public static VarHandle isSensor$VH() {
-        return constants$115.const$5;
-    }
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * _Bool isSensor;
-     * }
-     */
-    public static boolean isSensor$get(MemorySegment seg) {
-        return (boolean)constants$115.const$5.get(seg);
-    }
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * _Bool isSensor;
-     * }
-     */
-    public static void isSensor$set(MemorySegment seg, boolean x) {
-        constants$115.const$5.set(seg, x);
-    }
-    public static boolean isSensor$get(MemorySegment seg, long index) {
-        return (boolean)constants$115.const$5.get(seg.asSlice(index*sizeof()));
-    }
-    public static void isSensor$set(MemorySegment seg, long index, boolean x) {
-        constants$115.const$5.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static VarHandle enableSensorEvents$VH() {
-        return constants$116.const$0;
-    }
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * _Bool enableSensorEvents;
-     * }
-     */
-    public static boolean enableSensorEvents$get(MemorySegment seg) {
-        return (boolean)constants$116.const$0.get(seg);
-    }
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * _Bool enableSensorEvents;
-     * }
-     */
-    public static void enableSensorEvents$set(MemorySegment seg, boolean x) {
-        constants$116.const$0.set(seg, x);
-    }
-    public static boolean enableSensorEvents$get(MemorySegment seg, long index) {
-        return (boolean)constants$116.const$0.get(seg.asSlice(index*sizeof()));
-    }
-    public static void enableSensorEvents$set(MemorySegment seg, long index, boolean x) {
-        constants$116.const$0.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static VarHandle enableContactEvents$VH() {
-        return constants$116.const$1;
-    }
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * _Bool enableContactEvents;
-     * }
-     */
-    public static boolean enableContactEvents$get(MemorySegment seg) {
-        return (boolean)constants$116.const$1.get(seg);
-    }
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * _Bool enableContactEvents;
-     * }
-     */
-    public static void enableContactEvents$set(MemorySegment seg, boolean x) {
-        constants$116.const$1.set(seg, x);
-    }
-    public static boolean enableContactEvents$get(MemorySegment seg, long index) {
-        return (boolean)constants$116.const$1.get(seg.asSlice(index*sizeof()));
-    }
-    public static void enableContactEvents$set(MemorySegment seg, long index, boolean x) {
-        constants$116.const$1.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static VarHandle enableHitEvents$VH() {
-        return constants$116.const$2;
-    }
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * _Bool enableHitEvents;
-     * }
-     */
-    public static boolean enableHitEvents$get(MemorySegment seg) {
-        return (boolean)constants$116.const$2.get(seg);
-    }
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * _Bool enableHitEvents;
-     * }
-     */
-    public static void enableHitEvents$set(MemorySegment seg, boolean x) {
-        constants$116.const$2.set(seg, x);
-    }
-    public static boolean enableHitEvents$get(MemorySegment seg, long index) {
-        return (boolean)constants$116.const$2.get(seg.asSlice(index*sizeof()));
-    }
-    public static void enableHitEvents$set(MemorySegment seg, long index, boolean x) {
-        constants$116.const$2.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static VarHandle enablePreSolveEvents$VH() {
-        return constants$116.const$3;
-    }
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * _Bool enablePreSolveEvents;
-     * }
-     */
-    public static boolean enablePreSolveEvents$get(MemorySegment seg) {
-        return (boolean)constants$116.const$3.get(seg);
-    }
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * _Bool enablePreSolveEvents;
-     * }
-     */
-    public static void enablePreSolveEvents$set(MemorySegment seg, boolean x) {
-        constants$116.const$3.set(seg, x);
-    }
-    public static boolean enablePreSolveEvents$get(MemorySegment seg, long index) {
-        return (boolean)constants$116.const$3.get(seg.asSlice(index*sizeof()));
-    }
-    public static void enablePreSolveEvents$set(MemorySegment seg, long index, boolean x) {
-        constants$116.const$3.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static VarHandle invokeContactCreation$VH() {
-        return constants$116.const$4;
-    }
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * _Bool invokeContactCreation;
-     * }
-     */
-    public static boolean invokeContactCreation$get(MemorySegment seg) {
-        return (boolean)constants$116.const$4.get(seg);
-    }
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * _Bool invokeContactCreation;
-     * }
-     */
-    public static void invokeContactCreation$set(MemorySegment seg, boolean x) {
-        constants$116.const$4.set(seg, x);
-    }
-    public static boolean invokeContactCreation$get(MemorySegment seg, long index) {
-        return (boolean)constants$116.const$4.get(seg.asSlice(index*sizeof()));
-    }
-    public static void invokeContactCreation$set(MemorySegment seg, long index, boolean x) {
-        constants$116.const$4.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static VarHandle updateBodyMass$VH() {
-        return constants$116.const$5;
-    }
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * _Bool updateBodyMass;
-     * }
-     */
-    public static boolean updateBodyMass$get(MemorySegment seg) {
-        return (boolean)constants$116.const$5.get(seg);
-    }
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * _Bool updateBodyMass;
-     * }
-     */
-    public static void updateBodyMass$set(MemorySegment seg, boolean x) {
-        constants$116.const$5.set(seg, x);
-    }
-    public static boolean updateBodyMass$get(MemorySegment seg, long index) {
-        return (boolean)constants$116.const$5.get(seg.asSlice(index*sizeof()));
-    }
-    public static void updateBodyMass$set(MemorySegment seg, long index, boolean x) {
-        constants$116.const$5.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static VarHandle internalValue$VH() {
-        return constants$117.const$0;
-    }
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * int internalValue;
-     * }
-     */
-    public static int internalValue$get(MemorySegment seg) {
-        return (int)constants$117.const$0.get(seg);
-    }
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * int internalValue;
-     * }
-     */
-    public static void internalValue$set(MemorySegment seg, int x) {
-        constants$117.const$0.set(seg, x);
-    }
-    public static int internalValue$get(MemorySegment seg, long index) {
-        return (int)constants$117.const$0.get(seg.asSlice(index*sizeof()));
-    }
-    public static void internalValue$set(MemorySegment seg, long index, int x) {
-        constants$117.const$0.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static long sizeof() { return $LAYOUT().byteSize(); }
-    public static MemorySegment allocate(SegmentAllocator allocator) { return allocator.allocate($LAYOUT()); }
-    public static MemorySegment allocateArray(long len, SegmentAllocator allocator) {
-        return allocator.allocate(MemoryLayout.sequenceLayout(len, $LAYOUT()));
-    }
-    public static MemorySegment ofAddress(MemorySegment addr, Arena arena) { return RuntimeHelper.asArray(addr, $LAYOUT(), 1, arena); }
-}
 
+    private static final GroupLayout $LAYOUT = MemoryLayout.structLayout(
+        Box2D.C_POINTER.withName("userData"),
+        b2SurfaceMaterial.layout().withName("material"),
+        Box2D.C_FLOAT.withName("density"),
+        MemoryLayout.paddingLayout(4),
+        b2Filter.layout().withName("filter"),
+        Box2D.C_BOOL.withName("isSensor"),
+        Box2D.C_BOOL.withName("enableSensorEvents"),
+        Box2D.C_BOOL.withName("enableContactEvents"),
+        Box2D.C_BOOL.withName("enableHitEvents"),
+        Box2D.C_BOOL.withName("enablePreSolveEvents"),
+        Box2D.C_BOOL.withName("invokeContactCreation"),
+        Box2D.C_BOOL.withName("updateBodyMass"),
+        MemoryLayout.paddingLayout(1),
+        Box2D.C_INT.withName("internalValue"),
+        MemoryLayout.paddingLayout(4)
+    ).withName("b2ShapeDef");
+
+    /**
+     * The layout of this struct
+     */
+    public static final GroupLayout layout() {
+        return $LAYOUT;
+    }
+
+    private static final AddressLayout userData$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("userData"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * void *userData
+     * }
+     */
+    public static final AddressLayout userData$layout() {
+        return userData$LAYOUT;
+    }
+
+    private static final long userData$OFFSET = $LAYOUT.byteOffset(groupElement("userData"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * void *userData
+     * }
+     */
+    public static final long userData$offset() {
+        return userData$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * void *userData
+     * }
+     */
+    public static MemorySegment userData(MemorySegment struct) {
+        return struct.get(userData$LAYOUT, userData$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * void *userData
+     * }
+     */
+    public static void userData(MemorySegment struct, MemorySegment fieldValue) {
+        struct.set(userData$LAYOUT, userData$OFFSET, fieldValue);
+    }
+
+    private static final GroupLayout material$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("material"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * b2SurfaceMaterial material
+     * }
+     */
+    public static final GroupLayout material$layout() {
+        return material$LAYOUT;
+    }
+
+    private static final long material$OFFSET = $LAYOUT.byteOffset(groupElement("material"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * b2SurfaceMaterial material
+     * }
+     */
+    public static final long material$offset() {
+        return material$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * b2SurfaceMaterial material
+     * }
+     */
+    public static MemorySegment material(MemorySegment struct) {
+        return struct.asSlice(material$OFFSET, material$LAYOUT.byteSize());
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * b2SurfaceMaterial material
+     * }
+     */
+    public static void material(MemorySegment struct, MemorySegment fieldValue) {
+        MemorySegment.copy(fieldValue, 0L, struct, material$OFFSET, material$LAYOUT.byteSize());
+    }
+
+    private static final OfFloat density$LAYOUT = (OfFloat)$LAYOUT.select(groupElement("density"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * float density
+     * }
+     */
+    public static final OfFloat density$layout() {
+        return density$LAYOUT;
+    }
+
+    private static final long density$OFFSET = $LAYOUT.byteOffset(groupElement("density"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * float density
+     * }
+     */
+    public static final long density$offset() {
+        return density$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * float density
+     * }
+     */
+    public static float density(MemorySegment struct) {
+        return struct.get(density$LAYOUT, density$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * float density
+     * }
+     */
+    public static void density(MemorySegment struct, float fieldValue) {
+        struct.set(density$LAYOUT, density$OFFSET, fieldValue);
+    }
+
+    private static final GroupLayout filter$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("filter"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * b2Filter filter
+     * }
+     */
+    public static final GroupLayout filter$layout() {
+        return filter$LAYOUT;
+    }
+
+    private static final long filter$OFFSET = $LAYOUT.byteOffset(groupElement("filter"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * b2Filter filter
+     * }
+     */
+    public static final long filter$offset() {
+        return filter$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * b2Filter filter
+     * }
+     */
+    public static MemorySegment filter(MemorySegment struct) {
+        return struct.asSlice(filter$OFFSET, filter$LAYOUT.byteSize());
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * b2Filter filter
+     * }
+     */
+    public static void filter(MemorySegment struct, MemorySegment fieldValue) {
+        MemorySegment.copy(fieldValue, 0L, struct, filter$OFFSET, filter$LAYOUT.byteSize());
+    }
+
+    private static final OfBoolean isSensor$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("isSensor"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * _Bool isSensor
+     * }
+     */
+    public static final OfBoolean isSensor$layout() {
+        return isSensor$LAYOUT;
+    }
+
+    private static final long isSensor$OFFSET = $LAYOUT.byteOffset(groupElement("isSensor"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * _Bool isSensor
+     * }
+     */
+    public static final long isSensor$offset() {
+        return isSensor$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * _Bool isSensor
+     * }
+     */
+    public static boolean isSensor(MemorySegment struct) {
+        return struct.get(isSensor$LAYOUT, isSensor$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * _Bool isSensor
+     * }
+     */
+    public static void isSensor(MemorySegment struct, boolean fieldValue) {
+        struct.set(isSensor$LAYOUT, isSensor$OFFSET, fieldValue);
+    }
+
+    private static final OfBoolean enableSensorEvents$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("enableSensorEvents"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * _Bool enableSensorEvents
+     * }
+     */
+    public static final OfBoolean enableSensorEvents$layout() {
+        return enableSensorEvents$LAYOUT;
+    }
+
+    private static final long enableSensorEvents$OFFSET = $LAYOUT.byteOffset(groupElement("enableSensorEvents"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * _Bool enableSensorEvents
+     * }
+     */
+    public static final long enableSensorEvents$offset() {
+        return enableSensorEvents$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * _Bool enableSensorEvents
+     * }
+     */
+    public static boolean enableSensorEvents(MemorySegment struct) {
+        return struct.get(enableSensorEvents$LAYOUT, enableSensorEvents$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * _Bool enableSensorEvents
+     * }
+     */
+    public static void enableSensorEvents(MemorySegment struct, boolean fieldValue) {
+        struct.set(enableSensorEvents$LAYOUT, enableSensorEvents$OFFSET, fieldValue);
+    }
+
+    private static final OfBoolean enableContactEvents$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("enableContactEvents"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * _Bool enableContactEvents
+     * }
+     */
+    public static final OfBoolean enableContactEvents$layout() {
+        return enableContactEvents$LAYOUT;
+    }
+
+    private static final long enableContactEvents$OFFSET = $LAYOUT.byteOffset(groupElement("enableContactEvents"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * _Bool enableContactEvents
+     * }
+     */
+    public static final long enableContactEvents$offset() {
+        return enableContactEvents$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * _Bool enableContactEvents
+     * }
+     */
+    public static boolean enableContactEvents(MemorySegment struct) {
+        return struct.get(enableContactEvents$LAYOUT, enableContactEvents$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * _Bool enableContactEvents
+     * }
+     */
+    public static void enableContactEvents(MemorySegment struct, boolean fieldValue) {
+        struct.set(enableContactEvents$LAYOUT, enableContactEvents$OFFSET, fieldValue);
+    }
+
+    private static final OfBoolean enableHitEvents$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("enableHitEvents"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * _Bool enableHitEvents
+     * }
+     */
+    public static final OfBoolean enableHitEvents$layout() {
+        return enableHitEvents$LAYOUT;
+    }
+
+    private static final long enableHitEvents$OFFSET = $LAYOUT.byteOffset(groupElement("enableHitEvents"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * _Bool enableHitEvents
+     * }
+     */
+    public static final long enableHitEvents$offset() {
+        return enableHitEvents$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * _Bool enableHitEvents
+     * }
+     */
+    public static boolean enableHitEvents(MemorySegment struct) {
+        return struct.get(enableHitEvents$LAYOUT, enableHitEvents$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * _Bool enableHitEvents
+     * }
+     */
+    public static void enableHitEvents(MemorySegment struct, boolean fieldValue) {
+        struct.set(enableHitEvents$LAYOUT, enableHitEvents$OFFSET, fieldValue);
+    }
+
+    private static final OfBoolean enablePreSolveEvents$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("enablePreSolveEvents"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * _Bool enablePreSolveEvents
+     * }
+     */
+    public static final OfBoolean enablePreSolveEvents$layout() {
+        return enablePreSolveEvents$LAYOUT;
+    }
+
+    private static final long enablePreSolveEvents$OFFSET = $LAYOUT.byteOffset(groupElement("enablePreSolveEvents"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * _Bool enablePreSolveEvents
+     * }
+     */
+    public static final long enablePreSolveEvents$offset() {
+        return enablePreSolveEvents$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * _Bool enablePreSolveEvents
+     * }
+     */
+    public static boolean enablePreSolveEvents(MemorySegment struct) {
+        return struct.get(enablePreSolveEvents$LAYOUT, enablePreSolveEvents$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * _Bool enablePreSolveEvents
+     * }
+     */
+    public static void enablePreSolveEvents(MemorySegment struct, boolean fieldValue) {
+        struct.set(enablePreSolveEvents$LAYOUT, enablePreSolveEvents$OFFSET, fieldValue);
+    }
+
+    private static final OfBoolean invokeContactCreation$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("invokeContactCreation"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * _Bool invokeContactCreation
+     * }
+     */
+    public static final OfBoolean invokeContactCreation$layout() {
+        return invokeContactCreation$LAYOUT;
+    }
+
+    private static final long invokeContactCreation$OFFSET = $LAYOUT.byteOffset(groupElement("invokeContactCreation"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * _Bool invokeContactCreation
+     * }
+     */
+    public static final long invokeContactCreation$offset() {
+        return invokeContactCreation$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * _Bool invokeContactCreation
+     * }
+     */
+    public static boolean invokeContactCreation(MemorySegment struct) {
+        return struct.get(invokeContactCreation$LAYOUT, invokeContactCreation$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * _Bool invokeContactCreation
+     * }
+     */
+    public static void invokeContactCreation(MemorySegment struct, boolean fieldValue) {
+        struct.set(invokeContactCreation$LAYOUT, invokeContactCreation$OFFSET, fieldValue);
+    }
+
+    private static final OfBoolean updateBodyMass$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("updateBodyMass"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * _Bool updateBodyMass
+     * }
+     */
+    public static final OfBoolean updateBodyMass$layout() {
+        return updateBodyMass$LAYOUT;
+    }
+
+    private static final long updateBodyMass$OFFSET = $LAYOUT.byteOffset(groupElement("updateBodyMass"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * _Bool updateBodyMass
+     * }
+     */
+    public static final long updateBodyMass$offset() {
+        return updateBodyMass$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * _Bool updateBodyMass
+     * }
+     */
+    public static boolean updateBodyMass(MemorySegment struct) {
+        return struct.get(updateBodyMass$LAYOUT, updateBodyMass$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * _Bool updateBodyMass
+     * }
+     */
+    public static void updateBodyMass(MemorySegment struct, boolean fieldValue) {
+        struct.set(updateBodyMass$LAYOUT, updateBodyMass$OFFSET, fieldValue);
+    }
+
+    private static final OfInt internalValue$LAYOUT = (OfInt)$LAYOUT.select(groupElement("internalValue"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * int internalValue
+     * }
+     */
+    public static final OfInt internalValue$layout() {
+        return internalValue$LAYOUT;
+    }
+
+    private static final long internalValue$OFFSET = $LAYOUT.byteOffset(groupElement("internalValue"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * int internalValue
+     * }
+     */
+    public static final long internalValue$offset() {
+        return internalValue$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * int internalValue
+     * }
+     */
+    public static int internalValue(MemorySegment struct) {
+        return struct.get(internalValue$LAYOUT, internalValue$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * int internalValue
+     * }
+     */
+    public static void internalValue(MemorySegment struct, int fieldValue) {
+        struct.set(internalValue$LAYOUT, internalValue$OFFSET, fieldValue);
+    }
+
+    /**
+     * Obtains a slice of {@code arrayParam} which selects the array element at {@code index}.
+     * The returned segment has address {@code arrayParam.address() + index * layout().byteSize()}
+     */
+    public static MemorySegment asSlice(MemorySegment array, long index) {
+        return array.asSlice(layout().byteSize() * index);
+    }
+
+    /**
+     * The size (in bytes) of this struct
+     */
+    public static long sizeof() { return layout().byteSize(); }
+
+    /**
+     * Allocate a segment of size {@code layout().byteSize()} using {@code allocator}
+     */
+    public static MemorySegment allocate(SegmentAllocator allocator) {
+        return allocator.allocate(layout());
+    }
+
+    /**
+     * Allocate an array of size {@code elementCount} using {@code allocator}.
+     * The returned segment has size {@code elementCount * layout().byteSize()}.
+     */
+    public static MemorySegment allocateArray(long elementCount, SegmentAllocator allocator) {
+        return allocator.allocate(MemoryLayout.sequenceLayout(elementCount, layout()));
+    }
+
+    /**
+     * Reinterprets {@code addr} using target {@code arena} and {@code cleanupAction} (if any).
+     * The returned segment has size {@code layout().byteSize()}
+     */
+    public static MemorySegment reinterpret(MemorySegment addr, Arena arena, Consumer<MemorySegment> cleanup) {
+        return reinterpret(addr, 1, arena, cleanup);
+    }
+
+    /**
+     * Reinterprets {@code addr} using target {@code arena} and {@code cleanupAction} (if any).
+     * The returned segment has size {@code elementCount * layout().byteSize()}
+     */
+    public static MemorySegment reinterpret(MemorySegment addr, long elementCount, Arena arena, Consumer<MemorySegment> cleanup) {
+        return addr.reinterpret(layout().byteSize() * elementCount, arena, cleanup);
+    }
+}
 

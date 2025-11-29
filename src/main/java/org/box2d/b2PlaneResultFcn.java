@@ -2,32 +2,71 @@
 
 package org.box2d;
 
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.VarHandle;
-import java.nio.ByteOrder;
+import java.lang.invoke.*;
 import java.lang.foreign.*;
+import java.nio.ByteOrder;
+import java.util.*;
+import java.util.function.*;
+import java.util.stream.*;
+
 import static java.lang.foreign.ValueLayout.*;
+import static java.lang.foreign.MemoryLayout.PathElement.*;
+
 /**
  * {@snippet lang=c :
- * _Bool (*b2PlaneResultFcn)(struct b2ShapeId shapeId,struct b2PlaneResult* plane,void* context);
+ * typedef _Bool (b2PlaneResultFcn)(b2ShapeId, const b2PlaneResult *, void *)
  * }
  */
-public interface b2PlaneResultFcn {
+public final class b2PlaneResultFcn {
 
-    boolean apply(java.lang.foreign.MemorySegment shapeId, java.lang.foreign.MemorySegment plane, java.lang.foreign.MemorySegment context);
-    static MemorySegment allocate(b2PlaneResultFcn fi, Arena scope) {
-        return RuntimeHelper.upcallStub(constants$149.const$2, fi, constants$149.const$1, scope);
+    private b2PlaneResultFcn() {
+        // Should not be called directly
     }
-    static b2PlaneResultFcn ofAddress(MemorySegment addr, Arena arena) {
-        MemorySegment symbol = addr.reinterpret(arena, null);
-        return (java.lang.foreign.MemorySegment _shapeId, java.lang.foreign.MemorySegment _plane, java.lang.foreign.MemorySegment _context) -> {
-            try {
-                return (boolean)constants$149.const$3.invokeExact(symbol, _shapeId, _plane, _context);
-            } catch (Throwable ex$) {
-                throw new AssertionError("should not reach here", ex$);
-            }
-        };
+
+    /**
+     * The function pointer signature, expressed as a functional interface
+     */
+    public interface Function {
+        boolean apply(MemorySegment shapeId, MemorySegment plane, MemorySegment context);
+    }
+
+    private static final FunctionDescriptor $DESC = FunctionDescriptor.of(
+        Box2D.C_BOOL,
+        b2ShapeId.layout(),
+        Box2D.C_POINTER,
+        Box2D.C_POINTER
+    );
+
+    /**
+     * The descriptor of this function pointer
+     */
+    public static FunctionDescriptor descriptor() {
+        return $DESC;
+    }
+
+    private static final MethodHandle UP$MH = Box2D.upcallHandle(b2PlaneResultFcn.Function.class, "apply", $DESC);
+
+    /**
+     * Allocates a new upcall stub, whose implementation is defined by {@code fi}.
+     * The lifetime of the returned segment is managed by {@code arena}
+     */
+    public static MemorySegment allocate(b2PlaneResultFcn.Function fi, Arena arena) {
+        return Linker.nativeLinker().upcallStub(UP$MH.bindTo(fi), $DESC, arena);
+    }
+
+    private static final MethodHandle DOWN$MH = Linker.nativeLinker().downcallHandle($DESC);
+
+    /**
+     * Invoke the upcall stub {@code funcPtr}, with given parameters
+     */
+    public static boolean invoke(MemorySegment funcPtr, MemorySegment shapeId, MemorySegment plane, MemorySegment context) {
+        try {
+            return (boolean) DOWN$MH.invokeExact(funcPtr, shapeId, plane, context);
+        } catch (Error | RuntimeException ex) {
+            throw ex;
+        } catch (Throwable ex$) {
+            throw new AssertionError("should not reach here", ex$);
+        }
     }
 }
-
 

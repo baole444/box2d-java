@@ -2,196 +2,357 @@
 
 package org.box2d;
 
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.VarHandle;
-import java.nio.ByteOrder;
+import java.lang.invoke.*;
 import java.lang.foreign.*;
+import java.nio.ByteOrder;
+import java.util.*;
+import java.util.function.*;
+import java.util.stream.*;
+
 import static java.lang.foreign.ValueLayout.*;
+import static java.lang.foreign.MemoryLayout.PathElement.*;
+
 /**
  * {@snippet lang=c :
  * struct b2ContactEvents {
- *     struct b2ContactBeginTouchEvent* beginEvents;
- *     struct b2ContactEndTouchEvent* endEvents;
- *     struct b2ContactHitEvent* hitEvents;
+ *     b2ContactBeginTouchEvent *beginEvents;
+ *     b2ContactEndTouchEvent *endEvents;
+ *     b2ContactHitEvent *hitEvents;
  *     int beginCount;
  *     int endCount;
  *     int hitCount;
- * };
+ * }
  * }
  */
 public class b2ContactEvents {
 
-    public static MemoryLayout $LAYOUT() {
-        return constants$144.const$5;
+    b2ContactEvents() {
+        // Should not be called directly
     }
-    public static VarHandle beginEvents$VH() {
-        return constants$145.const$0;
-    }
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * struct b2ContactBeginTouchEvent* beginEvents;
-     * }
-     */
-    public static MemorySegment beginEvents$get(MemorySegment seg) {
-        return (java.lang.foreign.MemorySegment)constants$145.const$0.get(seg);
-    }
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * struct b2ContactBeginTouchEvent* beginEvents;
-     * }
-     */
-    public static void beginEvents$set(MemorySegment seg, MemorySegment x) {
-        constants$145.const$0.set(seg, x);
-    }
-    public static MemorySegment beginEvents$get(MemorySegment seg, long index) {
-        return (java.lang.foreign.MemorySegment)constants$145.const$0.get(seg.asSlice(index*sizeof()));
-    }
-    public static void beginEvents$set(MemorySegment seg, long index, MemorySegment x) {
-        constants$145.const$0.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static VarHandle endEvents$VH() {
-        return constants$145.const$1;
-    }
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * struct b2ContactEndTouchEvent* endEvents;
-     * }
-     */
-    public static MemorySegment endEvents$get(MemorySegment seg) {
-        return (java.lang.foreign.MemorySegment)constants$145.const$1.get(seg);
-    }
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * struct b2ContactEndTouchEvent* endEvents;
-     * }
-     */
-    public static void endEvents$set(MemorySegment seg, MemorySegment x) {
-        constants$145.const$1.set(seg, x);
-    }
-    public static MemorySegment endEvents$get(MemorySegment seg, long index) {
-        return (java.lang.foreign.MemorySegment)constants$145.const$1.get(seg.asSlice(index*sizeof()));
-    }
-    public static void endEvents$set(MemorySegment seg, long index, MemorySegment x) {
-        constants$145.const$1.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static VarHandle hitEvents$VH() {
-        return constants$145.const$2;
-    }
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * struct b2ContactHitEvent* hitEvents;
-     * }
-     */
-    public static MemorySegment hitEvents$get(MemorySegment seg) {
-        return (java.lang.foreign.MemorySegment)constants$145.const$2.get(seg);
-    }
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * struct b2ContactHitEvent* hitEvents;
-     * }
-     */
-    public static void hitEvents$set(MemorySegment seg, MemorySegment x) {
-        constants$145.const$2.set(seg, x);
-    }
-    public static MemorySegment hitEvents$get(MemorySegment seg, long index) {
-        return (java.lang.foreign.MemorySegment)constants$145.const$2.get(seg.asSlice(index*sizeof()));
-    }
-    public static void hitEvents$set(MemorySegment seg, long index, MemorySegment x) {
-        constants$145.const$2.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static VarHandle beginCount$VH() {
-        return constants$145.const$3;
-    }
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * int beginCount;
-     * }
-     */
-    public static int beginCount$get(MemorySegment seg) {
-        return (int)constants$145.const$3.get(seg);
-    }
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * int beginCount;
-     * }
-     */
-    public static void beginCount$set(MemorySegment seg, int x) {
-        constants$145.const$3.set(seg, x);
-    }
-    public static int beginCount$get(MemorySegment seg, long index) {
-        return (int)constants$145.const$3.get(seg.asSlice(index*sizeof()));
-    }
-    public static void beginCount$set(MemorySegment seg, long index, int x) {
-        constants$145.const$3.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static VarHandle endCount$VH() {
-        return constants$145.const$4;
-    }
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * int endCount;
-     * }
-     */
-    public static int endCount$get(MemorySegment seg) {
-        return (int)constants$145.const$4.get(seg);
-    }
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * int endCount;
-     * }
-     */
-    public static void endCount$set(MemorySegment seg, int x) {
-        constants$145.const$4.set(seg, x);
-    }
-    public static int endCount$get(MemorySegment seg, long index) {
-        return (int)constants$145.const$4.get(seg.asSlice(index*sizeof()));
-    }
-    public static void endCount$set(MemorySegment seg, long index, int x) {
-        constants$145.const$4.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static VarHandle hitCount$VH() {
-        return constants$145.const$5;
-    }
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * int hitCount;
-     * }
-     */
-    public static int hitCount$get(MemorySegment seg) {
-        return (int)constants$145.const$5.get(seg);
-    }
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * int hitCount;
-     * }
-     */
-    public static void hitCount$set(MemorySegment seg, int x) {
-        constants$145.const$5.set(seg, x);
-    }
-    public static int hitCount$get(MemorySegment seg, long index) {
-        return (int)constants$145.const$5.get(seg.asSlice(index*sizeof()));
-    }
-    public static void hitCount$set(MemorySegment seg, long index, int x) {
-        constants$145.const$5.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static long sizeof() { return $LAYOUT().byteSize(); }
-    public static MemorySegment allocate(SegmentAllocator allocator) { return allocator.allocate($LAYOUT()); }
-    public static MemorySegment allocateArray(long len, SegmentAllocator allocator) {
-        return allocator.allocate(MemoryLayout.sequenceLayout(len, $LAYOUT()));
-    }
-    public static MemorySegment ofAddress(MemorySegment addr, Arena arena) { return RuntimeHelper.asArray(addr, $LAYOUT(), 1, arena); }
-}
 
+    private static final GroupLayout $LAYOUT = MemoryLayout.structLayout(
+        Box2D.C_POINTER.withName("beginEvents"),
+        Box2D.C_POINTER.withName("endEvents"),
+        Box2D.C_POINTER.withName("hitEvents"),
+        Box2D.C_INT.withName("beginCount"),
+        Box2D.C_INT.withName("endCount"),
+        Box2D.C_INT.withName("hitCount"),
+        MemoryLayout.paddingLayout(4)
+    ).withName("b2ContactEvents");
+
+    /**
+     * The layout of this struct
+     */
+    public static final GroupLayout layout() {
+        return $LAYOUT;
+    }
+
+    private static final AddressLayout beginEvents$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("beginEvents"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * b2ContactBeginTouchEvent *beginEvents
+     * }
+     */
+    public static final AddressLayout beginEvents$layout() {
+        return beginEvents$LAYOUT;
+    }
+
+    private static final long beginEvents$OFFSET = $LAYOUT.byteOffset(groupElement("beginEvents"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * b2ContactBeginTouchEvent *beginEvents
+     * }
+     */
+    public static final long beginEvents$offset() {
+        return beginEvents$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * b2ContactBeginTouchEvent *beginEvents
+     * }
+     */
+    public static MemorySegment beginEvents(MemorySegment struct) {
+        return struct.get(beginEvents$LAYOUT, beginEvents$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * b2ContactBeginTouchEvent *beginEvents
+     * }
+     */
+    public static void beginEvents(MemorySegment struct, MemorySegment fieldValue) {
+        struct.set(beginEvents$LAYOUT, beginEvents$OFFSET, fieldValue);
+    }
+
+    private static final AddressLayout endEvents$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("endEvents"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * b2ContactEndTouchEvent *endEvents
+     * }
+     */
+    public static final AddressLayout endEvents$layout() {
+        return endEvents$LAYOUT;
+    }
+
+    private static final long endEvents$OFFSET = $LAYOUT.byteOffset(groupElement("endEvents"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * b2ContactEndTouchEvent *endEvents
+     * }
+     */
+    public static final long endEvents$offset() {
+        return endEvents$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * b2ContactEndTouchEvent *endEvents
+     * }
+     */
+    public static MemorySegment endEvents(MemorySegment struct) {
+        return struct.get(endEvents$LAYOUT, endEvents$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * b2ContactEndTouchEvent *endEvents
+     * }
+     */
+    public static void endEvents(MemorySegment struct, MemorySegment fieldValue) {
+        struct.set(endEvents$LAYOUT, endEvents$OFFSET, fieldValue);
+    }
+
+    private static final AddressLayout hitEvents$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("hitEvents"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * b2ContactHitEvent *hitEvents
+     * }
+     */
+    public static final AddressLayout hitEvents$layout() {
+        return hitEvents$LAYOUT;
+    }
+
+    private static final long hitEvents$OFFSET = $LAYOUT.byteOffset(groupElement("hitEvents"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * b2ContactHitEvent *hitEvents
+     * }
+     */
+    public static final long hitEvents$offset() {
+        return hitEvents$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * b2ContactHitEvent *hitEvents
+     * }
+     */
+    public static MemorySegment hitEvents(MemorySegment struct) {
+        return struct.get(hitEvents$LAYOUT, hitEvents$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * b2ContactHitEvent *hitEvents
+     * }
+     */
+    public static void hitEvents(MemorySegment struct, MemorySegment fieldValue) {
+        struct.set(hitEvents$LAYOUT, hitEvents$OFFSET, fieldValue);
+    }
+
+    private static final OfInt beginCount$LAYOUT = (OfInt)$LAYOUT.select(groupElement("beginCount"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * int beginCount
+     * }
+     */
+    public static final OfInt beginCount$layout() {
+        return beginCount$LAYOUT;
+    }
+
+    private static final long beginCount$OFFSET = $LAYOUT.byteOffset(groupElement("beginCount"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * int beginCount
+     * }
+     */
+    public static final long beginCount$offset() {
+        return beginCount$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * int beginCount
+     * }
+     */
+    public static int beginCount(MemorySegment struct) {
+        return struct.get(beginCount$LAYOUT, beginCount$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * int beginCount
+     * }
+     */
+    public static void beginCount(MemorySegment struct, int fieldValue) {
+        struct.set(beginCount$LAYOUT, beginCount$OFFSET, fieldValue);
+    }
+
+    private static final OfInt endCount$LAYOUT = (OfInt)$LAYOUT.select(groupElement("endCount"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * int endCount
+     * }
+     */
+    public static final OfInt endCount$layout() {
+        return endCount$LAYOUT;
+    }
+
+    private static final long endCount$OFFSET = $LAYOUT.byteOffset(groupElement("endCount"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * int endCount
+     * }
+     */
+    public static final long endCount$offset() {
+        return endCount$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * int endCount
+     * }
+     */
+    public static int endCount(MemorySegment struct) {
+        return struct.get(endCount$LAYOUT, endCount$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * int endCount
+     * }
+     */
+    public static void endCount(MemorySegment struct, int fieldValue) {
+        struct.set(endCount$LAYOUT, endCount$OFFSET, fieldValue);
+    }
+
+    private static final OfInt hitCount$LAYOUT = (OfInt)$LAYOUT.select(groupElement("hitCount"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * int hitCount
+     * }
+     */
+    public static final OfInt hitCount$layout() {
+        return hitCount$LAYOUT;
+    }
+
+    private static final long hitCount$OFFSET = $LAYOUT.byteOffset(groupElement("hitCount"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * int hitCount
+     * }
+     */
+    public static final long hitCount$offset() {
+        return hitCount$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * int hitCount
+     * }
+     */
+    public static int hitCount(MemorySegment struct) {
+        return struct.get(hitCount$LAYOUT, hitCount$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * int hitCount
+     * }
+     */
+    public static void hitCount(MemorySegment struct, int fieldValue) {
+        struct.set(hitCount$LAYOUT, hitCount$OFFSET, fieldValue);
+    }
+
+    /**
+     * Obtains a slice of {@code arrayParam} which selects the array element at {@code index}.
+     * The returned segment has address {@code arrayParam.address() + index * layout().byteSize()}
+     */
+    public static MemorySegment asSlice(MemorySegment array, long index) {
+        return array.asSlice(layout().byteSize() * index);
+    }
+
+    /**
+     * The size (in bytes) of this struct
+     */
+    public static long sizeof() { return layout().byteSize(); }
+
+    /**
+     * Allocate a segment of size {@code layout().byteSize()} using {@code allocator}
+     */
+    public static MemorySegment allocate(SegmentAllocator allocator) {
+        return allocator.allocate(layout());
+    }
+
+    /**
+     * Allocate an array of size {@code elementCount} using {@code allocator}.
+     * The returned segment has size {@code elementCount * layout().byteSize()}.
+     */
+    public static MemorySegment allocateArray(long elementCount, SegmentAllocator allocator) {
+        return allocator.allocate(MemoryLayout.sequenceLayout(elementCount, layout()));
+    }
+
+    /**
+     * Reinterprets {@code addr} using target {@code arena} and {@code cleanupAction} (if any).
+     * The returned segment has size {@code layout().byteSize()}
+     */
+    public static MemorySegment reinterpret(MemorySegment addr, Arena arena, Consumer<MemorySegment> cleanup) {
+        return reinterpret(addr, 1, arena, cleanup);
+    }
+
+    /**
+     * Reinterprets {@code addr} using target {@code arena} and {@code cleanupAction} (if any).
+     * The returned segment has size {@code elementCount * layout().byteSize()}
+     */
+    public static MemorySegment reinterpret(MemorySegment addr, long elementCount, Arena arena, Consumer<MemorySegment> cleanup) {
+        return addr.reinterpret(layout().byteSize() * elementCount, arena, cleanup);
+    }
+}
 

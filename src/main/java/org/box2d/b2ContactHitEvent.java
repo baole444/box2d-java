@@ -2,72 +2,310 @@
 
 package org.box2d;
 
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.VarHandle;
-import java.nio.ByteOrder;
+import java.lang.invoke.*;
 import java.lang.foreign.*;
+import java.nio.ByteOrder;
+import java.util.*;
+import java.util.function.*;
+import java.util.stream.*;
+
 import static java.lang.foreign.ValueLayout.*;
+import static java.lang.foreign.MemoryLayout.PathElement.*;
+
 /**
  * {@snippet lang=c :
  * struct b2ContactHitEvent {
- *     struct b2ShapeId shapeIdA;
- *     struct b2ShapeId shapeIdB;
- *     struct b2Vec2 point;
- *     struct b2Vec2 normal;
+ *     b2ShapeId shapeIdA;
+ *     b2ShapeId shapeIdB;
+ *     b2Vec2 point;
+ *     b2Vec2 normal;
  *     float approachSpeed;
- * };
+ * }
  * }
  */
 public class b2ContactHitEvent {
 
-    public static MemoryLayout $LAYOUT() {
-        return constants$144.const$3;
+    b2ContactHitEvent() {
+        // Should not be called directly
     }
-    public static MemorySegment shapeIdA$slice(MemorySegment seg) {
-        return seg.asSlice(0, 8);
+
+    private static final GroupLayout $LAYOUT = MemoryLayout.structLayout(
+        b2ShapeId.layout().withName("shapeIdA"),
+        b2ShapeId.layout().withName("shapeIdB"),
+        b2Vec2.layout().withName("point"),
+        b2Vec2.layout().withName("normal"),
+        Box2D.C_FLOAT.withName("approachSpeed")
+    ).withName("b2ContactHitEvent");
+
+    /**
+     * The layout of this struct
+     */
+    public static final GroupLayout layout() {
+        return $LAYOUT;
     }
-    public static MemorySegment shapeIdB$slice(MemorySegment seg) {
-        return seg.asSlice(8, 8);
+
+    private static final GroupLayout shapeIdA$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("shapeIdA"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * b2ShapeId shapeIdA
+     * }
+     */
+    public static final GroupLayout shapeIdA$layout() {
+        return shapeIdA$LAYOUT;
     }
-    public static MemorySegment point$slice(MemorySegment seg) {
-        return seg.asSlice(16, 8);
+
+    private static final long shapeIdA$OFFSET = $LAYOUT.byteOffset(groupElement("shapeIdA"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * b2ShapeId shapeIdA
+     * }
+     */
+    public static final long shapeIdA$offset() {
+        return shapeIdA$OFFSET;
     }
-    public static MemorySegment normal$slice(MemorySegment seg) {
-        return seg.asSlice(24, 8);
-    }
-    public static VarHandle approachSpeed$VH() {
-        return constants$144.const$4;
-    }
+
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * float approachSpeed;
+     * b2ShapeId shapeIdA
      * }
      */
-    public static float approachSpeed$get(MemorySegment seg) {
-        return (float)constants$144.const$4.get(seg);
+    public static MemorySegment shapeIdA(MemorySegment struct) {
+        return struct.asSlice(shapeIdA$OFFSET, shapeIdA$LAYOUT.byteSize());
     }
+
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * float approachSpeed;
+     * b2ShapeId shapeIdA
      * }
      */
-    public static void approachSpeed$set(MemorySegment seg, float x) {
-        constants$144.const$4.set(seg, x);
+    public static void shapeIdA(MemorySegment struct, MemorySegment fieldValue) {
+        MemorySegment.copy(fieldValue, 0L, struct, shapeIdA$OFFSET, shapeIdA$LAYOUT.byteSize());
     }
-    public static float approachSpeed$get(MemorySegment seg, long index) {
-        return (float)constants$144.const$4.get(seg.asSlice(index*sizeof()));
-    }
-    public static void approachSpeed$set(MemorySegment seg, long index, float x) {
-        constants$144.const$4.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static long sizeof() { return $LAYOUT().byteSize(); }
-    public static MemorySegment allocate(SegmentAllocator allocator) { return allocator.allocate($LAYOUT()); }
-    public static MemorySegment allocateArray(long len, SegmentAllocator allocator) {
-        return allocator.allocate(MemoryLayout.sequenceLayout(len, $LAYOUT()));
-    }
-    public static MemorySegment ofAddress(MemorySegment addr, Arena arena) { return RuntimeHelper.asArray(addr, $LAYOUT(), 1, arena); }
-}
 
+    private static final GroupLayout shapeIdB$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("shapeIdB"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * b2ShapeId shapeIdB
+     * }
+     */
+    public static final GroupLayout shapeIdB$layout() {
+        return shapeIdB$LAYOUT;
+    }
+
+    private static final long shapeIdB$OFFSET = $LAYOUT.byteOffset(groupElement("shapeIdB"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * b2ShapeId shapeIdB
+     * }
+     */
+    public static final long shapeIdB$offset() {
+        return shapeIdB$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * b2ShapeId shapeIdB
+     * }
+     */
+    public static MemorySegment shapeIdB(MemorySegment struct) {
+        return struct.asSlice(shapeIdB$OFFSET, shapeIdB$LAYOUT.byteSize());
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * b2ShapeId shapeIdB
+     * }
+     */
+    public static void shapeIdB(MemorySegment struct, MemorySegment fieldValue) {
+        MemorySegment.copy(fieldValue, 0L, struct, shapeIdB$OFFSET, shapeIdB$LAYOUT.byteSize());
+    }
+
+    private static final GroupLayout point$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("point"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * b2Vec2 point
+     * }
+     */
+    public static final GroupLayout point$layout() {
+        return point$LAYOUT;
+    }
+
+    private static final long point$OFFSET = $LAYOUT.byteOffset(groupElement("point"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * b2Vec2 point
+     * }
+     */
+    public static final long point$offset() {
+        return point$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * b2Vec2 point
+     * }
+     */
+    public static MemorySegment point(MemorySegment struct) {
+        return struct.asSlice(point$OFFSET, point$LAYOUT.byteSize());
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * b2Vec2 point
+     * }
+     */
+    public static void point(MemorySegment struct, MemorySegment fieldValue) {
+        MemorySegment.copy(fieldValue, 0L, struct, point$OFFSET, point$LAYOUT.byteSize());
+    }
+
+    private static final GroupLayout normal$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("normal"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * b2Vec2 normal
+     * }
+     */
+    public static final GroupLayout normal$layout() {
+        return normal$LAYOUT;
+    }
+
+    private static final long normal$OFFSET = $LAYOUT.byteOffset(groupElement("normal"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * b2Vec2 normal
+     * }
+     */
+    public static final long normal$offset() {
+        return normal$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * b2Vec2 normal
+     * }
+     */
+    public static MemorySegment normal(MemorySegment struct) {
+        return struct.asSlice(normal$OFFSET, normal$LAYOUT.byteSize());
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * b2Vec2 normal
+     * }
+     */
+    public static void normal(MemorySegment struct, MemorySegment fieldValue) {
+        MemorySegment.copy(fieldValue, 0L, struct, normal$OFFSET, normal$LAYOUT.byteSize());
+    }
+
+    private static final OfFloat approachSpeed$LAYOUT = (OfFloat)$LAYOUT.select(groupElement("approachSpeed"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * float approachSpeed
+     * }
+     */
+    public static final OfFloat approachSpeed$layout() {
+        return approachSpeed$LAYOUT;
+    }
+
+    private static final long approachSpeed$OFFSET = $LAYOUT.byteOffset(groupElement("approachSpeed"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * float approachSpeed
+     * }
+     */
+    public static final long approachSpeed$offset() {
+        return approachSpeed$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * float approachSpeed
+     * }
+     */
+    public static float approachSpeed(MemorySegment struct) {
+        return struct.get(approachSpeed$LAYOUT, approachSpeed$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * float approachSpeed
+     * }
+     */
+    public static void approachSpeed(MemorySegment struct, float fieldValue) {
+        struct.set(approachSpeed$LAYOUT, approachSpeed$OFFSET, fieldValue);
+    }
+
+    /**
+     * Obtains a slice of {@code arrayParam} which selects the array element at {@code index}.
+     * The returned segment has address {@code arrayParam.address() + index * layout().byteSize()}
+     */
+    public static MemorySegment asSlice(MemorySegment array, long index) {
+        return array.asSlice(layout().byteSize() * index);
+    }
+
+    /**
+     * The size (in bytes) of this struct
+     */
+    public static long sizeof() { return layout().byteSize(); }
+
+    /**
+     * Allocate a segment of size {@code layout().byteSize()} using {@code allocator}
+     */
+    public static MemorySegment allocate(SegmentAllocator allocator) {
+        return allocator.allocate(layout());
+    }
+
+    /**
+     * Allocate an array of size {@code elementCount} using {@code allocator}.
+     * The returned segment has size {@code elementCount * layout().byteSize()}.
+     */
+    public static MemorySegment allocateArray(long elementCount, SegmentAllocator allocator) {
+        return allocator.allocate(MemoryLayout.sequenceLayout(elementCount, layout()));
+    }
+
+    /**
+     * Reinterprets {@code addr} using target {@code arena} and {@code cleanupAction} (if any).
+     * The returned segment has size {@code layout().byteSize()}
+     */
+    public static MemorySegment reinterpret(MemorySegment addr, Arena arena, Consumer<MemorySegment> cleanup) {
+        return reinterpret(addr, 1, arena, cleanup);
+    }
+
+    /**
+     * Reinterprets {@code addr} using target {@code arena} and {@code cleanupAction} (if any).
+     * The returned segment has size {@code elementCount * layout().byteSize()}
+     */
+    public static MemorySegment reinterpret(MemorySegment addr, long elementCount, Arena arena, Consumer<MemorySegment> cleanup) {
+        return addr.reinterpret(layout().byteSize() * elementCount, arena, cleanup);
+    }
+}
 

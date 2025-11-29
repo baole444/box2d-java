@@ -2,24 +2,29 @@
 
 package org.box2d;
 
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.VarHandle;
-import java.nio.ByteOrder;
+import java.lang.invoke.*;
 import java.lang.foreign.*;
+import java.nio.ByteOrder;
+import java.util.*;
+import java.util.function.*;
+import java.util.stream.*;
+
 import static java.lang.foreign.ValueLayout.*;
+import static java.lang.foreign.MemoryLayout.PathElement.*;
+
 /**
  * {@snippet lang=c :
  * struct b2DebugDraw {
- *     void (*DrawPolygonFcn)(struct b2Vec2*,int,enum b2HexColor,void*);
- *     void (*DrawSolidPolygonFcn)(struct b2Transform,struct b2Vec2*,int,float,enum b2HexColor,void*);
- *     void (*DrawCircleFcn)(struct b2Vec2,float,enum b2HexColor,void*);
- *     void (*DrawSolidCircleFcn)(struct b2Transform,float,enum b2HexColor,void*);
- *     void (*DrawSolidCapsuleFcn)(struct b2Vec2,struct b2Vec2,float,enum b2HexColor,void*);
- *     void (*DrawSegmentFcn)(struct b2Vec2,struct b2Vec2,enum b2HexColor,void*);
- *     void (*DrawTransformFcn)(struct b2Transform,void*);
- *     void (*DrawPointFcn)(struct b2Vec2,float,enum b2HexColor,void*);
- *     void (*DrawStringFcn)(struct b2Vec2,char*,enum b2HexColor,void*);
- *     struct b2AABB drawingBounds;
+ *     void (*DrawPolygonFcn)(const b2Vec2 *, int, b2HexColor, void *);
+ *     void (*DrawSolidPolygonFcn)(b2Transform, const b2Vec2 *, int, float, b2HexColor, void *);
+ *     void (*DrawCircleFcn)(b2Vec2, float, b2HexColor, void *);
+ *     void (*DrawSolidCircleFcn)(b2Transform, float, b2HexColor, void *);
+ *     void (*DrawSolidCapsuleFcn)(b2Vec2, b2Vec2, float, b2HexColor, void *);
+ *     void (*DrawSegmentFcn)(b2Vec2, b2Vec2, b2HexColor, void *);
+ *     void (*DrawTransformFcn)(b2Transform, void *);
+ *     void (*DrawPointFcn)(b2Vec2, float, b2HexColor, void *);
+ *     void (*DrawStringFcn)(b2Vec2, const char *, b2HexColor, void *);
+ *     b2AABB drawingBounds;
  *     _Bool useDrawingBounds;
  *     _Bool drawShapes;
  *     _Bool drawJoints;
@@ -34,906 +39,1717 @@ import static java.lang.foreign.ValueLayout.*;
  *     _Bool drawContactFeatures;
  *     _Bool drawFrictionImpulses;
  *     _Bool drawIslands;
- *     void* context;
- * };
+ *     void *context;
+ * }
  * }
  */
 public class b2DebugDraw {
 
-    public static MemoryLayout $LAYOUT() {
-        return constants$149.const$4;
-    }
-    /**
-     * {@snippet lang=c :
- * void (*DrawPolygonFcn)(struct b2Vec2*,int,enum b2HexColor,void*);
-     * }
-     */
-    public interface DrawPolygonFcn {
-
-        void apply(java.lang.foreign.MemorySegment _x0, int _x1, int _x2, java.lang.foreign.MemorySegment _x3);
-        static MemorySegment allocate(DrawPolygonFcn fi, Arena scope) {
-            return RuntimeHelper.upcallStub(constants$150.const$0, fi, constants$149.const$5, scope);
-        }
-        static DrawPolygonFcn ofAddress(MemorySegment addr, Arena arena) {
-            MemorySegment symbol = addr.reinterpret(arena, null);
-            return (java.lang.foreign.MemorySegment __x0, int __x1, int __x2, java.lang.foreign.MemorySegment __x3) -> {
-                try {
-                    constants$150.const$1.invokeExact(symbol, __x0, __x1, __x2, __x3);
-                } catch (Throwable ex$) {
-                    throw new AssertionError("should not reach here", ex$);
-                }
-            };
-        }
+    b2DebugDraw() {
+        // Should not be called directly
     }
 
-    public static VarHandle DrawPolygonFcn$VH() {
-        return constants$150.const$2;
-    }
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * void (*DrawPolygonFcn)(struct b2Vec2*,int,enum b2HexColor,void*);
-     * }
-     */
-    public static MemorySegment DrawPolygonFcn$get(MemorySegment seg) {
-        return (java.lang.foreign.MemorySegment)constants$150.const$2.get(seg);
-    }
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * void (*DrawPolygonFcn)(struct b2Vec2*,int,enum b2HexColor,void*);
-     * }
-     */
-    public static void DrawPolygonFcn$set(MemorySegment seg, MemorySegment x) {
-        constants$150.const$2.set(seg, x);
-    }
-    public static MemorySegment DrawPolygonFcn$get(MemorySegment seg, long index) {
-        return (java.lang.foreign.MemorySegment)constants$150.const$2.get(seg.asSlice(index*sizeof()));
-    }
-    public static void DrawPolygonFcn$set(MemorySegment seg, long index, MemorySegment x) {
-        constants$150.const$2.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static DrawPolygonFcn DrawPolygonFcn(MemorySegment segment, Arena scope) {
-        return DrawPolygonFcn.ofAddress(DrawPolygonFcn$get(segment), scope);
-    }
-    /**
-     * {@snippet lang=c :
- * void (*DrawSolidPolygonFcn)(struct b2Transform,struct b2Vec2*,int,float,enum b2HexColor,void*);
-     * }
-     */
-    public interface DrawSolidPolygonFcn {
+    private static final GroupLayout $LAYOUT = MemoryLayout.structLayout(
+        Box2D.C_POINTER.withName("DrawPolygonFcn"),
+        Box2D.C_POINTER.withName("DrawSolidPolygonFcn"),
+        Box2D.C_POINTER.withName("DrawCircleFcn"),
+        Box2D.C_POINTER.withName("DrawSolidCircleFcn"),
+        Box2D.C_POINTER.withName("DrawSolidCapsuleFcn"),
+        Box2D.C_POINTER.withName("DrawSegmentFcn"),
+        Box2D.C_POINTER.withName("DrawTransformFcn"),
+        Box2D.C_POINTER.withName("DrawPointFcn"),
+        Box2D.C_POINTER.withName("DrawStringFcn"),
+        b2AABB.layout().withName("drawingBounds"),
+        Box2D.C_BOOL.withName("useDrawingBounds"),
+        Box2D.C_BOOL.withName("drawShapes"),
+        Box2D.C_BOOL.withName("drawJoints"),
+        Box2D.C_BOOL.withName("drawJointExtras"),
+        Box2D.C_BOOL.withName("drawBounds"),
+        Box2D.C_BOOL.withName("drawMass"),
+        Box2D.C_BOOL.withName("drawBodyNames"),
+        Box2D.C_BOOL.withName("drawContacts"),
+        Box2D.C_BOOL.withName("drawGraphColors"),
+        Box2D.C_BOOL.withName("drawContactNormals"),
+        Box2D.C_BOOL.withName("drawContactImpulses"),
+        Box2D.C_BOOL.withName("drawContactFeatures"),
+        Box2D.C_BOOL.withName("drawFrictionImpulses"),
+        Box2D.C_BOOL.withName("drawIslands"),
+        MemoryLayout.paddingLayout(2),
+        Box2D.C_POINTER.withName("context")
+    ).withName("b2DebugDraw");
 
-        void apply(java.lang.foreign.MemorySegment _x0, java.lang.foreign.MemorySegment _x1, int _x2, float _x3, int _x4, java.lang.foreign.MemorySegment _x5);
-        static MemorySegment allocate(DrawSolidPolygonFcn fi, Arena scope) {
-            return RuntimeHelper.upcallStub(constants$150.const$4, fi, constants$150.const$3, scope);
-        }
-        static DrawSolidPolygonFcn ofAddress(MemorySegment addr, Arena arena) {
-            MemorySegment symbol = addr.reinterpret(arena, null);
-            return (java.lang.foreign.MemorySegment __x0, java.lang.foreign.MemorySegment __x1, int __x2, float __x3, int __x4, java.lang.foreign.MemorySegment __x5) -> {
-                try {
-                    constants$150.const$5.invokeExact(symbol, __x0, __x1, __x2, __x3, __x4, __x5);
-                } catch (Throwable ex$) {
-                    throw new AssertionError("should not reach here", ex$);
-                }
-            };
-        }
+    /**
+     * The layout of this struct
+     */
+    public static final GroupLayout layout() {
+        return $LAYOUT;
     }
 
-    public static VarHandle DrawSolidPolygonFcn$VH() {
-        return constants$151.const$0;
-    }
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * void (*DrawSolidPolygonFcn)(struct b2Transform,struct b2Vec2*,int,float,enum b2HexColor,void*);
-     * }
-     */
-    public static MemorySegment DrawSolidPolygonFcn$get(MemorySegment seg) {
-        return (java.lang.foreign.MemorySegment)constants$151.const$0.get(seg);
-    }
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * void (*DrawSolidPolygonFcn)(struct b2Transform,struct b2Vec2*,int,float,enum b2HexColor,void*);
-     * }
-     */
-    public static void DrawSolidPolygonFcn$set(MemorySegment seg, MemorySegment x) {
-        constants$151.const$0.set(seg, x);
-    }
-    public static MemorySegment DrawSolidPolygonFcn$get(MemorySegment seg, long index) {
-        return (java.lang.foreign.MemorySegment)constants$151.const$0.get(seg.asSlice(index*sizeof()));
-    }
-    public static void DrawSolidPolygonFcn$set(MemorySegment seg, long index, MemorySegment x) {
-        constants$151.const$0.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static DrawSolidPolygonFcn DrawSolidPolygonFcn(MemorySegment segment, Arena scope) {
-        return DrawSolidPolygonFcn.ofAddress(DrawSolidPolygonFcn$get(segment), scope);
-    }
     /**
      * {@snippet lang=c :
- * void (*DrawCircleFcn)(struct b2Vec2,float,enum b2HexColor,void*);
+     * void (*DrawPolygonFcn)(const b2Vec2 *, int, b2HexColor, void *)
      * }
      */
-    public interface DrawCircleFcn {
+    public final static class DrawPolygonFcn {
 
-        void apply(java.lang.foreign.MemorySegment _x0, float _x1, int _x2, java.lang.foreign.MemorySegment _x3);
-        static MemorySegment allocate(DrawCircleFcn fi, Arena scope) {
-            return RuntimeHelper.upcallStub(constants$151.const$2, fi, constants$151.const$1, scope);
+        private DrawPolygonFcn() {
+            // Should not be called directly
         }
-        static DrawCircleFcn ofAddress(MemorySegment addr, Arena arena) {
-            MemorySegment symbol = addr.reinterpret(arena, null);
-            return (java.lang.foreign.MemorySegment __x0, float __x1, int __x2, java.lang.foreign.MemorySegment __x3) -> {
-                try {
-                    constants$151.const$3.invokeExact(symbol, __x0, __x1, __x2, __x3);
-                } catch (Throwable ex$) {
-                    throw new AssertionError("should not reach here", ex$);
-                }
-            };
+
+        /**
+         * The function pointer signature, expressed as a functional interface
+         */
+        public interface Function {
+            void apply(MemorySegment _x0, int _x1, int _x2, MemorySegment _x3);
+        }
+
+        private static final FunctionDescriptor $DESC = FunctionDescriptor.ofVoid(
+            Box2D.C_POINTER,
+            Box2D.C_INT,
+            Box2D.C_INT,
+            Box2D.C_POINTER
+        );
+
+        /**
+         * The descriptor of this function pointer
+         */
+        public static FunctionDescriptor descriptor() {
+            return $DESC;
+        }
+
+        private static final MethodHandle UP$MH = Box2D.upcallHandle(DrawPolygonFcn.Function.class, "apply", $DESC);
+
+        /**
+         * Allocates a new upcall stub, whose implementation is defined by {@code fi}.
+         * The lifetime of the returned segment is managed by {@code arena}
+         */
+        public static MemorySegment allocate(DrawPolygonFcn.Function fi, Arena arena) {
+            return Linker.nativeLinker().upcallStub(UP$MH.bindTo(fi), $DESC, arena);
+        }
+
+        private static final MethodHandle DOWN$MH = Linker.nativeLinker().downcallHandle($DESC);
+
+        /**
+         * Invoke the upcall stub {@code funcPtr}, with given parameters
+         */
+        public static void invoke(MemorySegment funcPtr, MemorySegment _x0, int _x1, int _x2, MemorySegment _x3) {
+            try {
+                 DOWN$MH.invokeExact(funcPtr, _x0, _x1, _x2, _x3);
+            } catch (Error | RuntimeException ex) {
+                throw ex;
+            } catch (Throwable ex$) {
+                throw new AssertionError("should not reach here", ex$);
+            }
         }
     }
 
-    public static VarHandle DrawCircleFcn$VH() {
-        return constants$151.const$4;
+    private static final AddressLayout DrawPolygonFcn$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("DrawPolygonFcn"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * void (*DrawPolygonFcn)(const b2Vec2 *, int, b2HexColor, void *)
+     * }
+     */
+    public static final AddressLayout DrawPolygonFcn$layout() {
+        return DrawPolygonFcn$LAYOUT;
     }
+
+    private static final long DrawPolygonFcn$OFFSET = $LAYOUT.byteOffset(groupElement("DrawPolygonFcn"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * void (*DrawPolygonFcn)(const b2Vec2 *, int, b2HexColor, void *)
+     * }
+     */
+    public static final long DrawPolygonFcn$offset() {
+        return DrawPolygonFcn$OFFSET;
+    }
+
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * void (*DrawCircleFcn)(struct b2Vec2,float,enum b2HexColor,void*);
+     * void (*DrawPolygonFcn)(const b2Vec2 *, int, b2HexColor, void *)
      * }
      */
-    public static MemorySegment DrawCircleFcn$get(MemorySegment seg) {
-        return (java.lang.foreign.MemorySegment)constants$151.const$4.get(seg);
+    public static MemorySegment DrawPolygonFcn(MemorySegment struct) {
+        return struct.get(DrawPolygonFcn$LAYOUT, DrawPolygonFcn$OFFSET);
     }
+
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * void (*DrawCircleFcn)(struct b2Vec2,float,enum b2HexColor,void*);
+     * void (*DrawPolygonFcn)(const b2Vec2 *, int, b2HexColor, void *)
      * }
      */
-    public static void DrawCircleFcn$set(MemorySegment seg, MemorySegment x) {
-        constants$151.const$4.set(seg, x);
-    }
-    public static MemorySegment DrawCircleFcn$get(MemorySegment seg, long index) {
-        return (java.lang.foreign.MemorySegment)constants$151.const$4.get(seg.asSlice(index*sizeof()));
-    }
-    public static void DrawCircleFcn$set(MemorySegment seg, long index, MemorySegment x) {
-        constants$151.const$4.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static DrawCircleFcn DrawCircleFcn(MemorySegment segment, Arena scope) {
-        return DrawCircleFcn.ofAddress(DrawCircleFcn$get(segment), scope);
-    }
-    /**
-     * {@snippet lang=c :
- * void (*DrawSolidCircleFcn)(struct b2Transform,float,enum b2HexColor,void*);
-     * }
-     */
-    public interface DrawSolidCircleFcn {
-
-        void apply(java.lang.foreign.MemorySegment _x0, float _x1, int _x2, java.lang.foreign.MemorySegment _x3);
-        static MemorySegment allocate(DrawSolidCircleFcn fi, Arena scope) {
-            return RuntimeHelper.upcallStub(constants$152.const$0, fi, constants$151.const$5, scope);
-        }
-        static DrawSolidCircleFcn ofAddress(MemorySegment addr, Arena arena) {
-            MemorySegment symbol = addr.reinterpret(arena, null);
-            return (java.lang.foreign.MemorySegment __x0, float __x1, int __x2, java.lang.foreign.MemorySegment __x3) -> {
-                try {
-                    constants$152.const$1.invokeExact(symbol, __x0, __x1, __x2, __x3);
-                } catch (Throwable ex$) {
-                    throw new AssertionError("should not reach here", ex$);
-                }
-            };
-        }
+    public static void DrawPolygonFcn(MemorySegment struct, MemorySegment fieldValue) {
+        struct.set(DrawPolygonFcn$LAYOUT, DrawPolygonFcn$OFFSET, fieldValue);
     }
 
-    public static VarHandle DrawSolidCircleFcn$VH() {
-        return constants$152.const$2;
-    }
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * void (*DrawSolidCircleFcn)(struct b2Transform,float,enum b2HexColor,void*);
-     * }
-     */
-    public static MemorySegment DrawSolidCircleFcn$get(MemorySegment seg) {
-        return (java.lang.foreign.MemorySegment)constants$152.const$2.get(seg);
-    }
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * void (*DrawSolidCircleFcn)(struct b2Transform,float,enum b2HexColor,void*);
-     * }
-     */
-    public static void DrawSolidCircleFcn$set(MemorySegment seg, MemorySegment x) {
-        constants$152.const$2.set(seg, x);
-    }
-    public static MemorySegment DrawSolidCircleFcn$get(MemorySegment seg, long index) {
-        return (java.lang.foreign.MemorySegment)constants$152.const$2.get(seg.asSlice(index*sizeof()));
-    }
-    public static void DrawSolidCircleFcn$set(MemorySegment seg, long index, MemorySegment x) {
-        constants$152.const$2.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static DrawSolidCircleFcn DrawSolidCircleFcn(MemorySegment segment, Arena scope) {
-        return DrawSolidCircleFcn.ofAddress(DrawSolidCircleFcn$get(segment), scope);
-    }
     /**
      * {@snippet lang=c :
- * void (*DrawSolidCapsuleFcn)(struct b2Vec2,struct b2Vec2,float,enum b2HexColor,void*);
+     * void (*DrawSolidPolygonFcn)(b2Transform, const b2Vec2 *, int, float, b2HexColor, void *)
      * }
      */
-    public interface DrawSolidCapsuleFcn {
+    public final static class DrawSolidPolygonFcn {
 
-        void apply(java.lang.foreign.MemorySegment _x0, java.lang.foreign.MemorySegment _x1, float _x2, int _x3, java.lang.foreign.MemorySegment _x4);
-        static MemorySegment allocate(DrawSolidCapsuleFcn fi, Arena scope) {
-            return RuntimeHelper.upcallStub(constants$152.const$4, fi, constants$152.const$3, scope);
+        private DrawSolidPolygonFcn() {
+            // Should not be called directly
         }
-        static DrawSolidCapsuleFcn ofAddress(MemorySegment addr, Arena arena) {
-            MemorySegment symbol = addr.reinterpret(arena, null);
-            return (java.lang.foreign.MemorySegment __x0, java.lang.foreign.MemorySegment __x1, float __x2, int __x3, java.lang.foreign.MemorySegment __x4) -> {
-                try {
-                    constants$152.const$5.invokeExact(symbol, __x0, __x1, __x2, __x3, __x4);
-                } catch (Throwable ex$) {
-                    throw new AssertionError("should not reach here", ex$);
-                }
-            };
+
+        /**
+         * The function pointer signature, expressed as a functional interface
+         */
+        public interface Function {
+            void apply(MemorySegment _x0, MemorySegment _x1, int _x2, float _x3, int _x4, MemorySegment _x5);
+        }
+
+        private static final FunctionDescriptor $DESC = FunctionDescriptor.ofVoid(
+            b2Transform.layout(),
+            Box2D.C_POINTER,
+            Box2D.C_INT,
+            Box2D.C_FLOAT,
+            Box2D.C_INT,
+            Box2D.C_POINTER
+        );
+
+        /**
+         * The descriptor of this function pointer
+         */
+        public static FunctionDescriptor descriptor() {
+            return $DESC;
+        }
+
+        private static final MethodHandle UP$MH = Box2D.upcallHandle(DrawSolidPolygonFcn.Function.class, "apply", $DESC);
+
+        /**
+         * Allocates a new upcall stub, whose implementation is defined by {@code fi}.
+         * The lifetime of the returned segment is managed by {@code arena}
+         */
+        public static MemorySegment allocate(DrawSolidPolygonFcn.Function fi, Arena arena) {
+            return Linker.nativeLinker().upcallStub(UP$MH.bindTo(fi), $DESC, arena);
+        }
+
+        private static final MethodHandle DOWN$MH = Linker.nativeLinker().downcallHandle($DESC);
+
+        /**
+         * Invoke the upcall stub {@code funcPtr}, with given parameters
+         */
+        public static void invoke(MemorySegment funcPtr, MemorySegment _x0, MemorySegment _x1, int _x2, float _x3, int _x4, MemorySegment _x5) {
+            try {
+                 DOWN$MH.invokeExact(funcPtr, _x0, _x1, _x2, _x3, _x4, _x5);
+            } catch (Error | RuntimeException ex) {
+                throw ex;
+            } catch (Throwable ex$) {
+                throw new AssertionError("should not reach here", ex$);
+            }
         }
     }
 
-    public static VarHandle DrawSolidCapsuleFcn$VH() {
-        return constants$153.const$0;
+    private static final AddressLayout DrawSolidPolygonFcn$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("DrawSolidPolygonFcn"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * void (*DrawSolidPolygonFcn)(b2Transform, const b2Vec2 *, int, float, b2HexColor, void *)
+     * }
+     */
+    public static final AddressLayout DrawSolidPolygonFcn$layout() {
+        return DrawSolidPolygonFcn$LAYOUT;
     }
+
+    private static final long DrawSolidPolygonFcn$OFFSET = $LAYOUT.byteOffset(groupElement("DrawSolidPolygonFcn"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * void (*DrawSolidPolygonFcn)(b2Transform, const b2Vec2 *, int, float, b2HexColor, void *)
+     * }
+     */
+    public static final long DrawSolidPolygonFcn$offset() {
+        return DrawSolidPolygonFcn$OFFSET;
+    }
+
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * void (*DrawSolidCapsuleFcn)(struct b2Vec2,struct b2Vec2,float,enum b2HexColor,void*);
+     * void (*DrawSolidPolygonFcn)(b2Transform, const b2Vec2 *, int, float, b2HexColor, void *)
      * }
      */
-    public static MemorySegment DrawSolidCapsuleFcn$get(MemorySegment seg) {
-        return (java.lang.foreign.MemorySegment)constants$153.const$0.get(seg);
+    public static MemorySegment DrawSolidPolygonFcn(MemorySegment struct) {
+        return struct.get(DrawSolidPolygonFcn$LAYOUT, DrawSolidPolygonFcn$OFFSET);
     }
+
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * void (*DrawSolidCapsuleFcn)(struct b2Vec2,struct b2Vec2,float,enum b2HexColor,void*);
+     * void (*DrawSolidPolygonFcn)(b2Transform, const b2Vec2 *, int, float, b2HexColor, void *)
      * }
      */
-    public static void DrawSolidCapsuleFcn$set(MemorySegment seg, MemorySegment x) {
-        constants$153.const$0.set(seg, x);
-    }
-    public static MemorySegment DrawSolidCapsuleFcn$get(MemorySegment seg, long index) {
-        return (java.lang.foreign.MemorySegment)constants$153.const$0.get(seg.asSlice(index*sizeof()));
-    }
-    public static void DrawSolidCapsuleFcn$set(MemorySegment seg, long index, MemorySegment x) {
-        constants$153.const$0.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static DrawSolidCapsuleFcn DrawSolidCapsuleFcn(MemorySegment segment, Arena scope) {
-        return DrawSolidCapsuleFcn.ofAddress(DrawSolidCapsuleFcn$get(segment), scope);
-    }
-    /**
-     * {@snippet lang=c :
- * void (*DrawSegmentFcn)(struct b2Vec2,struct b2Vec2,enum b2HexColor,void*);
-     * }
-     */
-    public interface DrawSegmentFcn {
-
-        void apply(java.lang.foreign.MemorySegment _x0, java.lang.foreign.MemorySegment _x1, int _x2, java.lang.foreign.MemorySegment _x3);
-        static MemorySegment allocate(DrawSegmentFcn fi, Arena scope) {
-            return RuntimeHelper.upcallStub(constants$153.const$2, fi, constants$153.const$1, scope);
-        }
-        static DrawSegmentFcn ofAddress(MemorySegment addr, Arena arena) {
-            MemorySegment symbol = addr.reinterpret(arena, null);
-            return (java.lang.foreign.MemorySegment __x0, java.lang.foreign.MemorySegment __x1, int __x2, java.lang.foreign.MemorySegment __x3) -> {
-                try {
-                    constants$153.const$3.invokeExact(symbol, __x0, __x1, __x2, __x3);
-                } catch (Throwable ex$) {
-                    throw new AssertionError("should not reach here", ex$);
-                }
-            };
-        }
+    public static void DrawSolidPolygonFcn(MemorySegment struct, MemorySegment fieldValue) {
+        struct.set(DrawSolidPolygonFcn$LAYOUT, DrawSolidPolygonFcn$OFFSET, fieldValue);
     }
 
-    public static VarHandle DrawSegmentFcn$VH() {
-        return constants$153.const$4;
-    }
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * void (*DrawSegmentFcn)(struct b2Vec2,struct b2Vec2,enum b2HexColor,void*);
-     * }
-     */
-    public static MemorySegment DrawSegmentFcn$get(MemorySegment seg) {
-        return (java.lang.foreign.MemorySegment)constants$153.const$4.get(seg);
-    }
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * void (*DrawSegmentFcn)(struct b2Vec2,struct b2Vec2,enum b2HexColor,void*);
-     * }
-     */
-    public static void DrawSegmentFcn$set(MemorySegment seg, MemorySegment x) {
-        constants$153.const$4.set(seg, x);
-    }
-    public static MemorySegment DrawSegmentFcn$get(MemorySegment seg, long index) {
-        return (java.lang.foreign.MemorySegment)constants$153.const$4.get(seg.asSlice(index*sizeof()));
-    }
-    public static void DrawSegmentFcn$set(MemorySegment seg, long index, MemorySegment x) {
-        constants$153.const$4.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static DrawSegmentFcn DrawSegmentFcn(MemorySegment segment, Arena scope) {
-        return DrawSegmentFcn.ofAddress(DrawSegmentFcn$get(segment), scope);
-    }
     /**
      * {@snippet lang=c :
- * void (*DrawTransformFcn)(struct b2Transform,void*);
+     * void (*DrawCircleFcn)(b2Vec2, float, b2HexColor, void *)
      * }
      */
-    public interface DrawTransformFcn {
+    public final static class DrawCircleFcn {
 
-        void apply(java.lang.foreign.MemorySegment _x0, java.lang.foreign.MemorySegment _x1);
-        static MemorySegment allocate(DrawTransformFcn fi, Arena scope) {
-            return RuntimeHelper.upcallStub(constants$154.const$0, fi, constants$153.const$5, scope);
+        private DrawCircleFcn() {
+            // Should not be called directly
         }
-        static DrawTransformFcn ofAddress(MemorySegment addr, Arena arena) {
-            MemorySegment symbol = addr.reinterpret(arena, null);
-            return (java.lang.foreign.MemorySegment __x0, java.lang.foreign.MemorySegment __x1) -> {
-                try {
-                    constants$154.const$1.invokeExact(symbol, __x0, __x1);
-                } catch (Throwable ex$) {
-                    throw new AssertionError("should not reach here", ex$);
-                }
-            };
+
+        /**
+         * The function pointer signature, expressed as a functional interface
+         */
+        public interface Function {
+            void apply(MemorySegment _x0, float _x1, int _x2, MemorySegment _x3);
+        }
+
+        private static final FunctionDescriptor $DESC = FunctionDescriptor.ofVoid(
+            b2Vec2.layout(),
+            Box2D.C_FLOAT,
+            Box2D.C_INT,
+            Box2D.C_POINTER
+        );
+
+        /**
+         * The descriptor of this function pointer
+         */
+        public static FunctionDescriptor descriptor() {
+            return $DESC;
+        }
+
+        private static final MethodHandle UP$MH = Box2D.upcallHandle(DrawCircleFcn.Function.class, "apply", $DESC);
+
+        /**
+         * Allocates a new upcall stub, whose implementation is defined by {@code fi}.
+         * The lifetime of the returned segment is managed by {@code arena}
+         */
+        public static MemorySegment allocate(DrawCircleFcn.Function fi, Arena arena) {
+            return Linker.nativeLinker().upcallStub(UP$MH.bindTo(fi), $DESC, arena);
+        }
+
+        private static final MethodHandle DOWN$MH = Linker.nativeLinker().downcallHandle($DESC);
+
+        /**
+         * Invoke the upcall stub {@code funcPtr}, with given parameters
+         */
+        public static void invoke(MemorySegment funcPtr, MemorySegment _x0, float _x1, int _x2, MemorySegment _x3) {
+            try {
+                 DOWN$MH.invokeExact(funcPtr, _x0, _x1, _x2, _x3);
+            } catch (Error | RuntimeException ex) {
+                throw ex;
+            } catch (Throwable ex$) {
+                throw new AssertionError("should not reach here", ex$);
+            }
         }
     }
 
-    public static VarHandle DrawTransformFcn$VH() {
-        return constants$154.const$2;
+    private static final AddressLayout DrawCircleFcn$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("DrawCircleFcn"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * void (*DrawCircleFcn)(b2Vec2, float, b2HexColor, void *)
+     * }
+     */
+    public static final AddressLayout DrawCircleFcn$layout() {
+        return DrawCircleFcn$LAYOUT;
     }
+
+    private static final long DrawCircleFcn$OFFSET = $LAYOUT.byteOffset(groupElement("DrawCircleFcn"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * void (*DrawCircleFcn)(b2Vec2, float, b2HexColor, void *)
+     * }
+     */
+    public static final long DrawCircleFcn$offset() {
+        return DrawCircleFcn$OFFSET;
+    }
+
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * void (*DrawTransformFcn)(struct b2Transform,void*);
+     * void (*DrawCircleFcn)(b2Vec2, float, b2HexColor, void *)
      * }
      */
-    public static MemorySegment DrawTransformFcn$get(MemorySegment seg) {
-        return (java.lang.foreign.MemorySegment)constants$154.const$2.get(seg);
+    public static MemorySegment DrawCircleFcn(MemorySegment struct) {
+        return struct.get(DrawCircleFcn$LAYOUT, DrawCircleFcn$OFFSET);
     }
+
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * void (*DrawTransformFcn)(struct b2Transform,void*);
+     * void (*DrawCircleFcn)(b2Vec2, float, b2HexColor, void *)
      * }
      */
-    public static void DrawTransformFcn$set(MemorySegment seg, MemorySegment x) {
-        constants$154.const$2.set(seg, x);
-    }
-    public static MemorySegment DrawTransformFcn$get(MemorySegment seg, long index) {
-        return (java.lang.foreign.MemorySegment)constants$154.const$2.get(seg.asSlice(index*sizeof()));
-    }
-    public static void DrawTransformFcn$set(MemorySegment seg, long index, MemorySegment x) {
-        constants$154.const$2.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static DrawTransformFcn DrawTransformFcn(MemorySegment segment, Arena scope) {
-        return DrawTransformFcn.ofAddress(DrawTransformFcn$get(segment), scope);
-    }
-    /**
-     * {@snippet lang=c :
- * void (*DrawPointFcn)(struct b2Vec2,float,enum b2HexColor,void*);
-     * }
-     */
-    public interface DrawPointFcn {
-
-        void apply(java.lang.foreign.MemorySegment _x0, float _x1, int _x2, java.lang.foreign.MemorySegment _x3);
-        static MemorySegment allocate(DrawPointFcn fi, Arena scope) {
-            return RuntimeHelper.upcallStub(constants$154.const$3, fi, constants$151.const$1, scope);
-        }
-        static DrawPointFcn ofAddress(MemorySegment addr, Arena arena) {
-            MemorySegment symbol = addr.reinterpret(arena, null);
-            return (java.lang.foreign.MemorySegment __x0, float __x1, int __x2, java.lang.foreign.MemorySegment __x3) -> {
-                try {
-                    constants$151.const$3.invokeExact(symbol, __x0, __x1, __x2, __x3);
-                } catch (Throwable ex$) {
-                    throw new AssertionError("should not reach here", ex$);
-                }
-            };
-        }
+    public static void DrawCircleFcn(MemorySegment struct, MemorySegment fieldValue) {
+        struct.set(DrawCircleFcn$LAYOUT, DrawCircleFcn$OFFSET, fieldValue);
     }
 
-    public static VarHandle DrawPointFcn$VH() {
-        return constants$154.const$4;
-    }
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * void (*DrawPointFcn)(struct b2Vec2,float,enum b2HexColor,void*);
-     * }
-     */
-    public static MemorySegment DrawPointFcn$get(MemorySegment seg) {
-        return (java.lang.foreign.MemorySegment)constants$154.const$4.get(seg);
-    }
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * void (*DrawPointFcn)(struct b2Vec2,float,enum b2HexColor,void*);
-     * }
-     */
-    public static void DrawPointFcn$set(MemorySegment seg, MemorySegment x) {
-        constants$154.const$4.set(seg, x);
-    }
-    public static MemorySegment DrawPointFcn$get(MemorySegment seg, long index) {
-        return (java.lang.foreign.MemorySegment)constants$154.const$4.get(seg.asSlice(index*sizeof()));
-    }
-    public static void DrawPointFcn$set(MemorySegment seg, long index, MemorySegment x) {
-        constants$154.const$4.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static DrawPointFcn DrawPointFcn(MemorySegment segment, Arena scope) {
-        return DrawPointFcn.ofAddress(DrawPointFcn$get(segment), scope);
-    }
     /**
      * {@snippet lang=c :
- * void (*DrawStringFcn)(struct b2Vec2,char*,enum b2HexColor,void*);
+     * void (*DrawSolidCircleFcn)(b2Transform, float, b2HexColor, void *)
      * }
      */
-    public interface DrawStringFcn {
+    public final static class DrawSolidCircleFcn {
 
-        void apply(java.lang.foreign.MemorySegment _x0, java.lang.foreign.MemorySegment _x1, int _x2, java.lang.foreign.MemorySegment _x3);
-        static MemorySegment allocate(DrawStringFcn fi, Arena scope) {
-            return RuntimeHelper.upcallStub(constants$155.const$0, fi, constants$154.const$5, scope);
+        private DrawSolidCircleFcn() {
+            // Should not be called directly
         }
-        static DrawStringFcn ofAddress(MemorySegment addr, Arena arena) {
-            MemorySegment symbol = addr.reinterpret(arena, null);
-            return (java.lang.foreign.MemorySegment __x0, java.lang.foreign.MemorySegment __x1, int __x2, java.lang.foreign.MemorySegment __x3) -> {
-                try {
-                    constants$155.const$1.invokeExact(symbol, __x0, __x1, __x2, __x3);
-                } catch (Throwable ex$) {
-                    throw new AssertionError("should not reach here", ex$);
-                }
-            };
+
+        /**
+         * The function pointer signature, expressed as a functional interface
+         */
+        public interface Function {
+            void apply(MemorySegment _x0, float _x1, int _x2, MemorySegment _x3);
+        }
+
+        private static final FunctionDescriptor $DESC = FunctionDescriptor.ofVoid(
+            b2Transform.layout(),
+            Box2D.C_FLOAT,
+            Box2D.C_INT,
+            Box2D.C_POINTER
+        );
+
+        /**
+         * The descriptor of this function pointer
+         */
+        public static FunctionDescriptor descriptor() {
+            return $DESC;
+        }
+
+        private static final MethodHandle UP$MH = Box2D.upcallHandle(DrawSolidCircleFcn.Function.class, "apply", $DESC);
+
+        /**
+         * Allocates a new upcall stub, whose implementation is defined by {@code fi}.
+         * The lifetime of the returned segment is managed by {@code arena}
+         */
+        public static MemorySegment allocate(DrawSolidCircleFcn.Function fi, Arena arena) {
+            return Linker.nativeLinker().upcallStub(UP$MH.bindTo(fi), $DESC, arena);
+        }
+
+        private static final MethodHandle DOWN$MH = Linker.nativeLinker().downcallHandle($DESC);
+
+        /**
+         * Invoke the upcall stub {@code funcPtr}, with given parameters
+         */
+        public static void invoke(MemorySegment funcPtr, MemorySegment _x0, float _x1, int _x2, MemorySegment _x3) {
+            try {
+                 DOWN$MH.invokeExact(funcPtr, _x0, _x1, _x2, _x3);
+            } catch (Error | RuntimeException ex) {
+                throw ex;
+            } catch (Throwable ex$) {
+                throw new AssertionError("should not reach here", ex$);
+            }
         }
     }
 
-    public static VarHandle DrawStringFcn$VH() {
-        return constants$155.const$2;
+    private static final AddressLayout DrawSolidCircleFcn$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("DrawSolidCircleFcn"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * void (*DrawSolidCircleFcn)(b2Transform, float, b2HexColor, void *)
+     * }
+     */
+    public static final AddressLayout DrawSolidCircleFcn$layout() {
+        return DrawSolidCircleFcn$LAYOUT;
     }
+
+    private static final long DrawSolidCircleFcn$OFFSET = $LAYOUT.byteOffset(groupElement("DrawSolidCircleFcn"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * void (*DrawSolidCircleFcn)(b2Transform, float, b2HexColor, void *)
+     * }
+     */
+    public static final long DrawSolidCircleFcn$offset() {
+        return DrawSolidCircleFcn$OFFSET;
+    }
+
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * void (*DrawStringFcn)(struct b2Vec2,char*,enum b2HexColor,void*);
+     * void (*DrawSolidCircleFcn)(b2Transform, float, b2HexColor, void *)
      * }
      */
-    public static MemorySegment DrawStringFcn$get(MemorySegment seg) {
-        return (java.lang.foreign.MemorySegment)constants$155.const$2.get(seg);
+    public static MemorySegment DrawSolidCircleFcn(MemorySegment struct) {
+        return struct.get(DrawSolidCircleFcn$LAYOUT, DrawSolidCircleFcn$OFFSET);
     }
+
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * void (*DrawStringFcn)(struct b2Vec2,char*,enum b2HexColor,void*);
+     * void (*DrawSolidCircleFcn)(b2Transform, float, b2HexColor, void *)
      * }
      */
-    public static void DrawStringFcn$set(MemorySegment seg, MemorySegment x) {
-        constants$155.const$2.set(seg, x);
+    public static void DrawSolidCircleFcn(MemorySegment struct, MemorySegment fieldValue) {
+        struct.set(DrawSolidCircleFcn$LAYOUT, DrawSolidCircleFcn$OFFSET, fieldValue);
     }
-    public static MemorySegment DrawStringFcn$get(MemorySegment seg, long index) {
-        return (java.lang.foreign.MemorySegment)constants$155.const$2.get(seg.asSlice(index*sizeof()));
+
+    /**
+     * {@snippet lang=c :
+     * void (*DrawSolidCapsuleFcn)(b2Vec2, b2Vec2, float, b2HexColor, void *)
+     * }
+     */
+    public final static class DrawSolidCapsuleFcn {
+
+        private DrawSolidCapsuleFcn() {
+            // Should not be called directly
+        }
+
+        /**
+         * The function pointer signature, expressed as a functional interface
+         */
+        public interface Function {
+            void apply(MemorySegment _x0, MemorySegment _x1, float _x2, int _x3, MemorySegment _x4);
+        }
+
+        private static final FunctionDescriptor $DESC = FunctionDescriptor.ofVoid(
+            b2Vec2.layout(),
+            b2Vec2.layout(),
+            Box2D.C_FLOAT,
+            Box2D.C_INT,
+            Box2D.C_POINTER
+        );
+
+        /**
+         * The descriptor of this function pointer
+         */
+        public static FunctionDescriptor descriptor() {
+            return $DESC;
+        }
+
+        private static final MethodHandle UP$MH = Box2D.upcallHandle(DrawSolidCapsuleFcn.Function.class, "apply", $DESC);
+
+        /**
+         * Allocates a new upcall stub, whose implementation is defined by {@code fi}.
+         * The lifetime of the returned segment is managed by {@code arena}
+         */
+        public static MemorySegment allocate(DrawSolidCapsuleFcn.Function fi, Arena arena) {
+            return Linker.nativeLinker().upcallStub(UP$MH.bindTo(fi), $DESC, arena);
+        }
+
+        private static final MethodHandle DOWN$MH = Linker.nativeLinker().downcallHandle($DESC);
+
+        /**
+         * Invoke the upcall stub {@code funcPtr}, with given parameters
+         */
+        public static void invoke(MemorySegment funcPtr, MemorySegment _x0, MemorySegment _x1, float _x2, int _x3, MemorySegment _x4) {
+            try {
+                 DOWN$MH.invokeExact(funcPtr, _x0, _x1, _x2, _x3, _x4);
+            } catch (Error | RuntimeException ex) {
+                throw ex;
+            } catch (Throwable ex$) {
+                throw new AssertionError("should not reach here", ex$);
+            }
+        }
     }
-    public static void DrawStringFcn$set(MemorySegment seg, long index, MemorySegment x) {
-        constants$155.const$2.set(seg.asSlice(index*sizeof()), x);
+
+    private static final AddressLayout DrawSolidCapsuleFcn$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("DrawSolidCapsuleFcn"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * void (*DrawSolidCapsuleFcn)(b2Vec2, b2Vec2, float, b2HexColor, void *)
+     * }
+     */
+    public static final AddressLayout DrawSolidCapsuleFcn$layout() {
+        return DrawSolidCapsuleFcn$LAYOUT;
     }
-    public static DrawStringFcn DrawStringFcn(MemorySegment segment, Arena scope) {
-        return DrawStringFcn.ofAddress(DrawStringFcn$get(segment), scope);
+
+    private static final long DrawSolidCapsuleFcn$OFFSET = $LAYOUT.byteOffset(groupElement("DrawSolidCapsuleFcn"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * void (*DrawSolidCapsuleFcn)(b2Vec2, b2Vec2, float, b2HexColor, void *)
+     * }
+     */
+    public static final long DrawSolidCapsuleFcn$offset() {
+        return DrawSolidCapsuleFcn$OFFSET;
     }
-    public static MemorySegment drawingBounds$slice(MemorySegment seg) {
-        return seg.asSlice(72, 16);
-    }
-    public static VarHandle useDrawingBounds$VH() {
-        return constants$155.const$3;
-    }
+
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * _Bool useDrawingBounds;
+     * void (*DrawSolidCapsuleFcn)(b2Vec2, b2Vec2, float, b2HexColor, void *)
      * }
      */
-    public static boolean useDrawingBounds$get(MemorySegment seg) {
-        return (boolean)constants$155.const$3.get(seg);
+    public static MemorySegment DrawSolidCapsuleFcn(MemorySegment struct) {
+        return struct.get(DrawSolidCapsuleFcn$LAYOUT, DrawSolidCapsuleFcn$OFFSET);
     }
+
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * _Bool useDrawingBounds;
+     * void (*DrawSolidCapsuleFcn)(b2Vec2, b2Vec2, float, b2HexColor, void *)
      * }
      */
-    public static void useDrawingBounds$set(MemorySegment seg, boolean x) {
-        constants$155.const$3.set(seg, x);
+    public static void DrawSolidCapsuleFcn(MemorySegment struct, MemorySegment fieldValue) {
+        struct.set(DrawSolidCapsuleFcn$LAYOUT, DrawSolidCapsuleFcn$OFFSET, fieldValue);
     }
-    public static boolean useDrawingBounds$get(MemorySegment seg, long index) {
-        return (boolean)constants$155.const$3.get(seg.asSlice(index*sizeof()));
+
+    /**
+     * {@snippet lang=c :
+     * void (*DrawSegmentFcn)(b2Vec2, b2Vec2, b2HexColor, void *)
+     * }
+     */
+    public final static class DrawSegmentFcn {
+
+        private DrawSegmentFcn() {
+            // Should not be called directly
+        }
+
+        /**
+         * The function pointer signature, expressed as a functional interface
+         */
+        public interface Function {
+            void apply(MemorySegment _x0, MemorySegment _x1, int _x2, MemorySegment _x3);
+        }
+
+        private static final FunctionDescriptor $DESC = FunctionDescriptor.ofVoid(
+            b2Vec2.layout(),
+            b2Vec2.layout(),
+            Box2D.C_INT,
+            Box2D.C_POINTER
+        );
+
+        /**
+         * The descriptor of this function pointer
+         */
+        public static FunctionDescriptor descriptor() {
+            return $DESC;
+        }
+
+        private static final MethodHandle UP$MH = Box2D.upcallHandle(DrawSegmentFcn.Function.class, "apply", $DESC);
+
+        /**
+         * Allocates a new upcall stub, whose implementation is defined by {@code fi}.
+         * The lifetime of the returned segment is managed by {@code arena}
+         */
+        public static MemorySegment allocate(DrawSegmentFcn.Function fi, Arena arena) {
+            return Linker.nativeLinker().upcallStub(UP$MH.bindTo(fi), $DESC, arena);
+        }
+
+        private static final MethodHandle DOWN$MH = Linker.nativeLinker().downcallHandle($DESC);
+
+        /**
+         * Invoke the upcall stub {@code funcPtr}, with given parameters
+         */
+        public static void invoke(MemorySegment funcPtr, MemorySegment _x0, MemorySegment _x1, int _x2, MemorySegment _x3) {
+            try {
+                 DOWN$MH.invokeExact(funcPtr, _x0, _x1, _x2, _x3);
+            } catch (Error | RuntimeException ex) {
+                throw ex;
+            } catch (Throwable ex$) {
+                throw new AssertionError("should not reach here", ex$);
+            }
+        }
     }
-    public static void useDrawingBounds$set(MemorySegment seg, long index, boolean x) {
-        constants$155.const$3.set(seg.asSlice(index*sizeof()), x);
+
+    private static final AddressLayout DrawSegmentFcn$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("DrawSegmentFcn"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * void (*DrawSegmentFcn)(b2Vec2, b2Vec2, b2HexColor, void *)
+     * }
+     */
+    public static final AddressLayout DrawSegmentFcn$layout() {
+        return DrawSegmentFcn$LAYOUT;
     }
-    public static VarHandle drawShapes$VH() {
-        return constants$155.const$4;
+
+    private static final long DrawSegmentFcn$OFFSET = $LAYOUT.byteOffset(groupElement("DrawSegmentFcn"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * void (*DrawSegmentFcn)(b2Vec2, b2Vec2, b2HexColor, void *)
+     * }
+     */
+    public static final long DrawSegmentFcn$offset() {
+        return DrawSegmentFcn$OFFSET;
     }
+
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * _Bool drawShapes;
+     * void (*DrawSegmentFcn)(b2Vec2, b2Vec2, b2HexColor, void *)
      * }
      */
-    public static boolean drawShapes$get(MemorySegment seg) {
-        return (boolean)constants$155.const$4.get(seg);
+    public static MemorySegment DrawSegmentFcn(MemorySegment struct) {
+        return struct.get(DrawSegmentFcn$LAYOUT, DrawSegmentFcn$OFFSET);
     }
+
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * _Bool drawShapes;
+     * void (*DrawSegmentFcn)(b2Vec2, b2Vec2, b2HexColor, void *)
      * }
      */
-    public static void drawShapes$set(MemorySegment seg, boolean x) {
-        constants$155.const$4.set(seg, x);
+    public static void DrawSegmentFcn(MemorySegment struct, MemorySegment fieldValue) {
+        struct.set(DrawSegmentFcn$LAYOUT, DrawSegmentFcn$OFFSET, fieldValue);
     }
-    public static boolean drawShapes$get(MemorySegment seg, long index) {
-        return (boolean)constants$155.const$4.get(seg.asSlice(index*sizeof()));
+
+    /**
+     * {@snippet lang=c :
+     * void (*DrawTransformFcn)(b2Transform, void *)
+     * }
+     */
+    public final static class DrawTransformFcn {
+
+        private DrawTransformFcn() {
+            // Should not be called directly
+        }
+
+        /**
+         * The function pointer signature, expressed as a functional interface
+         */
+        public interface Function {
+            void apply(MemorySegment _x0, MemorySegment _x1);
+        }
+
+        private static final FunctionDescriptor $DESC = FunctionDescriptor.ofVoid(
+            b2Transform.layout(),
+            Box2D.C_POINTER
+        );
+
+        /**
+         * The descriptor of this function pointer
+         */
+        public static FunctionDescriptor descriptor() {
+            return $DESC;
+        }
+
+        private static final MethodHandle UP$MH = Box2D.upcallHandle(DrawTransformFcn.Function.class, "apply", $DESC);
+
+        /**
+         * Allocates a new upcall stub, whose implementation is defined by {@code fi}.
+         * The lifetime of the returned segment is managed by {@code arena}
+         */
+        public static MemorySegment allocate(DrawTransformFcn.Function fi, Arena arena) {
+            return Linker.nativeLinker().upcallStub(UP$MH.bindTo(fi), $DESC, arena);
+        }
+
+        private static final MethodHandle DOWN$MH = Linker.nativeLinker().downcallHandle($DESC);
+
+        /**
+         * Invoke the upcall stub {@code funcPtr}, with given parameters
+         */
+        public static void invoke(MemorySegment funcPtr, MemorySegment _x0, MemorySegment _x1) {
+            try {
+                 DOWN$MH.invokeExact(funcPtr, _x0, _x1);
+            } catch (Error | RuntimeException ex) {
+                throw ex;
+            } catch (Throwable ex$) {
+                throw new AssertionError("should not reach here", ex$);
+            }
+        }
     }
-    public static void drawShapes$set(MemorySegment seg, long index, boolean x) {
-        constants$155.const$4.set(seg.asSlice(index*sizeof()), x);
+
+    private static final AddressLayout DrawTransformFcn$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("DrawTransformFcn"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * void (*DrawTransformFcn)(b2Transform, void *)
+     * }
+     */
+    public static final AddressLayout DrawTransformFcn$layout() {
+        return DrawTransformFcn$LAYOUT;
     }
-    public static VarHandle drawJoints$VH() {
-        return constants$155.const$5;
+
+    private static final long DrawTransformFcn$OFFSET = $LAYOUT.byteOffset(groupElement("DrawTransformFcn"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * void (*DrawTransformFcn)(b2Transform, void *)
+     * }
+     */
+    public static final long DrawTransformFcn$offset() {
+        return DrawTransformFcn$OFFSET;
     }
+
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * _Bool drawJoints;
+     * void (*DrawTransformFcn)(b2Transform, void *)
      * }
      */
-    public static boolean drawJoints$get(MemorySegment seg) {
-        return (boolean)constants$155.const$5.get(seg);
+    public static MemorySegment DrawTransformFcn(MemorySegment struct) {
+        return struct.get(DrawTransformFcn$LAYOUT, DrawTransformFcn$OFFSET);
     }
+
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * _Bool drawJoints;
+     * void (*DrawTransformFcn)(b2Transform, void *)
      * }
      */
-    public static void drawJoints$set(MemorySegment seg, boolean x) {
-        constants$155.const$5.set(seg, x);
+    public static void DrawTransformFcn(MemorySegment struct, MemorySegment fieldValue) {
+        struct.set(DrawTransformFcn$LAYOUT, DrawTransformFcn$OFFSET, fieldValue);
     }
-    public static boolean drawJoints$get(MemorySegment seg, long index) {
-        return (boolean)constants$155.const$5.get(seg.asSlice(index*sizeof()));
+
+    /**
+     * {@snippet lang=c :
+     * void (*DrawPointFcn)(b2Vec2, float, b2HexColor, void *)
+     * }
+     */
+    public final static class DrawPointFcn {
+
+        private DrawPointFcn() {
+            // Should not be called directly
+        }
+
+        /**
+         * The function pointer signature, expressed as a functional interface
+         */
+        public interface Function {
+            void apply(MemorySegment _x0, float _x1, int _x2, MemorySegment _x3);
+        }
+
+        private static final FunctionDescriptor $DESC = FunctionDescriptor.ofVoid(
+            b2Vec2.layout(),
+            Box2D.C_FLOAT,
+            Box2D.C_INT,
+            Box2D.C_POINTER
+        );
+
+        /**
+         * The descriptor of this function pointer
+         */
+        public static FunctionDescriptor descriptor() {
+            return $DESC;
+        }
+
+        private static final MethodHandle UP$MH = Box2D.upcallHandle(DrawPointFcn.Function.class, "apply", $DESC);
+
+        /**
+         * Allocates a new upcall stub, whose implementation is defined by {@code fi}.
+         * The lifetime of the returned segment is managed by {@code arena}
+         */
+        public static MemorySegment allocate(DrawPointFcn.Function fi, Arena arena) {
+            return Linker.nativeLinker().upcallStub(UP$MH.bindTo(fi), $DESC, arena);
+        }
+
+        private static final MethodHandle DOWN$MH = Linker.nativeLinker().downcallHandle($DESC);
+
+        /**
+         * Invoke the upcall stub {@code funcPtr}, with given parameters
+         */
+        public static void invoke(MemorySegment funcPtr, MemorySegment _x0, float _x1, int _x2, MemorySegment _x3) {
+            try {
+                 DOWN$MH.invokeExact(funcPtr, _x0, _x1, _x2, _x3);
+            } catch (Error | RuntimeException ex) {
+                throw ex;
+            } catch (Throwable ex$) {
+                throw new AssertionError("should not reach here", ex$);
+            }
+        }
     }
-    public static void drawJoints$set(MemorySegment seg, long index, boolean x) {
-        constants$155.const$5.set(seg.asSlice(index*sizeof()), x);
+
+    private static final AddressLayout DrawPointFcn$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("DrawPointFcn"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * void (*DrawPointFcn)(b2Vec2, float, b2HexColor, void *)
+     * }
+     */
+    public static final AddressLayout DrawPointFcn$layout() {
+        return DrawPointFcn$LAYOUT;
     }
-    public static VarHandle drawJointExtras$VH() {
-        return constants$156.const$0;
+
+    private static final long DrawPointFcn$OFFSET = $LAYOUT.byteOffset(groupElement("DrawPointFcn"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * void (*DrawPointFcn)(b2Vec2, float, b2HexColor, void *)
+     * }
+     */
+    public static final long DrawPointFcn$offset() {
+        return DrawPointFcn$OFFSET;
     }
+
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * _Bool drawJointExtras;
+     * void (*DrawPointFcn)(b2Vec2, float, b2HexColor, void *)
      * }
      */
-    public static boolean drawJointExtras$get(MemorySegment seg) {
-        return (boolean)constants$156.const$0.get(seg);
+    public static MemorySegment DrawPointFcn(MemorySegment struct) {
+        return struct.get(DrawPointFcn$LAYOUT, DrawPointFcn$OFFSET);
     }
+
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * _Bool drawJointExtras;
+     * void (*DrawPointFcn)(b2Vec2, float, b2HexColor, void *)
      * }
      */
-    public static void drawJointExtras$set(MemorySegment seg, boolean x) {
-        constants$156.const$0.set(seg, x);
+    public static void DrawPointFcn(MemorySegment struct, MemorySegment fieldValue) {
+        struct.set(DrawPointFcn$LAYOUT, DrawPointFcn$OFFSET, fieldValue);
     }
-    public static boolean drawJointExtras$get(MemorySegment seg, long index) {
-        return (boolean)constants$156.const$0.get(seg.asSlice(index*sizeof()));
+
+    /**
+     * {@snippet lang=c :
+     * void (*DrawStringFcn)(b2Vec2, const char *, b2HexColor, void *)
+     * }
+     */
+    public final static class DrawStringFcn {
+
+        private DrawStringFcn() {
+            // Should not be called directly
+        }
+
+        /**
+         * The function pointer signature, expressed as a functional interface
+         */
+        public interface Function {
+            void apply(MemorySegment _x0, MemorySegment _x1, int _x2, MemorySegment _x3);
+        }
+
+        private static final FunctionDescriptor $DESC = FunctionDescriptor.ofVoid(
+            b2Vec2.layout(),
+            Box2D.C_POINTER,
+            Box2D.C_INT,
+            Box2D.C_POINTER
+        );
+
+        /**
+         * The descriptor of this function pointer
+         */
+        public static FunctionDescriptor descriptor() {
+            return $DESC;
+        }
+
+        private static final MethodHandle UP$MH = Box2D.upcallHandle(DrawStringFcn.Function.class, "apply", $DESC);
+
+        /**
+         * Allocates a new upcall stub, whose implementation is defined by {@code fi}.
+         * The lifetime of the returned segment is managed by {@code arena}
+         */
+        public static MemorySegment allocate(DrawStringFcn.Function fi, Arena arena) {
+            return Linker.nativeLinker().upcallStub(UP$MH.bindTo(fi), $DESC, arena);
+        }
+
+        private static final MethodHandle DOWN$MH = Linker.nativeLinker().downcallHandle($DESC);
+
+        /**
+         * Invoke the upcall stub {@code funcPtr}, with given parameters
+         */
+        public static void invoke(MemorySegment funcPtr, MemorySegment _x0, MemorySegment _x1, int _x2, MemorySegment _x3) {
+            try {
+                 DOWN$MH.invokeExact(funcPtr, _x0, _x1, _x2, _x3);
+            } catch (Error | RuntimeException ex) {
+                throw ex;
+            } catch (Throwable ex$) {
+                throw new AssertionError("should not reach here", ex$);
+            }
+        }
     }
-    public static void drawJointExtras$set(MemorySegment seg, long index, boolean x) {
-        constants$156.const$0.set(seg.asSlice(index*sizeof()), x);
+
+    private static final AddressLayout DrawStringFcn$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("DrawStringFcn"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * void (*DrawStringFcn)(b2Vec2, const char *, b2HexColor, void *)
+     * }
+     */
+    public static final AddressLayout DrawStringFcn$layout() {
+        return DrawStringFcn$LAYOUT;
     }
-    public static VarHandle drawBounds$VH() {
-        return constants$156.const$1;
+
+    private static final long DrawStringFcn$OFFSET = $LAYOUT.byteOffset(groupElement("DrawStringFcn"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * void (*DrawStringFcn)(b2Vec2, const char *, b2HexColor, void *)
+     * }
+     */
+    public static final long DrawStringFcn$offset() {
+        return DrawStringFcn$OFFSET;
     }
+
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * _Bool drawBounds;
+     * void (*DrawStringFcn)(b2Vec2, const char *, b2HexColor, void *)
      * }
      */
-    public static boolean drawBounds$get(MemorySegment seg) {
-        return (boolean)constants$156.const$1.get(seg);
+    public static MemorySegment DrawStringFcn(MemorySegment struct) {
+        return struct.get(DrawStringFcn$LAYOUT, DrawStringFcn$OFFSET);
     }
+
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * _Bool drawBounds;
+     * void (*DrawStringFcn)(b2Vec2, const char *, b2HexColor, void *)
      * }
      */
-    public static void drawBounds$set(MemorySegment seg, boolean x) {
-        constants$156.const$1.set(seg, x);
+    public static void DrawStringFcn(MemorySegment struct, MemorySegment fieldValue) {
+        struct.set(DrawStringFcn$LAYOUT, DrawStringFcn$OFFSET, fieldValue);
     }
-    public static boolean drawBounds$get(MemorySegment seg, long index) {
-        return (boolean)constants$156.const$1.get(seg.asSlice(index*sizeof()));
+
+    private static final GroupLayout drawingBounds$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("drawingBounds"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * b2AABB drawingBounds
+     * }
+     */
+    public static final GroupLayout drawingBounds$layout() {
+        return drawingBounds$LAYOUT;
     }
-    public static void drawBounds$set(MemorySegment seg, long index, boolean x) {
-        constants$156.const$1.set(seg.asSlice(index*sizeof()), x);
+
+    private static final long drawingBounds$OFFSET = $LAYOUT.byteOffset(groupElement("drawingBounds"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * b2AABB drawingBounds
+     * }
+     */
+    public static final long drawingBounds$offset() {
+        return drawingBounds$OFFSET;
     }
-    public static VarHandle drawMass$VH() {
-        return constants$156.const$2;
-    }
+
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * _Bool drawMass;
+     * b2AABB drawingBounds
      * }
      */
-    public static boolean drawMass$get(MemorySegment seg) {
-        return (boolean)constants$156.const$2.get(seg);
+    public static MemorySegment drawingBounds(MemorySegment struct) {
+        return struct.asSlice(drawingBounds$OFFSET, drawingBounds$LAYOUT.byteSize());
     }
+
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * _Bool drawMass;
+     * b2AABB drawingBounds
      * }
      */
-    public static void drawMass$set(MemorySegment seg, boolean x) {
-        constants$156.const$2.set(seg, x);
+    public static void drawingBounds(MemorySegment struct, MemorySegment fieldValue) {
+        MemorySegment.copy(fieldValue, 0L, struct, drawingBounds$OFFSET, drawingBounds$LAYOUT.byteSize());
     }
-    public static boolean drawMass$get(MemorySegment seg, long index) {
-        return (boolean)constants$156.const$2.get(seg.asSlice(index*sizeof()));
+
+    private static final OfBoolean useDrawingBounds$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("useDrawingBounds"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * _Bool useDrawingBounds
+     * }
+     */
+    public static final OfBoolean useDrawingBounds$layout() {
+        return useDrawingBounds$LAYOUT;
     }
-    public static void drawMass$set(MemorySegment seg, long index, boolean x) {
-        constants$156.const$2.set(seg.asSlice(index*sizeof()), x);
+
+    private static final long useDrawingBounds$OFFSET = $LAYOUT.byteOffset(groupElement("useDrawingBounds"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * _Bool useDrawingBounds
+     * }
+     */
+    public static final long useDrawingBounds$offset() {
+        return useDrawingBounds$OFFSET;
     }
-    public static VarHandle drawBodyNames$VH() {
-        return constants$156.const$3;
-    }
+
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * _Bool drawBodyNames;
+     * _Bool useDrawingBounds
      * }
      */
-    public static boolean drawBodyNames$get(MemorySegment seg) {
-        return (boolean)constants$156.const$3.get(seg);
+    public static boolean useDrawingBounds(MemorySegment struct) {
+        return struct.get(useDrawingBounds$LAYOUT, useDrawingBounds$OFFSET);
     }
+
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * _Bool drawBodyNames;
+     * _Bool useDrawingBounds
      * }
      */
-    public static void drawBodyNames$set(MemorySegment seg, boolean x) {
-        constants$156.const$3.set(seg, x);
+    public static void useDrawingBounds(MemorySegment struct, boolean fieldValue) {
+        struct.set(useDrawingBounds$LAYOUT, useDrawingBounds$OFFSET, fieldValue);
     }
-    public static boolean drawBodyNames$get(MemorySegment seg, long index) {
-        return (boolean)constants$156.const$3.get(seg.asSlice(index*sizeof()));
+
+    private static final OfBoolean drawShapes$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("drawShapes"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * _Bool drawShapes
+     * }
+     */
+    public static final OfBoolean drawShapes$layout() {
+        return drawShapes$LAYOUT;
     }
-    public static void drawBodyNames$set(MemorySegment seg, long index, boolean x) {
-        constants$156.const$3.set(seg.asSlice(index*sizeof()), x);
+
+    private static final long drawShapes$OFFSET = $LAYOUT.byteOffset(groupElement("drawShapes"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * _Bool drawShapes
+     * }
+     */
+    public static final long drawShapes$offset() {
+        return drawShapes$OFFSET;
     }
-    public static VarHandle drawContacts$VH() {
-        return constants$156.const$4;
-    }
+
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * _Bool drawContacts;
+     * _Bool drawShapes
      * }
      */
-    public static boolean drawContacts$get(MemorySegment seg) {
-        return (boolean)constants$156.const$4.get(seg);
+    public static boolean drawShapes(MemorySegment struct) {
+        return struct.get(drawShapes$LAYOUT, drawShapes$OFFSET);
     }
+
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * _Bool drawContacts;
+     * _Bool drawShapes
      * }
      */
-    public static void drawContacts$set(MemorySegment seg, boolean x) {
-        constants$156.const$4.set(seg, x);
+    public static void drawShapes(MemorySegment struct, boolean fieldValue) {
+        struct.set(drawShapes$LAYOUT, drawShapes$OFFSET, fieldValue);
     }
-    public static boolean drawContacts$get(MemorySegment seg, long index) {
-        return (boolean)constants$156.const$4.get(seg.asSlice(index*sizeof()));
+
+    private static final OfBoolean drawJoints$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("drawJoints"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * _Bool drawJoints
+     * }
+     */
+    public static final OfBoolean drawJoints$layout() {
+        return drawJoints$LAYOUT;
     }
-    public static void drawContacts$set(MemorySegment seg, long index, boolean x) {
-        constants$156.const$4.set(seg.asSlice(index*sizeof()), x);
+
+    private static final long drawJoints$OFFSET = $LAYOUT.byteOffset(groupElement("drawJoints"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * _Bool drawJoints
+     * }
+     */
+    public static final long drawJoints$offset() {
+        return drawJoints$OFFSET;
     }
-    public static VarHandle drawGraphColors$VH() {
-        return constants$156.const$5;
-    }
+
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * _Bool drawGraphColors;
+     * _Bool drawJoints
      * }
      */
-    public static boolean drawGraphColors$get(MemorySegment seg) {
-        return (boolean)constants$156.const$5.get(seg);
+    public static boolean drawJoints(MemorySegment struct) {
+        return struct.get(drawJoints$LAYOUT, drawJoints$OFFSET);
     }
+
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * _Bool drawGraphColors;
+     * _Bool drawJoints
      * }
      */
-    public static void drawGraphColors$set(MemorySegment seg, boolean x) {
-        constants$156.const$5.set(seg, x);
+    public static void drawJoints(MemorySegment struct, boolean fieldValue) {
+        struct.set(drawJoints$LAYOUT, drawJoints$OFFSET, fieldValue);
     }
-    public static boolean drawGraphColors$get(MemorySegment seg, long index) {
-        return (boolean)constants$156.const$5.get(seg.asSlice(index*sizeof()));
+
+    private static final OfBoolean drawJointExtras$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("drawJointExtras"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * _Bool drawJointExtras
+     * }
+     */
+    public static final OfBoolean drawJointExtras$layout() {
+        return drawJointExtras$LAYOUT;
     }
-    public static void drawGraphColors$set(MemorySegment seg, long index, boolean x) {
-        constants$156.const$5.set(seg.asSlice(index*sizeof()), x);
+
+    private static final long drawJointExtras$OFFSET = $LAYOUT.byteOffset(groupElement("drawJointExtras"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * _Bool drawJointExtras
+     * }
+     */
+    public static final long drawJointExtras$offset() {
+        return drawJointExtras$OFFSET;
     }
-    public static VarHandle drawContactNormals$VH() {
-        return constants$157.const$0;
-    }
+
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * _Bool drawContactNormals;
+     * _Bool drawJointExtras
      * }
      */
-    public static boolean drawContactNormals$get(MemorySegment seg) {
-        return (boolean)constants$157.const$0.get(seg);
+    public static boolean drawJointExtras(MemorySegment struct) {
+        return struct.get(drawJointExtras$LAYOUT, drawJointExtras$OFFSET);
     }
+
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * _Bool drawContactNormals;
+     * _Bool drawJointExtras
      * }
      */
-    public static void drawContactNormals$set(MemorySegment seg, boolean x) {
-        constants$157.const$0.set(seg, x);
+    public static void drawJointExtras(MemorySegment struct, boolean fieldValue) {
+        struct.set(drawJointExtras$LAYOUT, drawJointExtras$OFFSET, fieldValue);
     }
-    public static boolean drawContactNormals$get(MemorySegment seg, long index) {
-        return (boolean)constants$157.const$0.get(seg.asSlice(index*sizeof()));
+
+    private static final OfBoolean drawBounds$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("drawBounds"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * _Bool drawBounds
+     * }
+     */
+    public static final OfBoolean drawBounds$layout() {
+        return drawBounds$LAYOUT;
     }
-    public static void drawContactNormals$set(MemorySegment seg, long index, boolean x) {
-        constants$157.const$0.set(seg.asSlice(index*sizeof()), x);
+
+    private static final long drawBounds$OFFSET = $LAYOUT.byteOffset(groupElement("drawBounds"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * _Bool drawBounds
+     * }
+     */
+    public static final long drawBounds$offset() {
+        return drawBounds$OFFSET;
     }
-    public static VarHandle drawContactImpulses$VH() {
-        return constants$157.const$1;
-    }
+
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * _Bool drawContactImpulses;
+     * _Bool drawBounds
      * }
      */
-    public static boolean drawContactImpulses$get(MemorySegment seg) {
-        return (boolean)constants$157.const$1.get(seg);
+    public static boolean drawBounds(MemorySegment struct) {
+        return struct.get(drawBounds$LAYOUT, drawBounds$OFFSET);
     }
+
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * _Bool drawContactImpulses;
+     * _Bool drawBounds
      * }
      */
-    public static void drawContactImpulses$set(MemorySegment seg, boolean x) {
-        constants$157.const$1.set(seg, x);
+    public static void drawBounds(MemorySegment struct, boolean fieldValue) {
+        struct.set(drawBounds$LAYOUT, drawBounds$OFFSET, fieldValue);
     }
-    public static boolean drawContactImpulses$get(MemorySegment seg, long index) {
-        return (boolean)constants$157.const$1.get(seg.asSlice(index*sizeof()));
+
+    private static final OfBoolean drawMass$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("drawMass"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * _Bool drawMass
+     * }
+     */
+    public static final OfBoolean drawMass$layout() {
+        return drawMass$LAYOUT;
     }
-    public static void drawContactImpulses$set(MemorySegment seg, long index, boolean x) {
-        constants$157.const$1.set(seg.asSlice(index*sizeof()), x);
+
+    private static final long drawMass$OFFSET = $LAYOUT.byteOffset(groupElement("drawMass"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * _Bool drawMass
+     * }
+     */
+    public static final long drawMass$offset() {
+        return drawMass$OFFSET;
     }
-    public static VarHandle drawContactFeatures$VH() {
-        return constants$157.const$2;
-    }
+
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * _Bool drawContactFeatures;
+     * _Bool drawMass
      * }
      */
-    public static boolean drawContactFeatures$get(MemorySegment seg) {
-        return (boolean)constants$157.const$2.get(seg);
+    public static boolean drawMass(MemorySegment struct) {
+        return struct.get(drawMass$LAYOUT, drawMass$OFFSET);
     }
+
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * _Bool drawContactFeatures;
+     * _Bool drawMass
      * }
      */
-    public static void drawContactFeatures$set(MemorySegment seg, boolean x) {
-        constants$157.const$2.set(seg, x);
+    public static void drawMass(MemorySegment struct, boolean fieldValue) {
+        struct.set(drawMass$LAYOUT, drawMass$OFFSET, fieldValue);
     }
-    public static boolean drawContactFeatures$get(MemorySegment seg, long index) {
-        return (boolean)constants$157.const$2.get(seg.asSlice(index*sizeof()));
+
+    private static final OfBoolean drawBodyNames$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("drawBodyNames"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * _Bool drawBodyNames
+     * }
+     */
+    public static final OfBoolean drawBodyNames$layout() {
+        return drawBodyNames$LAYOUT;
     }
-    public static void drawContactFeatures$set(MemorySegment seg, long index, boolean x) {
-        constants$157.const$2.set(seg.asSlice(index*sizeof()), x);
+
+    private static final long drawBodyNames$OFFSET = $LAYOUT.byteOffset(groupElement("drawBodyNames"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * _Bool drawBodyNames
+     * }
+     */
+    public static final long drawBodyNames$offset() {
+        return drawBodyNames$OFFSET;
     }
-    public static VarHandle drawFrictionImpulses$VH() {
-        return constants$157.const$3;
-    }
+
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * _Bool drawFrictionImpulses;
+     * _Bool drawBodyNames
      * }
      */
-    public static boolean drawFrictionImpulses$get(MemorySegment seg) {
-        return (boolean)constants$157.const$3.get(seg);
+    public static boolean drawBodyNames(MemorySegment struct) {
+        return struct.get(drawBodyNames$LAYOUT, drawBodyNames$OFFSET);
     }
+
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * _Bool drawFrictionImpulses;
+     * _Bool drawBodyNames
      * }
      */
-    public static void drawFrictionImpulses$set(MemorySegment seg, boolean x) {
-        constants$157.const$3.set(seg, x);
+    public static void drawBodyNames(MemorySegment struct, boolean fieldValue) {
+        struct.set(drawBodyNames$LAYOUT, drawBodyNames$OFFSET, fieldValue);
     }
-    public static boolean drawFrictionImpulses$get(MemorySegment seg, long index) {
-        return (boolean)constants$157.const$3.get(seg.asSlice(index*sizeof()));
+
+    private static final OfBoolean drawContacts$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("drawContacts"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * _Bool drawContacts
+     * }
+     */
+    public static final OfBoolean drawContacts$layout() {
+        return drawContacts$LAYOUT;
     }
-    public static void drawFrictionImpulses$set(MemorySegment seg, long index, boolean x) {
-        constants$157.const$3.set(seg.asSlice(index*sizeof()), x);
+
+    private static final long drawContacts$OFFSET = $LAYOUT.byteOffset(groupElement("drawContacts"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * _Bool drawContacts
+     * }
+     */
+    public static final long drawContacts$offset() {
+        return drawContacts$OFFSET;
     }
-    public static VarHandle drawIslands$VH() {
-        return constants$157.const$4;
-    }
+
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * _Bool drawIslands;
+     * _Bool drawContacts
      * }
      */
-    public static boolean drawIslands$get(MemorySegment seg) {
-        return (boolean)constants$157.const$4.get(seg);
+    public static boolean drawContacts(MemorySegment struct) {
+        return struct.get(drawContacts$LAYOUT, drawContacts$OFFSET);
     }
+
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * _Bool drawIslands;
+     * _Bool drawContacts
      * }
      */
-    public static void drawIslands$set(MemorySegment seg, boolean x) {
-        constants$157.const$4.set(seg, x);
+    public static void drawContacts(MemorySegment struct, boolean fieldValue) {
+        struct.set(drawContacts$LAYOUT, drawContacts$OFFSET, fieldValue);
     }
-    public static boolean drawIslands$get(MemorySegment seg, long index) {
-        return (boolean)constants$157.const$4.get(seg.asSlice(index*sizeof()));
+
+    private static final OfBoolean drawGraphColors$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("drawGraphColors"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * _Bool drawGraphColors
+     * }
+     */
+    public static final OfBoolean drawGraphColors$layout() {
+        return drawGraphColors$LAYOUT;
     }
-    public static void drawIslands$set(MemorySegment seg, long index, boolean x) {
-        constants$157.const$4.set(seg.asSlice(index*sizeof()), x);
+
+    private static final long drawGraphColors$OFFSET = $LAYOUT.byteOffset(groupElement("drawGraphColors"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * _Bool drawGraphColors
+     * }
+     */
+    public static final long drawGraphColors$offset() {
+        return drawGraphColors$OFFSET;
     }
-    public static VarHandle context$VH() {
-        return constants$157.const$5;
-    }
+
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * void* context;
+     * _Bool drawGraphColors
      * }
      */
-    public static MemorySegment context$get(MemorySegment seg) {
-        return (java.lang.foreign.MemorySegment)constants$157.const$5.get(seg);
+    public static boolean drawGraphColors(MemorySegment struct) {
+        return struct.get(drawGraphColors$LAYOUT, drawGraphColors$OFFSET);
     }
+
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * void* context;
+     * _Bool drawGraphColors
      * }
      */
-    public static void context$set(MemorySegment seg, MemorySegment x) {
-        constants$157.const$5.set(seg, x);
+    public static void drawGraphColors(MemorySegment struct, boolean fieldValue) {
+        struct.set(drawGraphColors$LAYOUT, drawGraphColors$OFFSET, fieldValue);
     }
-    public static MemorySegment context$get(MemorySegment seg, long index) {
-        return (java.lang.foreign.MemorySegment)constants$157.const$5.get(seg.asSlice(index*sizeof()));
+
+    private static final OfBoolean drawContactNormals$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("drawContactNormals"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * _Bool drawContactNormals
+     * }
+     */
+    public static final OfBoolean drawContactNormals$layout() {
+        return drawContactNormals$LAYOUT;
     }
-    public static void context$set(MemorySegment seg, long index, MemorySegment x) {
-        constants$157.const$5.set(seg.asSlice(index*sizeof()), x);
+
+    private static final long drawContactNormals$OFFSET = $LAYOUT.byteOffset(groupElement("drawContactNormals"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * _Bool drawContactNormals
+     * }
+     */
+    public static final long drawContactNormals$offset() {
+        return drawContactNormals$OFFSET;
     }
-    public static long sizeof() { return $LAYOUT().byteSize(); }
-    public static MemorySegment allocate(SegmentAllocator allocator) { return allocator.allocate($LAYOUT()); }
-    public static MemorySegment allocateArray(long len, SegmentAllocator allocator) {
-        return allocator.allocate(MemoryLayout.sequenceLayout(len, $LAYOUT()));
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * _Bool drawContactNormals
+     * }
+     */
+    public static boolean drawContactNormals(MemorySegment struct) {
+        return struct.get(drawContactNormals$LAYOUT, drawContactNormals$OFFSET);
     }
-    public static MemorySegment ofAddress(MemorySegment addr, Arena arena) { return RuntimeHelper.asArray(addr, $LAYOUT(), 1, arena); }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * _Bool drawContactNormals
+     * }
+     */
+    public static void drawContactNormals(MemorySegment struct, boolean fieldValue) {
+        struct.set(drawContactNormals$LAYOUT, drawContactNormals$OFFSET, fieldValue);
+    }
+
+    private static final OfBoolean drawContactImpulses$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("drawContactImpulses"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * _Bool drawContactImpulses
+     * }
+     */
+    public static final OfBoolean drawContactImpulses$layout() {
+        return drawContactImpulses$LAYOUT;
+    }
+
+    private static final long drawContactImpulses$OFFSET = $LAYOUT.byteOffset(groupElement("drawContactImpulses"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * _Bool drawContactImpulses
+     * }
+     */
+    public static final long drawContactImpulses$offset() {
+        return drawContactImpulses$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * _Bool drawContactImpulses
+     * }
+     */
+    public static boolean drawContactImpulses(MemorySegment struct) {
+        return struct.get(drawContactImpulses$LAYOUT, drawContactImpulses$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * _Bool drawContactImpulses
+     * }
+     */
+    public static void drawContactImpulses(MemorySegment struct, boolean fieldValue) {
+        struct.set(drawContactImpulses$LAYOUT, drawContactImpulses$OFFSET, fieldValue);
+    }
+
+    private static final OfBoolean drawContactFeatures$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("drawContactFeatures"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * _Bool drawContactFeatures
+     * }
+     */
+    public static final OfBoolean drawContactFeatures$layout() {
+        return drawContactFeatures$LAYOUT;
+    }
+
+    private static final long drawContactFeatures$OFFSET = $LAYOUT.byteOffset(groupElement("drawContactFeatures"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * _Bool drawContactFeatures
+     * }
+     */
+    public static final long drawContactFeatures$offset() {
+        return drawContactFeatures$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * _Bool drawContactFeatures
+     * }
+     */
+    public static boolean drawContactFeatures(MemorySegment struct) {
+        return struct.get(drawContactFeatures$LAYOUT, drawContactFeatures$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * _Bool drawContactFeatures
+     * }
+     */
+    public static void drawContactFeatures(MemorySegment struct, boolean fieldValue) {
+        struct.set(drawContactFeatures$LAYOUT, drawContactFeatures$OFFSET, fieldValue);
+    }
+
+    private static final OfBoolean drawFrictionImpulses$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("drawFrictionImpulses"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * _Bool drawFrictionImpulses
+     * }
+     */
+    public static final OfBoolean drawFrictionImpulses$layout() {
+        return drawFrictionImpulses$LAYOUT;
+    }
+
+    private static final long drawFrictionImpulses$OFFSET = $LAYOUT.byteOffset(groupElement("drawFrictionImpulses"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * _Bool drawFrictionImpulses
+     * }
+     */
+    public static final long drawFrictionImpulses$offset() {
+        return drawFrictionImpulses$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * _Bool drawFrictionImpulses
+     * }
+     */
+    public static boolean drawFrictionImpulses(MemorySegment struct) {
+        return struct.get(drawFrictionImpulses$LAYOUT, drawFrictionImpulses$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * _Bool drawFrictionImpulses
+     * }
+     */
+    public static void drawFrictionImpulses(MemorySegment struct, boolean fieldValue) {
+        struct.set(drawFrictionImpulses$LAYOUT, drawFrictionImpulses$OFFSET, fieldValue);
+    }
+
+    private static final OfBoolean drawIslands$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("drawIslands"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * _Bool drawIslands
+     * }
+     */
+    public static final OfBoolean drawIslands$layout() {
+        return drawIslands$LAYOUT;
+    }
+
+    private static final long drawIslands$OFFSET = $LAYOUT.byteOffset(groupElement("drawIslands"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * _Bool drawIslands
+     * }
+     */
+    public static final long drawIslands$offset() {
+        return drawIslands$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * _Bool drawIslands
+     * }
+     */
+    public static boolean drawIslands(MemorySegment struct) {
+        return struct.get(drawIslands$LAYOUT, drawIslands$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * _Bool drawIslands
+     * }
+     */
+    public static void drawIslands(MemorySegment struct, boolean fieldValue) {
+        struct.set(drawIslands$LAYOUT, drawIslands$OFFSET, fieldValue);
+    }
+
+    private static final AddressLayout context$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("context"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * void *context
+     * }
+     */
+    public static final AddressLayout context$layout() {
+        return context$LAYOUT;
+    }
+
+    private static final long context$OFFSET = $LAYOUT.byteOffset(groupElement("context"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * void *context
+     * }
+     */
+    public static final long context$offset() {
+        return context$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * void *context
+     * }
+     */
+    public static MemorySegment context(MemorySegment struct) {
+        return struct.get(context$LAYOUT, context$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * void *context
+     * }
+     */
+    public static void context(MemorySegment struct, MemorySegment fieldValue) {
+        struct.set(context$LAYOUT, context$OFFSET, fieldValue);
+    }
+
+    /**
+     * Obtains a slice of {@code arrayParam} which selects the array element at {@code index}.
+     * The returned segment has address {@code arrayParam.address() + index * layout().byteSize()}
+     */
+    public static MemorySegment asSlice(MemorySegment array, long index) {
+        return array.asSlice(layout().byteSize() * index);
+    }
+
+    /**
+     * The size (in bytes) of this struct
+     */
+    public static long sizeof() { return layout().byteSize(); }
+
+    /**
+     * Allocate a segment of size {@code layout().byteSize()} using {@code allocator}
+     */
+    public static MemorySegment allocate(SegmentAllocator allocator) {
+        return allocator.allocate(layout());
+    }
+
+    /**
+     * Allocate an array of size {@code elementCount} using {@code allocator}.
+     * The returned segment has size {@code elementCount * layout().byteSize()}.
+     */
+    public static MemorySegment allocateArray(long elementCount, SegmentAllocator allocator) {
+        return allocator.allocate(MemoryLayout.sequenceLayout(elementCount, layout()));
+    }
+
+    /**
+     * Reinterprets {@code addr} using target {@code arena} and {@code cleanupAction} (if any).
+     * The returned segment has size {@code layout().byteSize()}
+     */
+    public static MemorySegment reinterpret(MemorySegment addr, Arena arena, Consumer<MemorySegment> cleanup) {
+        return reinterpret(addr, 1, arena, cleanup);
+    }
+
+    /**
+     * Reinterprets {@code addr} using target {@code arena} and {@code cleanupAction} (if any).
+     * The returned segment has size {@code elementCount * layout().byteSize()}
+     */
+    public static MemorySegment reinterpret(MemorySegment addr, long elementCount, Arena arena, Consumer<MemorySegment> cleanup) {
+        return addr.reinterpret(layout().byteSize() * elementCount, arena, cleanup);
+    }
 }
-
 

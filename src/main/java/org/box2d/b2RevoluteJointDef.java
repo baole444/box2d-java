@@ -2,18 +2,23 @@
 
 package org.box2d;
 
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.VarHandle;
-import java.nio.ByteOrder;
+import java.lang.invoke.*;
 import java.lang.foreign.*;
+import java.nio.ByteOrder;
+import java.util.*;
+import java.util.function.*;
+import java.util.stream.*;
+
 import static java.lang.foreign.ValueLayout.*;
+import static java.lang.foreign.MemoryLayout.PathElement.*;
+
 /**
  * {@snippet lang=c :
  * struct b2RevoluteJointDef {
- *     struct b2BodyId bodyIdA;
- *     struct b2BodyId bodyIdB;
- *     struct b2Vec2 localAnchorA;
- *     struct b2Vec2 localAnchorB;
+ *     b2BodyId bodyIdA;
+ *     b2BodyId bodyIdB;
+ *     b2Vec2 localAnchorA;
+ *     b2Vec2 localAnchorB;
  *     float referenceAngle;
  *     float targetAngle;
  *     _Bool enableSpring;
@@ -27,439 +32,929 @@ import static java.lang.foreign.ValueLayout.*;
  *     float motorSpeed;
  *     float drawSize;
  *     _Bool collideConnected;
- *     void* userData;
+ *     void *userData;
  *     int internalValue;
- * };
+ * }
  * }
  */
 public class b2RevoluteJointDef {
 
-    public static MemoryLayout $LAYOUT() {
-        return constants$134.const$3;
+    b2RevoluteJointDef() {
+        // Should not be called directly
     }
-    public static MemorySegment bodyIdA$slice(MemorySegment seg) {
-        return seg.asSlice(0, 8);
-    }
-    public static MemorySegment bodyIdB$slice(MemorySegment seg) {
-        return seg.asSlice(8, 8);
-    }
-    public static MemorySegment localAnchorA$slice(MemorySegment seg) {
-        return seg.asSlice(16, 8);
-    }
-    public static MemorySegment localAnchorB$slice(MemorySegment seg) {
-        return seg.asSlice(24, 8);
-    }
-    public static VarHandle referenceAngle$VH() {
-        return constants$134.const$4;
-    }
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * float referenceAngle;
-     * }
-     */
-    public static float referenceAngle$get(MemorySegment seg) {
-        return (float)constants$134.const$4.get(seg);
-    }
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * float referenceAngle;
-     * }
-     */
-    public static void referenceAngle$set(MemorySegment seg, float x) {
-        constants$134.const$4.set(seg, x);
-    }
-    public static float referenceAngle$get(MemorySegment seg, long index) {
-        return (float)constants$134.const$4.get(seg.asSlice(index*sizeof()));
-    }
-    public static void referenceAngle$set(MemorySegment seg, long index, float x) {
-        constants$134.const$4.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static VarHandle targetAngle$VH() {
-        return constants$134.const$5;
-    }
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * float targetAngle;
-     * }
-     */
-    public static float targetAngle$get(MemorySegment seg) {
-        return (float)constants$134.const$5.get(seg);
-    }
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * float targetAngle;
-     * }
-     */
-    public static void targetAngle$set(MemorySegment seg, float x) {
-        constants$134.const$5.set(seg, x);
-    }
-    public static float targetAngle$get(MemorySegment seg, long index) {
-        return (float)constants$134.const$5.get(seg.asSlice(index*sizeof()));
-    }
-    public static void targetAngle$set(MemorySegment seg, long index, float x) {
-        constants$134.const$5.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static VarHandle enableSpring$VH() {
-        return constants$135.const$0;
-    }
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * _Bool enableSpring;
-     * }
-     */
-    public static boolean enableSpring$get(MemorySegment seg) {
-        return (boolean)constants$135.const$0.get(seg);
-    }
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * _Bool enableSpring;
-     * }
-     */
-    public static void enableSpring$set(MemorySegment seg, boolean x) {
-        constants$135.const$0.set(seg, x);
-    }
-    public static boolean enableSpring$get(MemorySegment seg, long index) {
-        return (boolean)constants$135.const$0.get(seg.asSlice(index*sizeof()));
-    }
-    public static void enableSpring$set(MemorySegment seg, long index, boolean x) {
-        constants$135.const$0.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static VarHandle hertz$VH() {
-        return constants$135.const$1;
-    }
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * float hertz;
-     * }
-     */
-    public static float hertz$get(MemorySegment seg) {
-        return (float)constants$135.const$1.get(seg);
-    }
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * float hertz;
-     * }
-     */
-    public static void hertz$set(MemorySegment seg, float x) {
-        constants$135.const$1.set(seg, x);
-    }
-    public static float hertz$get(MemorySegment seg, long index) {
-        return (float)constants$135.const$1.get(seg.asSlice(index*sizeof()));
-    }
-    public static void hertz$set(MemorySegment seg, long index, float x) {
-        constants$135.const$1.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static VarHandle dampingRatio$VH() {
-        return constants$135.const$2;
-    }
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * float dampingRatio;
-     * }
-     */
-    public static float dampingRatio$get(MemorySegment seg) {
-        return (float)constants$135.const$2.get(seg);
-    }
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * float dampingRatio;
-     * }
-     */
-    public static void dampingRatio$set(MemorySegment seg, float x) {
-        constants$135.const$2.set(seg, x);
-    }
-    public static float dampingRatio$get(MemorySegment seg, long index) {
-        return (float)constants$135.const$2.get(seg.asSlice(index*sizeof()));
-    }
-    public static void dampingRatio$set(MemorySegment seg, long index, float x) {
-        constants$135.const$2.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static VarHandle enableLimit$VH() {
-        return constants$135.const$3;
-    }
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * _Bool enableLimit;
-     * }
-     */
-    public static boolean enableLimit$get(MemorySegment seg) {
-        return (boolean)constants$135.const$3.get(seg);
-    }
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * _Bool enableLimit;
-     * }
-     */
-    public static void enableLimit$set(MemorySegment seg, boolean x) {
-        constants$135.const$3.set(seg, x);
-    }
-    public static boolean enableLimit$get(MemorySegment seg, long index) {
-        return (boolean)constants$135.const$3.get(seg.asSlice(index*sizeof()));
-    }
-    public static void enableLimit$set(MemorySegment seg, long index, boolean x) {
-        constants$135.const$3.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static VarHandle lowerAngle$VH() {
-        return constants$135.const$4;
-    }
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * float lowerAngle;
-     * }
-     */
-    public static float lowerAngle$get(MemorySegment seg) {
-        return (float)constants$135.const$4.get(seg);
-    }
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * float lowerAngle;
-     * }
-     */
-    public static void lowerAngle$set(MemorySegment seg, float x) {
-        constants$135.const$4.set(seg, x);
-    }
-    public static float lowerAngle$get(MemorySegment seg, long index) {
-        return (float)constants$135.const$4.get(seg.asSlice(index*sizeof()));
-    }
-    public static void lowerAngle$set(MemorySegment seg, long index, float x) {
-        constants$135.const$4.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static VarHandle upperAngle$VH() {
-        return constants$135.const$5;
-    }
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * float upperAngle;
-     * }
-     */
-    public static float upperAngle$get(MemorySegment seg) {
-        return (float)constants$135.const$5.get(seg);
-    }
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * float upperAngle;
-     * }
-     */
-    public static void upperAngle$set(MemorySegment seg, float x) {
-        constants$135.const$5.set(seg, x);
-    }
-    public static float upperAngle$get(MemorySegment seg, long index) {
-        return (float)constants$135.const$5.get(seg.asSlice(index*sizeof()));
-    }
-    public static void upperAngle$set(MemorySegment seg, long index, float x) {
-        constants$135.const$5.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static VarHandle enableMotor$VH() {
-        return constants$136.const$0;
-    }
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * _Bool enableMotor;
-     * }
-     */
-    public static boolean enableMotor$get(MemorySegment seg) {
-        return (boolean)constants$136.const$0.get(seg);
-    }
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * _Bool enableMotor;
-     * }
-     */
-    public static void enableMotor$set(MemorySegment seg, boolean x) {
-        constants$136.const$0.set(seg, x);
-    }
-    public static boolean enableMotor$get(MemorySegment seg, long index) {
-        return (boolean)constants$136.const$0.get(seg.asSlice(index*sizeof()));
-    }
-    public static void enableMotor$set(MemorySegment seg, long index, boolean x) {
-        constants$136.const$0.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static VarHandle maxMotorTorque$VH() {
-        return constants$136.const$1;
-    }
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * float maxMotorTorque;
-     * }
-     */
-    public static float maxMotorTorque$get(MemorySegment seg) {
-        return (float)constants$136.const$1.get(seg);
-    }
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * float maxMotorTorque;
-     * }
-     */
-    public static void maxMotorTorque$set(MemorySegment seg, float x) {
-        constants$136.const$1.set(seg, x);
-    }
-    public static float maxMotorTorque$get(MemorySegment seg, long index) {
-        return (float)constants$136.const$1.get(seg.asSlice(index*sizeof()));
-    }
-    public static void maxMotorTorque$set(MemorySegment seg, long index, float x) {
-        constants$136.const$1.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static VarHandle motorSpeed$VH() {
-        return constants$136.const$2;
-    }
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * float motorSpeed;
-     * }
-     */
-    public static float motorSpeed$get(MemorySegment seg) {
-        return (float)constants$136.const$2.get(seg);
-    }
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * float motorSpeed;
-     * }
-     */
-    public static void motorSpeed$set(MemorySegment seg, float x) {
-        constants$136.const$2.set(seg, x);
-    }
-    public static float motorSpeed$get(MemorySegment seg, long index) {
-        return (float)constants$136.const$2.get(seg.asSlice(index*sizeof()));
-    }
-    public static void motorSpeed$set(MemorySegment seg, long index, float x) {
-        constants$136.const$2.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static VarHandle drawSize$VH() {
-        return constants$136.const$3;
-    }
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * float drawSize;
-     * }
-     */
-    public static float drawSize$get(MemorySegment seg) {
-        return (float)constants$136.const$3.get(seg);
-    }
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * float drawSize;
-     * }
-     */
-    public static void drawSize$set(MemorySegment seg, float x) {
-        constants$136.const$3.set(seg, x);
-    }
-    public static float drawSize$get(MemorySegment seg, long index) {
-        return (float)constants$136.const$3.get(seg.asSlice(index*sizeof()));
-    }
-    public static void drawSize$set(MemorySegment seg, long index, float x) {
-        constants$136.const$3.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static VarHandle collideConnected$VH() {
-        return constants$136.const$4;
-    }
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * _Bool collideConnected;
-     * }
-     */
-    public static boolean collideConnected$get(MemorySegment seg) {
-        return (boolean)constants$136.const$4.get(seg);
-    }
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * _Bool collideConnected;
-     * }
-     */
-    public static void collideConnected$set(MemorySegment seg, boolean x) {
-        constants$136.const$4.set(seg, x);
-    }
-    public static boolean collideConnected$get(MemorySegment seg, long index) {
-        return (boolean)constants$136.const$4.get(seg.asSlice(index*sizeof()));
-    }
-    public static void collideConnected$set(MemorySegment seg, long index, boolean x) {
-        constants$136.const$4.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static VarHandle userData$VH() {
-        return constants$136.const$5;
-    }
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * void* userData;
-     * }
-     */
-    public static MemorySegment userData$get(MemorySegment seg) {
-        return (java.lang.foreign.MemorySegment)constants$136.const$5.get(seg);
-    }
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * void* userData;
-     * }
-     */
-    public static void userData$set(MemorySegment seg, MemorySegment x) {
-        constants$136.const$5.set(seg, x);
-    }
-    public static MemorySegment userData$get(MemorySegment seg, long index) {
-        return (java.lang.foreign.MemorySegment)constants$136.const$5.get(seg.asSlice(index*sizeof()));
-    }
-    public static void userData$set(MemorySegment seg, long index, MemorySegment x) {
-        constants$136.const$5.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static VarHandle internalValue$VH() {
-        return constants$137.const$0;
-    }
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * int internalValue;
-     * }
-     */
-    public static int internalValue$get(MemorySegment seg) {
-        return (int)constants$137.const$0.get(seg);
-    }
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * int internalValue;
-     * }
-     */
-    public static void internalValue$set(MemorySegment seg, int x) {
-        constants$137.const$0.set(seg, x);
-    }
-    public static int internalValue$get(MemorySegment seg, long index) {
-        return (int)constants$137.const$0.get(seg.asSlice(index*sizeof()));
-    }
-    public static void internalValue$set(MemorySegment seg, long index, int x) {
-        constants$137.const$0.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static long sizeof() { return $LAYOUT().byteSize(); }
-    public static MemorySegment allocate(SegmentAllocator allocator) { return allocator.allocate($LAYOUT()); }
-    public static MemorySegment allocateArray(long len, SegmentAllocator allocator) {
-        return allocator.allocate(MemoryLayout.sequenceLayout(len, $LAYOUT()));
-    }
-    public static MemorySegment ofAddress(MemorySegment addr, Arena arena) { return RuntimeHelper.asArray(addr, $LAYOUT(), 1, arena); }
-}
 
+    private static final GroupLayout $LAYOUT = MemoryLayout.structLayout(
+        b2BodyId.layout().withName("bodyIdA"),
+        b2BodyId.layout().withName("bodyIdB"),
+        b2Vec2.layout().withName("localAnchorA"),
+        b2Vec2.layout().withName("localAnchorB"),
+        Box2D.C_FLOAT.withName("referenceAngle"),
+        Box2D.C_FLOAT.withName("targetAngle"),
+        Box2D.C_BOOL.withName("enableSpring"),
+        MemoryLayout.paddingLayout(3),
+        Box2D.C_FLOAT.withName("hertz"),
+        Box2D.C_FLOAT.withName("dampingRatio"),
+        Box2D.C_BOOL.withName("enableLimit"),
+        MemoryLayout.paddingLayout(3),
+        Box2D.C_FLOAT.withName("lowerAngle"),
+        Box2D.C_FLOAT.withName("upperAngle"),
+        Box2D.C_BOOL.withName("enableMotor"),
+        MemoryLayout.paddingLayout(3),
+        Box2D.C_FLOAT.withName("maxMotorTorque"),
+        Box2D.C_FLOAT.withName("motorSpeed"),
+        Box2D.C_FLOAT.withName("drawSize"),
+        Box2D.C_BOOL.withName("collideConnected"),
+        MemoryLayout.paddingLayout(7),
+        Box2D.C_POINTER.withName("userData"),
+        Box2D.C_INT.withName("internalValue"),
+        MemoryLayout.paddingLayout(4)
+    ).withName("b2RevoluteJointDef");
+
+    /**
+     * The layout of this struct
+     */
+    public static final GroupLayout layout() {
+        return $LAYOUT;
+    }
+
+    private static final GroupLayout bodyIdA$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("bodyIdA"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * b2BodyId bodyIdA
+     * }
+     */
+    public static final GroupLayout bodyIdA$layout() {
+        return bodyIdA$LAYOUT;
+    }
+
+    private static final long bodyIdA$OFFSET = $LAYOUT.byteOffset(groupElement("bodyIdA"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * b2BodyId bodyIdA
+     * }
+     */
+    public static final long bodyIdA$offset() {
+        return bodyIdA$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * b2BodyId bodyIdA
+     * }
+     */
+    public static MemorySegment bodyIdA(MemorySegment struct) {
+        return struct.asSlice(bodyIdA$OFFSET, bodyIdA$LAYOUT.byteSize());
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * b2BodyId bodyIdA
+     * }
+     */
+    public static void bodyIdA(MemorySegment struct, MemorySegment fieldValue) {
+        MemorySegment.copy(fieldValue, 0L, struct, bodyIdA$OFFSET, bodyIdA$LAYOUT.byteSize());
+    }
+
+    private static final GroupLayout bodyIdB$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("bodyIdB"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * b2BodyId bodyIdB
+     * }
+     */
+    public static final GroupLayout bodyIdB$layout() {
+        return bodyIdB$LAYOUT;
+    }
+
+    private static final long bodyIdB$OFFSET = $LAYOUT.byteOffset(groupElement("bodyIdB"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * b2BodyId bodyIdB
+     * }
+     */
+    public static final long bodyIdB$offset() {
+        return bodyIdB$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * b2BodyId bodyIdB
+     * }
+     */
+    public static MemorySegment bodyIdB(MemorySegment struct) {
+        return struct.asSlice(bodyIdB$OFFSET, bodyIdB$LAYOUT.byteSize());
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * b2BodyId bodyIdB
+     * }
+     */
+    public static void bodyIdB(MemorySegment struct, MemorySegment fieldValue) {
+        MemorySegment.copy(fieldValue, 0L, struct, bodyIdB$OFFSET, bodyIdB$LAYOUT.byteSize());
+    }
+
+    private static final GroupLayout localAnchorA$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("localAnchorA"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * b2Vec2 localAnchorA
+     * }
+     */
+    public static final GroupLayout localAnchorA$layout() {
+        return localAnchorA$LAYOUT;
+    }
+
+    private static final long localAnchorA$OFFSET = $LAYOUT.byteOffset(groupElement("localAnchorA"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * b2Vec2 localAnchorA
+     * }
+     */
+    public static final long localAnchorA$offset() {
+        return localAnchorA$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * b2Vec2 localAnchorA
+     * }
+     */
+    public static MemorySegment localAnchorA(MemorySegment struct) {
+        return struct.asSlice(localAnchorA$OFFSET, localAnchorA$LAYOUT.byteSize());
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * b2Vec2 localAnchorA
+     * }
+     */
+    public static void localAnchorA(MemorySegment struct, MemorySegment fieldValue) {
+        MemorySegment.copy(fieldValue, 0L, struct, localAnchorA$OFFSET, localAnchorA$LAYOUT.byteSize());
+    }
+
+    private static final GroupLayout localAnchorB$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("localAnchorB"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * b2Vec2 localAnchorB
+     * }
+     */
+    public static final GroupLayout localAnchorB$layout() {
+        return localAnchorB$LAYOUT;
+    }
+
+    private static final long localAnchorB$OFFSET = $LAYOUT.byteOffset(groupElement("localAnchorB"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * b2Vec2 localAnchorB
+     * }
+     */
+    public static final long localAnchorB$offset() {
+        return localAnchorB$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * b2Vec2 localAnchorB
+     * }
+     */
+    public static MemorySegment localAnchorB(MemorySegment struct) {
+        return struct.asSlice(localAnchorB$OFFSET, localAnchorB$LAYOUT.byteSize());
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * b2Vec2 localAnchorB
+     * }
+     */
+    public static void localAnchorB(MemorySegment struct, MemorySegment fieldValue) {
+        MemorySegment.copy(fieldValue, 0L, struct, localAnchorB$OFFSET, localAnchorB$LAYOUT.byteSize());
+    }
+
+    private static final OfFloat referenceAngle$LAYOUT = (OfFloat)$LAYOUT.select(groupElement("referenceAngle"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * float referenceAngle
+     * }
+     */
+    public static final OfFloat referenceAngle$layout() {
+        return referenceAngle$LAYOUT;
+    }
+
+    private static final long referenceAngle$OFFSET = $LAYOUT.byteOffset(groupElement("referenceAngle"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * float referenceAngle
+     * }
+     */
+    public static final long referenceAngle$offset() {
+        return referenceAngle$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * float referenceAngle
+     * }
+     */
+    public static float referenceAngle(MemorySegment struct) {
+        return struct.get(referenceAngle$LAYOUT, referenceAngle$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * float referenceAngle
+     * }
+     */
+    public static void referenceAngle(MemorySegment struct, float fieldValue) {
+        struct.set(referenceAngle$LAYOUT, referenceAngle$OFFSET, fieldValue);
+    }
+
+    private static final OfFloat targetAngle$LAYOUT = (OfFloat)$LAYOUT.select(groupElement("targetAngle"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * float targetAngle
+     * }
+     */
+    public static final OfFloat targetAngle$layout() {
+        return targetAngle$LAYOUT;
+    }
+
+    private static final long targetAngle$OFFSET = $LAYOUT.byteOffset(groupElement("targetAngle"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * float targetAngle
+     * }
+     */
+    public static final long targetAngle$offset() {
+        return targetAngle$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * float targetAngle
+     * }
+     */
+    public static float targetAngle(MemorySegment struct) {
+        return struct.get(targetAngle$LAYOUT, targetAngle$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * float targetAngle
+     * }
+     */
+    public static void targetAngle(MemorySegment struct, float fieldValue) {
+        struct.set(targetAngle$LAYOUT, targetAngle$OFFSET, fieldValue);
+    }
+
+    private static final OfBoolean enableSpring$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("enableSpring"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * _Bool enableSpring
+     * }
+     */
+    public static final OfBoolean enableSpring$layout() {
+        return enableSpring$LAYOUT;
+    }
+
+    private static final long enableSpring$OFFSET = $LAYOUT.byteOffset(groupElement("enableSpring"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * _Bool enableSpring
+     * }
+     */
+    public static final long enableSpring$offset() {
+        return enableSpring$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * _Bool enableSpring
+     * }
+     */
+    public static boolean enableSpring(MemorySegment struct) {
+        return struct.get(enableSpring$LAYOUT, enableSpring$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * _Bool enableSpring
+     * }
+     */
+    public static void enableSpring(MemorySegment struct, boolean fieldValue) {
+        struct.set(enableSpring$LAYOUT, enableSpring$OFFSET, fieldValue);
+    }
+
+    private static final OfFloat hertz$LAYOUT = (OfFloat)$LAYOUT.select(groupElement("hertz"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * float hertz
+     * }
+     */
+    public static final OfFloat hertz$layout() {
+        return hertz$LAYOUT;
+    }
+
+    private static final long hertz$OFFSET = $LAYOUT.byteOffset(groupElement("hertz"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * float hertz
+     * }
+     */
+    public static final long hertz$offset() {
+        return hertz$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * float hertz
+     * }
+     */
+    public static float hertz(MemorySegment struct) {
+        return struct.get(hertz$LAYOUT, hertz$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * float hertz
+     * }
+     */
+    public static void hertz(MemorySegment struct, float fieldValue) {
+        struct.set(hertz$LAYOUT, hertz$OFFSET, fieldValue);
+    }
+
+    private static final OfFloat dampingRatio$LAYOUT = (OfFloat)$LAYOUT.select(groupElement("dampingRatio"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * float dampingRatio
+     * }
+     */
+    public static final OfFloat dampingRatio$layout() {
+        return dampingRatio$LAYOUT;
+    }
+
+    private static final long dampingRatio$OFFSET = $LAYOUT.byteOffset(groupElement("dampingRatio"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * float dampingRatio
+     * }
+     */
+    public static final long dampingRatio$offset() {
+        return dampingRatio$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * float dampingRatio
+     * }
+     */
+    public static float dampingRatio(MemorySegment struct) {
+        return struct.get(dampingRatio$LAYOUT, dampingRatio$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * float dampingRatio
+     * }
+     */
+    public static void dampingRatio(MemorySegment struct, float fieldValue) {
+        struct.set(dampingRatio$LAYOUT, dampingRatio$OFFSET, fieldValue);
+    }
+
+    private static final OfBoolean enableLimit$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("enableLimit"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * _Bool enableLimit
+     * }
+     */
+    public static final OfBoolean enableLimit$layout() {
+        return enableLimit$LAYOUT;
+    }
+
+    private static final long enableLimit$OFFSET = $LAYOUT.byteOffset(groupElement("enableLimit"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * _Bool enableLimit
+     * }
+     */
+    public static final long enableLimit$offset() {
+        return enableLimit$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * _Bool enableLimit
+     * }
+     */
+    public static boolean enableLimit(MemorySegment struct) {
+        return struct.get(enableLimit$LAYOUT, enableLimit$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * _Bool enableLimit
+     * }
+     */
+    public static void enableLimit(MemorySegment struct, boolean fieldValue) {
+        struct.set(enableLimit$LAYOUT, enableLimit$OFFSET, fieldValue);
+    }
+
+    private static final OfFloat lowerAngle$LAYOUT = (OfFloat)$LAYOUT.select(groupElement("lowerAngle"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * float lowerAngle
+     * }
+     */
+    public static final OfFloat lowerAngle$layout() {
+        return lowerAngle$LAYOUT;
+    }
+
+    private static final long lowerAngle$OFFSET = $LAYOUT.byteOffset(groupElement("lowerAngle"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * float lowerAngle
+     * }
+     */
+    public static final long lowerAngle$offset() {
+        return lowerAngle$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * float lowerAngle
+     * }
+     */
+    public static float lowerAngle(MemorySegment struct) {
+        return struct.get(lowerAngle$LAYOUT, lowerAngle$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * float lowerAngle
+     * }
+     */
+    public static void lowerAngle(MemorySegment struct, float fieldValue) {
+        struct.set(lowerAngle$LAYOUT, lowerAngle$OFFSET, fieldValue);
+    }
+
+    private static final OfFloat upperAngle$LAYOUT = (OfFloat)$LAYOUT.select(groupElement("upperAngle"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * float upperAngle
+     * }
+     */
+    public static final OfFloat upperAngle$layout() {
+        return upperAngle$LAYOUT;
+    }
+
+    private static final long upperAngle$OFFSET = $LAYOUT.byteOffset(groupElement("upperAngle"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * float upperAngle
+     * }
+     */
+    public static final long upperAngle$offset() {
+        return upperAngle$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * float upperAngle
+     * }
+     */
+    public static float upperAngle(MemorySegment struct) {
+        return struct.get(upperAngle$LAYOUT, upperAngle$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * float upperAngle
+     * }
+     */
+    public static void upperAngle(MemorySegment struct, float fieldValue) {
+        struct.set(upperAngle$LAYOUT, upperAngle$OFFSET, fieldValue);
+    }
+
+    private static final OfBoolean enableMotor$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("enableMotor"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * _Bool enableMotor
+     * }
+     */
+    public static final OfBoolean enableMotor$layout() {
+        return enableMotor$LAYOUT;
+    }
+
+    private static final long enableMotor$OFFSET = $LAYOUT.byteOffset(groupElement("enableMotor"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * _Bool enableMotor
+     * }
+     */
+    public static final long enableMotor$offset() {
+        return enableMotor$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * _Bool enableMotor
+     * }
+     */
+    public static boolean enableMotor(MemorySegment struct) {
+        return struct.get(enableMotor$LAYOUT, enableMotor$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * _Bool enableMotor
+     * }
+     */
+    public static void enableMotor(MemorySegment struct, boolean fieldValue) {
+        struct.set(enableMotor$LAYOUT, enableMotor$OFFSET, fieldValue);
+    }
+
+    private static final OfFloat maxMotorTorque$LAYOUT = (OfFloat)$LAYOUT.select(groupElement("maxMotorTorque"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * float maxMotorTorque
+     * }
+     */
+    public static final OfFloat maxMotorTorque$layout() {
+        return maxMotorTorque$LAYOUT;
+    }
+
+    private static final long maxMotorTorque$OFFSET = $LAYOUT.byteOffset(groupElement("maxMotorTorque"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * float maxMotorTorque
+     * }
+     */
+    public static final long maxMotorTorque$offset() {
+        return maxMotorTorque$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * float maxMotorTorque
+     * }
+     */
+    public static float maxMotorTorque(MemorySegment struct) {
+        return struct.get(maxMotorTorque$LAYOUT, maxMotorTorque$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * float maxMotorTorque
+     * }
+     */
+    public static void maxMotorTorque(MemorySegment struct, float fieldValue) {
+        struct.set(maxMotorTorque$LAYOUT, maxMotorTorque$OFFSET, fieldValue);
+    }
+
+    private static final OfFloat motorSpeed$LAYOUT = (OfFloat)$LAYOUT.select(groupElement("motorSpeed"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * float motorSpeed
+     * }
+     */
+    public static final OfFloat motorSpeed$layout() {
+        return motorSpeed$LAYOUT;
+    }
+
+    private static final long motorSpeed$OFFSET = $LAYOUT.byteOffset(groupElement("motorSpeed"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * float motorSpeed
+     * }
+     */
+    public static final long motorSpeed$offset() {
+        return motorSpeed$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * float motorSpeed
+     * }
+     */
+    public static float motorSpeed(MemorySegment struct) {
+        return struct.get(motorSpeed$LAYOUT, motorSpeed$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * float motorSpeed
+     * }
+     */
+    public static void motorSpeed(MemorySegment struct, float fieldValue) {
+        struct.set(motorSpeed$LAYOUT, motorSpeed$OFFSET, fieldValue);
+    }
+
+    private static final OfFloat drawSize$LAYOUT = (OfFloat)$LAYOUT.select(groupElement("drawSize"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * float drawSize
+     * }
+     */
+    public static final OfFloat drawSize$layout() {
+        return drawSize$LAYOUT;
+    }
+
+    private static final long drawSize$OFFSET = $LAYOUT.byteOffset(groupElement("drawSize"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * float drawSize
+     * }
+     */
+    public static final long drawSize$offset() {
+        return drawSize$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * float drawSize
+     * }
+     */
+    public static float drawSize(MemorySegment struct) {
+        return struct.get(drawSize$LAYOUT, drawSize$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * float drawSize
+     * }
+     */
+    public static void drawSize(MemorySegment struct, float fieldValue) {
+        struct.set(drawSize$LAYOUT, drawSize$OFFSET, fieldValue);
+    }
+
+    private static final OfBoolean collideConnected$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("collideConnected"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * _Bool collideConnected
+     * }
+     */
+    public static final OfBoolean collideConnected$layout() {
+        return collideConnected$LAYOUT;
+    }
+
+    private static final long collideConnected$OFFSET = $LAYOUT.byteOffset(groupElement("collideConnected"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * _Bool collideConnected
+     * }
+     */
+    public static final long collideConnected$offset() {
+        return collideConnected$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * _Bool collideConnected
+     * }
+     */
+    public static boolean collideConnected(MemorySegment struct) {
+        return struct.get(collideConnected$LAYOUT, collideConnected$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * _Bool collideConnected
+     * }
+     */
+    public static void collideConnected(MemorySegment struct, boolean fieldValue) {
+        struct.set(collideConnected$LAYOUT, collideConnected$OFFSET, fieldValue);
+    }
+
+    private static final AddressLayout userData$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("userData"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * void *userData
+     * }
+     */
+    public static final AddressLayout userData$layout() {
+        return userData$LAYOUT;
+    }
+
+    private static final long userData$OFFSET = $LAYOUT.byteOffset(groupElement("userData"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * void *userData
+     * }
+     */
+    public static final long userData$offset() {
+        return userData$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * void *userData
+     * }
+     */
+    public static MemorySegment userData(MemorySegment struct) {
+        return struct.get(userData$LAYOUT, userData$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * void *userData
+     * }
+     */
+    public static void userData(MemorySegment struct, MemorySegment fieldValue) {
+        struct.set(userData$LAYOUT, userData$OFFSET, fieldValue);
+    }
+
+    private static final OfInt internalValue$LAYOUT = (OfInt)$LAYOUT.select(groupElement("internalValue"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * int internalValue
+     * }
+     */
+    public static final OfInt internalValue$layout() {
+        return internalValue$LAYOUT;
+    }
+
+    private static final long internalValue$OFFSET = $LAYOUT.byteOffset(groupElement("internalValue"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * int internalValue
+     * }
+     */
+    public static final long internalValue$offset() {
+        return internalValue$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * int internalValue
+     * }
+     */
+    public static int internalValue(MemorySegment struct) {
+        return struct.get(internalValue$LAYOUT, internalValue$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * int internalValue
+     * }
+     */
+    public static void internalValue(MemorySegment struct, int fieldValue) {
+        struct.set(internalValue$LAYOUT, internalValue$OFFSET, fieldValue);
+    }
+
+    /**
+     * Obtains a slice of {@code arrayParam} which selects the array element at {@code index}.
+     * The returned segment has address {@code arrayParam.address() + index * layout().byteSize()}
+     */
+    public static MemorySegment asSlice(MemorySegment array, long index) {
+        return array.asSlice(layout().byteSize() * index);
+    }
+
+    /**
+     * The size (in bytes) of this struct
+     */
+    public static long sizeof() { return layout().byteSize(); }
+
+    /**
+     * Allocate a segment of size {@code layout().byteSize()} using {@code allocator}
+     */
+    public static MemorySegment allocate(SegmentAllocator allocator) {
+        return allocator.allocate(layout());
+    }
+
+    /**
+     * Allocate an array of size {@code elementCount} using {@code allocator}.
+     * The returned segment has size {@code elementCount * layout().byteSize()}.
+     */
+    public static MemorySegment allocateArray(long elementCount, SegmentAllocator allocator) {
+        return allocator.allocate(MemoryLayout.sequenceLayout(elementCount, layout()));
+    }
+
+    /**
+     * Reinterprets {@code addr} using target {@code arena} and {@code cleanupAction} (if any).
+     * The returned segment has size {@code layout().byteSize()}
+     */
+    public static MemorySegment reinterpret(MemorySegment addr, Arena arena, Consumer<MemorySegment> cleanup) {
+        return reinterpret(addr, 1, arena, cleanup);
+    }
+
+    /**
+     * Reinterprets {@code addr} using target {@code arena} and {@code cleanupAction} (if any).
+     * The returned segment has size {@code elementCount * layout().byteSize()}
+     */
+    public static MemorySegment reinterpret(MemorySegment addr, long elementCount, Arena arena, Consumer<MemorySegment> cleanup) {
+        return addr.reinterpret(layout().byteSize() * elementCount, arena, cleanup);
+    }
+}
 

@@ -2,96 +2,388 @@
 
 package org.box2d;
 
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.VarHandle;
-import java.nio.ByteOrder;
+import java.lang.invoke.*;
 import java.lang.foreign.*;
+import java.nio.ByteOrder;
+import java.util.*;
+import java.util.function.*;
+import java.util.stream.*;
+
 import static java.lang.foreign.ValueLayout.*;
+import static java.lang.foreign.MemoryLayout.PathElement.*;
+
 /**
  * {@snippet lang=c :
  * struct b2Polygon {
- *     struct b2Vec2 vertices[8];
- *     struct b2Vec2 normals[8];
- *     struct b2Vec2 centroid;
+ *     b2Vec2 vertices[8];
+ *     b2Vec2 normals[8];
+ *     b2Vec2 centroid;
  *     float radius;
  *     int count;
- * };
+ * }
  * }
  */
 public class b2Polygon {
 
-    public static MemoryLayout $LAYOUT() {
-        return constants$69.const$1;
+    b2Polygon() {
+        // Should not be called directly
     }
-    public static MemorySegment vertices$slice(MemorySegment seg) {
-        return seg.asSlice(0, 64);
-    }
-    public static MemorySegment normals$slice(MemorySegment seg) {
-        return seg.asSlice(64, 64);
-    }
-    public static MemorySegment centroid$slice(MemorySegment seg) {
-        return seg.asSlice(128, 8);
-    }
-    public static VarHandle radius$VH() {
-        return constants$69.const$2;
-    }
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * float radius;
-     * }
-     */
-    public static float radius$get(MemorySegment seg) {
-        return (float)constants$69.const$2.get(seg);
-    }
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * float radius;
-     * }
-     */
-    public static void radius$set(MemorySegment seg, float x) {
-        constants$69.const$2.set(seg, x);
-    }
-    public static float radius$get(MemorySegment seg, long index) {
-        return (float)constants$69.const$2.get(seg.asSlice(index*sizeof()));
-    }
-    public static void radius$set(MemorySegment seg, long index, float x) {
-        constants$69.const$2.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static VarHandle count$VH() {
-        return constants$69.const$3;
-    }
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * int count;
-     * }
-     */
-    public static int count$get(MemorySegment seg) {
-        return (int)constants$69.const$3.get(seg);
-    }
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * int count;
-     * }
-     */
-    public static void count$set(MemorySegment seg, int x) {
-        constants$69.const$3.set(seg, x);
-    }
-    public static int count$get(MemorySegment seg, long index) {
-        return (int)constants$69.const$3.get(seg.asSlice(index*sizeof()));
-    }
-    public static void count$set(MemorySegment seg, long index, int x) {
-        constants$69.const$3.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static long sizeof() { return $LAYOUT().byteSize(); }
-    public static MemorySegment allocate(SegmentAllocator allocator) { return allocator.allocate($LAYOUT()); }
-    public static MemorySegment allocateArray(long len, SegmentAllocator allocator) {
-        return allocator.allocate(MemoryLayout.sequenceLayout(len, $LAYOUT()));
-    }
-    public static MemorySegment ofAddress(MemorySegment addr, Arena arena) { return RuntimeHelper.asArray(addr, $LAYOUT(), 1, arena); }
-}
 
+    private static final GroupLayout $LAYOUT = MemoryLayout.structLayout(
+        MemoryLayout.sequenceLayout(8, b2Vec2.layout()).withName("vertices"),
+        MemoryLayout.sequenceLayout(8, b2Vec2.layout()).withName("normals"),
+        b2Vec2.layout().withName("centroid"),
+        Box2D.C_FLOAT.withName("radius"),
+        Box2D.C_INT.withName("count")
+    ).withName("b2Polygon");
+
+    /**
+     * The layout of this struct
+     */
+    public static final GroupLayout layout() {
+        return $LAYOUT;
+    }
+
+    private static final SequenceLayout vertices$LAYOUT = (SequenceLayout)$LAYOUT.select(groupElement("vertices"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * b2Vec2 vertices[8]
+     * }
+     */
+    public static final SequenceLayout vertices$layout() {
+        return vertices$LAYOUT;
+    }
+
+    private static final long vertices$OFFSET = $LAYOUT.byteOffset(groupElement("vertices"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * b2Vec2 vertices[8]
+     * }
+     */
+    public static final long vertices$offset() {
+        return vertices$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * b2Vec2 vertices[8]
+     * }
+     */
+    public static MemorySegment vertices(MemorySegment struct) {
+        return struct.asSlice(vertices$OFFSET, vertices$LAYOUT.byteSize());
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * b2Vec2 vertices[8]
+     * }
+     */
+    public static void vertices(MemorySegment struct, MemorySegment fieldValue) {
+        MemorySegment.copy(fieldValue, 0L, struct, vertices$OFFSET, vertices$LAYOUT.byteSize());
+    }
+
+    private static long[] vertices$DIMS = { 8 };
+
+    /**
+     * Dimensions for array field:
+     * {@snippet lang=c :
+     * b2Vec2 vertices[8]
+     * }
+     */
+    public static long[] vertices$dimensions() {
+        return vertices$DIMS;
+    }
+    private static final MethodHandle vertices$ELEM_HANDLE = vertices$LAYOUT.sliceHandle(sequenceElement());
+
+    /**
+     * Indexed getter for field:
+     * {@snippet lang=c :
+     * b2Vec2 vertices[8]
+     * }
+     */
+    public static MemorySegment vertices(MemorySegment struct, long index0) {
+        try {
+            return (MemorySegment)vertices$ELEM_HANDLE.invokeExact(struct, vertices$OFFSET, index0);
+        } catch (Error | RuntimeException ex) {
+            throw ex;
+        } catch (Throwable ex$) {
+            throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    /**
+     * Indexed setter for field:
+     * {@snippet lang=c :
+     * b2Vec2 vertices[8]
+     * }
+     */
+    public static void vertices(MemorySegment struct, long index0, MemorySegment fieldValue) {
+        MemorySegment.copy(fieldValue, 0L, vertices(struct, index0), 0L, b2Vec2.layout().byteSize());
+    }
+
+    private static final SequenceLayout normals$LAYOUT = (SequenceLayout)$LAYOUT.select(groupElement("normals"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * b2Vec2 normals[8]
+     * }
+     */
+    public static final SequenceLayout normals$layout() {
+        return normals$LAYOUT;
+    }
+
+    private static final long normals$OFFSET = $LAYOUT.byteOffset(groupElement("normals"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * b2Vec2 normals[8]
+     * }
+     */
+    public static final long normals$offset() {
+        return normals$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * b2Vec2 normals[8]
+     * }
+     */
+    public static MemorySegment normals(MemorySegment struct) {
+        return struct.asSlice(normals$OFFSET, normals$LAYOUT.byteSize());
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * b2Vec2 normals[8]
+     * }
+     */
+    public static void normals(MemorySegment struct, MemorySegment fieldValue) {
+        MemorySegment.copy(fieldValue, 0L, struct, normals$OFFSET, normals$LAYOUT.byteSize());
+    }
+
+    private static long[] normals$DIMS = { 8 };
+
+    /**
+     * Dimensions for array field:
+     * {@snippet lang=c :
+     * b2Vec2 normals[8]
+     * }
+     */
+    public static long[] normals$dimensions() {
+        return normals$DIMS;
+    }
+    private static final MethodHandle normals$ELEM_HANDLE = normals$LAYOUT.sliceHandle(sequenceElement());
+
+    /**
+     * Indexed getter for field:
+     * {@snippet lang=c :
+     * b2Vec2 normals[8]
+     * }
+     */
+    public static MemorySegment normals(MemorySegment struct, long index0) {
+        try {
+            return (MemorySegment)normals$ELEM_HANDLE.invokeExact(struct, normals$OFFSET, index0);
+        } catch (Error | RuntimeException ex) {
+            throw ex;
+        } catch (Throwable ex$) {
+            throw new AssertionError("should not reach here", ex$);
+        }
+    }
+
+    /**
+     * Indexed setter for field:
+     * {@snippet lang=c :
+     * b2Vec2 normals[8]
+     * }
+     */
+    public static void normals(MemorySegment struct, long index0, MemorySegment fieldValue) {
+        MemorySegment.copy(fieldValue, 0L, normals(struct, index0), 0L, b2Vec2.layout().byteSize());
+    }
+
+    private static final GroupLayout centroid$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("centroid"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * b2Vec2 centroid
+     * }
+     */
+    public static final GroupLayout centroid$layout() {
+        return centroid$LAYOUT;
+    }
+
+    private static final long centroid$OFFSET = $LAYOUT.byteOffset(groupElement("centroid"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * b2Vec2 centroid
+     * }
+     */
+    public static final long centroid$offset() {
+        return centroid$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * b2Vec2 centroid
+     * }
+     */
+    public static MemorySegment centroid(MemorySegment struct) {
+        return struct.asSlice(centroid$OFFSET, centroid$LAYOUT.byteSize());
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * b2Vec2 centroid
+     * }
+     */
+    public static void centroid(MemorySegment struct, MemorySegment fieldValue) {
+        MemorySegment.copy(fieldValue, 0L, struct, centroid$OFFSET, centroid$LAYOUT.byteSize());
+    }
+
+    private static final OfFloat radius$LAYOUT = (OfFloat)$LAYOUT.select(groupElement("radius"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * float radius
+     * }
+     */
+    public static final OfFloat radius$layout() {
+        return radius$LAYOUT;
+    }
+
+    private static final long radius$OFFSET = $LAYOUT.byteOffset(groupElement("radius"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * float radius
+     * }
+     */
+    public static final long radius$offset() {
+        return radius$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * float radius
+     * }
+     */
+    public static float radius(MemorySegment struct) {
+        return struct.get(radius$LAYOUT, radius$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * float radius
+     * }
+     */
+    public static void radius(MemorySegment struct, float fieldValue) {
+        struct.set(radius$LAYOUT, radius$OFFSET, fieldValue);
+    }
+
+    private static final OfInt count$LAYOUT = (OfInt)$LAYOUT.select(groupElement("count"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * int count
+     * }
+     */
+    public static final OfInt count$layout() {
+        return count$LAYOUT;
+    }
+
+    private static final long count$OFFSET = $LAYOUT.byteOffset(groupElement("count"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * int count
+     * }
+     */
+    public static final long count$offset() {
+        return count$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * int count
+     * }
+     */
+    public static int count(MemorySegment struct) {
+        return struct.get(count$LAYOUT, count$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * int count
+     * }
+     */
+    public static void count(MemorySegment struct, int fieldValue) {
+        struct.set(count$LAYOUT, count$OFFSET, fieldValue);
+    }
+
+    /**
+     * Obtains a slice of {@code arrayParam} which selects the array element at {@code index}.
+     * The returned segment has address {@code arrayParam.address() + index * layout().byteSize()}
+     */
+    public static MemorySegment asSlice(MemorySegment array, long index) {
+        return array.asSlice(layout().byteSize() * index);
+    }
+
+    /**
+     * The size (in bytes) of this struct
+     */
+    public static long sizeof() { return layout().byteSize(); }
+
+    /**
+     * Allocate a segment of size {@code layout().byteSize()} using {@code allocator}
+     */
+    public static MemorySegment allocate(SegmentAllocator allocator) {
+        return allocator.allocate(layout());
+    }
+
+    /**
+     * Allocate an array of size {@code elementCount} using {@code allocator}.
+     * The returned segment has size {@code elementCount * layout().byteSize()}.
+     */
+    public static MemorySegment allocateArray(long elementCount, SegmentAllocator allocator) {
+        return allocator.allocate(MemoryLayout.sequenceLayout(elementCount, layout()));
+    }
+
+    /**
+     * Reinterprets {@code addr} using target {@code arena} and {@code cleanupAction} (if any).
+     * The returned segment has size {@code layout().byteSize()}
+     */
+    public static MemorySegment reinterpret(MemorySegment addr, Arena arena, Consumer<MemorySegment> cleanup) {
+        return reinterpret(addr, 1, arena, cleanup);
+    }
+
+    /**
+     * Reinterprets {@code addr} using target {@code arena} and {@code cleanupAction} (if any).
+     * The returned segment has size {@code elementCount * layout().byteSize()}
+     */
+    public static MemorySegment reinterpret(MemorySegment addr, long elementCount, Arena arena, Consumer<MemorySegment> cleanup) {
+        return addr.reinterpret(layout().byteSize() * elementCount, arena, cleanup);
+    }
+}
 

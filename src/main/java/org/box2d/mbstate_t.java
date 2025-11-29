@@ -2,20 +2,25 @@
 
 package org.box2d;
 
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.VarHandle;
-import java.nio.ByteOrder;
+import java.lang.invoke.*;
 import java.lang.foreign.*;
+import java.nio.ByteOrder;
+import java.util.*;
+import java.util.function.*;
+import java.util.stream.*;
+
 import static java.lang.foreign.ValueLayout.*;
+import static java.lang.foreign.MemoryLayout.PathElement.*;
+
 /**
  * {@snippet lang=c :
- * typedef struct _Mbstatet mbstate_t;
+ * typedef _Mbstatet mbstate_t
  * }
  */
-public final class mbstate_t extends _Mbstatet {
+public class mbstate_t extends _Mbstatet {
 
-    // Suppresses default constructor, ensuring non-instantiability.
-    private mbstate_t() {}
+    mbstate_t() {
+        // Should not be called directly
+    }
 }
-
 

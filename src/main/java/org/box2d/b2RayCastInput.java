@@ -2,64 +2,218 @@
 
 package org.box2d;
 
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.VarHandle;
-import java.nio.ByteOrder;
+import java.lang.invoke.*;
 import java.lang.foreign.*;
+import java.nio.ByteOrder;
+import java.util.*;
+import java.util.function.*;
+import java.util.stream.*;
+
 import static java.lang.foreign.ValueLayout.*;
+import static java.lang.foreign.MemoryLayout.PathElement.*;
+
 /**
  * {@snippet lang=c :
  * struct b2RayCastInput {
- *     struct b2Vec2 origin;
- *     struct b2Vec2 translation;
+ *     b2Vec2 origin;
+ *     b2Vec2 translation;
  *     float maxFraction;
- * };
+ * }
  * }
  */
 public class b2RayCastInput {
 
-    public static MemoryLayout $LAYOUT() {
-        return constants$66.const$0;
+    b2RayCastInput() {
+        // Should not be called directly
     }
-    public static MemorySegment origin$slice(MemorySegment seg) {
-        return seg.asSlice(0, 8);
+
+    private static final GroupLayout $LAYOUT = MemoryLayout.structLayout(
+        b2Vec2.layout().withName("origin"),
+        b2Vec2.layout().withName("translation"),
+        Box2D.C_FLOAT.withName("maxFraction")
+    ).withName("b2RayCastInput");
+
+    /**
+     * The layout of this struct
+     */
+    public static final GroupLayout layout() {
+        return $LAYOUT;
     }
-    public static MemorySegment translation$slice(MemorySegment seg) {
-        return seg.asSlice(8, 8);
+
+    private static final GroupLayout origin$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("origin"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * b2Vec2 origin
+     * }
+     */
+    public static final GroupLayout origin$layout() {
+        return origin$LAYOUT;
     }
-    public static VarHandle maxFraction$VH() {
-        return constants$66.const$1;
+
+    private static final long origin$OFFSET = $LAYOUT.byteOffset(groupElement("origin"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * b2Vec2 origin
+     * }
+     */
+    public static final long origin$offset() {
+        return origin$OFFSET;
     }
+
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * float maxFraction;
+     * b2Vec2 origin
      * }
      */
-    public static float maxFraction$get(MemorySegment seg) {
-        return (float)constants$66.const$1.get(seg);
+    public static MemorySegment origin(MemorySegment struct) {
+        return struct.asSlice(origin$OFFSET, origin$LAYOUT.byteSize());
     }
+
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * float maxFraction;
+     * b2Vec2 origin
      * }
      */
-    public static void maxFraction$set(MemorySegment seg, float x) {
-        constants$66.const$1.set(seg, x);
+    public static void origin(MemorySegment struct, MemorySegment fieldValue) {
+        MemorySegment.copy(fieldValue, 0L, struct, origin$OFFSET, origin$LAYOUT.byteSize());
     }
-    public static float maxFraction$get(MemorySegment seg, long index) {
-        return (float)constants$66.const$1.get(seg.asSlice(index*sizeof()));
-    }
-    public static void maxFraction$set(MemorySegment seg, long index, float x) {
-        constants$66.const$1.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static long sizeof() { return $LAYOUT().byteSize(); }
-    public static MemorySegment allocate(SegmentAllocator allocator) { return allocator.allocate($LAYOUT()); }
-    public static MemorySegment allocateArray(long len, SegmentAllocator allocator) {
-        return allocator.allocate(MemoryLayout.sequenceLayout(len, $LAYOUT()));
-    }
-    public static MemorySegment ofAddress(MemorySegment addr, Arena arena) { return RuntimeHelper.asArray(addr, $LAYOUT(), 1, arena); }
-}
 
+    private static final GroupLayout translation$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("translation"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * b2Vec2 translation
+     * }
+     */
+    public static final GroupLayout translation$layout() {
+        return translation$LAYOUT;
+    }
+
+    private static final long translation$OFFSET = $LAYOUT.byteOffset(groupElement("translation"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * b2Vec2 translation
+     * }
+     */
+    public static final long translation$offset() {
+        return translation$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * b2Vec2 translation
+     * }
+     */
+    public static MemorySegment translation(MemorySegment struct) {
+        return struct.asSlice(translation$OFFSET, translation$LAYOUT.byteSize());
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * b2Vec2 translation
+     * }
+     */
+    public static void translation(MemorySegment struct, MemorySegment fieldValue) {
+        MemorySegment.copy(fieldValue, 0L, struct, translation$OFFSET, translation$LAYOUT.byteSize());
+    }
+
+    private static final OfFloat maxFraction$LAYOUT = (OfFloat)$LAYOUT.select(groupElement("maxFraction"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * float maxFraction
+     * }
+     */
+    public static final OfFloat maxFraction$layout() {
+        return maxFraction$LAYOUT;
+    }
+
+    private static final long maxFraction$OFFSET = $LAYOUT.byteOffset(groupElement("maxFraction"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * float maxFraction
+     * }
+     */
+    public static final long maxFraction$offset() {
+        return maxFraction$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * float maxFraction
+     * }
+     */
+    public static float maxFraction(MemorySegment struct) {
+        return struct.get(maxFraction$LAYOUT, maxFraction$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * float maxFraction
+     * }
+     */
+    public static void maxFraction(MemorySegment struct, float fieldValue) {
+        struct.set(maxFraction$LAYOUT, maxFraction$OFFSET, fieldValue);
+    }
+
+    /**
+     * Obtains a slice of {@code arrayParam} which selects the array element at {@code index}.
+     * The returned segment has address {@code arrayParam.address() + index * layout().byteSize()}
+     */
+    public static MemorySegment asSlice(MemorySegment array, long index) {
+        return array.asSlice(layout().byteSize() * index);
+    }
+
+    /**
+     * The size (in bytes) of this struct
+     */
+    public static long sizeof() { return layout().byteSize(); }
+
+    /**
+     * Allocate a segment of size {@code layout().byteSize()} using {@code allocator}
+     */
+    public static MemorySegment allocate(SegmentAllocator allocator) {
+        return allocator.allocate(layout());
+    }
+
+    /**
+     * Allocate an array of size {@code elementCount} using {@code allocator}.
+     * The returned segment has size {@code elementCount * layout().byteSize()}.
+     */
+    public static MemorySegment allocateArray(long elementCount, SegmentAllocator allocator) {
+        return allocator.allocate(MemoryLayout.sequenceLayout(elementCount, layout()));
+    }
+
+    /**
+     * Reinterprets {@code addr} using target {@code arena} and {@code cleanupAction} (if any).
+     * The returned segment has size {@code layout().byteSize()}
+     */
+    public static MemorySegment reinterpret(MemorySegment addr, Arena arena, Consumer<MemorySegment> cleanup) {
+        return reinterpret(addr, 1, arena, cleanup);
+    }
+
+    /**
+     * Reinterprets {@code addr} using target {@code arena} and {@code cleanupAction} (if any).
+     * The returned segment has size {@code elementCount * layout().byteSize()}
+     */
+    public static MemorySegment reinterpret(MemorySegment addr, long elementCount, Arena arena, Consumer<MemorySegment> cleanup) {
+        return addr.reinterpret(layout().byteSize() * elementCount, arena, cleanup);
+    }
+}
 

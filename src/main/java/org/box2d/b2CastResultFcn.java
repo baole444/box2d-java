@@ -2,32 +2,73 @@
 
 package org.box2d;
 
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.VarHandle;
-import java.nio.ByteOrder;
+import java.lang.invoke.*;
 import java.lang.foreign.*;
+import java.nio.ByteOrder;
+import java.util.*;
+import java.util.function.*;
+import java.util.stream.*;
+
 import static java.lang.foreign.ValueLayout.*;
+import static java.lang.foreign.MemoryLayout.PathElement.*;
+
 /**
  * {@snippet lang=c :
- * float (*b2CastResultFcn)(struct b2ShapeId shapeId,struct b2Vec2 point,struct b2Vec2 normal,float fraction,void* context);
+ * typedef float (b2CastResultFcn)(b2ShapeId, b2Vec2, b2Vec2, float, void *)
  * }
  */
-public interface b2CastResultFcn {
+public final class b2CastResultFcn {
 
-    float apply(java.lang.foreign.MemorySegment shapeId, java.lang.foreign.MemorySegment point, java.lang.foreign.MemorySegment normal, float fraction, java.lang.foreign.MemorySegment context);
-    static MemorySegment allocate(b2CastResultFcn fi, Arena scope) {
-        return RuntimeHelper.upcallStub(constants$148.const$5, fi, constants$148.const$4, scope);
+    private b2CastResultFcn() {
+        // Should not be called directly
     }
-    static b2CastResultFcn ofAddress(MemorySegment addr, Arena arena) {
-        MemorySegment symbol = addr.reinterpret(arena, null);
-        return (java.lang.foreign.MemorySegment _shapeId, java.lang.foreign.MemorySegment _point, java.lang.foreign.MemorySegment _normal, float _fraction, java.lang.foreign.MemorySegment _context) -> {
-            try {
-                return (float)constants$149.const$0.invokeExact(symbol, _shapeId, _point, _normal, _fraction, _context);
-            } catch (Throwable ex$) {
-                throw new AssertionError("should not reach here", ex$);
-            }
-        };
+
+    /**
+     * The function pointer signature, expressed as a functional interface
+     */
+    public interface Function {
+        float apply(MemorySegment shapeId, MemorySegment point, MemorySegment normal, float fraction, MemorySegment context);
+    }
+
+    private static final FunctionDescriptor $DESC = FunctionDescriptor.of(
+        Box2D.C_FLOAT,
+        b2ShapeId.layout(),
+        b2Vec2.layout(),
+        b2Vec2.layout(),
+        Box2D.C_FLOAT,
+        Box2D.C_POINTER
+    );
+
+    /**
+     * The descriptor of this function pointer
+     */
+    public static FunctionDescriptor descriptor() {
+        return $DESC;
+    }
+
+    private static final MethodHandle UP$MH = Box2D.upcallHandle(b2CastResultFcn.Function.class, "apply", $DESC);
+
+    /**
+     * Allocates a new upcall stub, whose implementation is defined by {@code fi}.
+     * The lifetime of the returned segment is managed by {@code arena}
+     */
+    public static MemorySegment allocate(b2CastResultFcn.Function fi, Arena arena) {
+        return Linker.nativeLinker().upcallStub(UP$MH.bindTo(fi), $DESC, arena);
+    }
+
+    private static final MethodHandle DOWN$MH = Linker.nativeLinker().downcallHandle($DESC);
+
+    /**
+     * Invoke the upcall stub {@code funcPtr}, with given parameters
+     */
+    public static float invoke(MemorySegment funcPtr, MemorySegment shapeId, MemorySegment point, MemorySegment normal, float fraction, MemorySegment context) {
+        try {
+            return (float) DOWN$MH.invokeExact(funcPtr, shapeId, point, normal, fraction, context);
+        } catch (Error | RuntimeException ex) {
+            throw ex;
+        } catch (Throwable ex$) {
+            throw new AssertionError("should not reach here", ex$);
+        }
     }
 }
-
 

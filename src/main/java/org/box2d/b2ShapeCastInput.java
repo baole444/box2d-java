@@ -2,92 +2,265 @@
 
 package org.box2d;
 
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.VarHandle;
-import java.nio.ByteOrder;
+import java.lang.invoke.*;
 import java.lang.foreign.*;
+import java.nio.ByteOrder;
+import java.util.*;
+import java.util.function.*;
+import java.util.stream.*;
+
 import static java.lang.foreign.ValueLayout.*;
+import static java.lang.foreign.MemoryLayout.PathElement.*;
+
 /**
  * {@snippet lang=c :
  * struct b2ShapeCastInput {
- *     struct b2ShapeProxy proxy;
- *     struct b2Vec2 translation;
+ *     b2ShapeProxy proxy;
+ *     b2Vec2 translation;
  *     float maxFraction;
  *     _Bool canEncroach;
- * };
+ * }
  * }
  */
 public class b2ShapeCastInput {
 
-    public static MemoryLayout $LAYOUT() {
-        return constants$66.const$5;
+    b2ShapeCastInput() {
+        // Should not be called directly
     }
-    public static MemorySegment proxy$slice(MemorySegment seg) {
-        return seg.asSlice(0, 72);
-    }
-    public static MemorySegment translation$slice(MemorySegment seg) {
-        return seg.asSlice(72, 8);
-    }
-    public static VarHandle maxFraction$VH() {
-        return constants$67.const$0;
-    }
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * float maxFraction;
-     * }
-     */
-    public static float maxFraction$get(MemorySegment seg) {
-        return (float)constants$67.const$0.get(seg);
-    }
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * float maxFraction;
-     * }
-     */
-    public static void maxFraction$set(MemorySegment seg, float x) {
-        constants$67.const$0.set(seg, x);
-    }
-    public static float maxFraction$get(MemorySegment seg, long index) {
-        return (float)constants$67.const$0.get(seg.asSlice(index*sizeof()));
-    }
-    public static void maxFraction$set(MemorySegment seg, long index, float x) {
-        constants$67.const$0.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static VarHandle canEncroach$VH() {
-        return constants$67.const$1;
-    }
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * _Bool canEncroach;
-     * }
-     */
-    public static boolean canEncroach$get(MemorySegment seg) {
-        return (boolean)constants$67.const$1.get(seg);
-    }
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * _Bool canEncroach;
-     * }
-     */
-    public static void canEncroach$set(MemorySegment seg, boolean x) {
-        constants$67.const$1.set(seg, x);
-    }
-    public static boolean canEncroach$get(MemorySegment seg, long index) {
-        return (boolean)constants$67.const$1.get(seg.asSlice(index*sizeof()));
-    }
-    public static void canEncroach$set(MemorySegment seg, long index, boolean x) {
-        constants$67.const$1.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static long sizeof() { return $LAYOUT().byteSize(); }
-    public static MemorySegment allocate(SegmentAllocator allocator) { return allocator.allocate($LAYOUT()); }
-    public static MemorySegment allocateArray(long len, SegmentAllocator allocator) {
-        return allocator.allocate(MemoryLayout.sequenceLayout(len, $LAYOUT()));
-    }
-    public static MemorySegment ofAddress(MemorySegment addr, Arena arena) { return RuntimeHelper.asArray(addr, $LAYOUT(), 1, arena); }
-}
 
+    private static final GroupLayout $LAYOUT = MemoryLayout.structLayout(
+        b2ShapeProxy.layout().withName("proxy"),
+        b2Vec2.layout().withName("translation"),
+        Box2D.C_FLOAT.withName("maxFraction"),
+        Box2D.C_BOOL.withName("canEncroach"),
+        MemoryLayout.paddingLayout(3)
+    ).withName("b2ShapeCastInput");
+
+    /**
+     * The layout of this struct
+     */
+    public static final GroupLayout layout() {
+        return $LAYOUT;
+    }
+
+    private static final GroupLayout proxy$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("proxy"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * b2ShapeProxy proxy
+     * }
+     */
+    public static final GroupLayout proxy$layout() {
+        return proxy$LAYOUT;
+    }
+
+    private static final long proxy$OFFSET = $LAYOUT.byteOffset(groupElement("proxy"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * b2ShapeProxy proxy
+     * }
+     */
+    public static final long proxy$offset() {
+        return proxy$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * b2ShapeProxy proxy
+     * }
+     */
+    public static MemorySegment proxy(MemorySegment struct) {
+        return struct.asSlice(proxy$OFFSET, proxy$LAYOUT.byteSize());
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * b2ShapeProxy proxy
+     * }
+     */
+    public static void proxy(MemorySegment struct, MemorySegment fieldValue) {
+        MemorySegment.copy(fieldValue, 0L, struct, proxy$OFFSET, proxy$LAYOUT.byteSize());
+    }
+
+    private static final GroupLayout translation$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("translation"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * b2Vec2 translation
+     * }
+     */
+    public static final GroupLayout translation$layout() {
+        return translation$LAYOUT;
+    }
+
+    private static final long translation$OFFSET = $LAYOUT.byteOffset(groupElement("translation"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * b2Vec2 translation
+     * }
+     */
+    public static final long translation$offset() {
+        return translation$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * b2Vec2 translation
+     * }
+     */
+    public static MemorySegment translation(MemorySegment struct) {
+        return struct.asSlice(translation$OFFSET, translation$LAYOUT.byteSize());
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * b2Vec2 translation
+     * }
+     */
+    public static void translation(MemorySegment struct, MemorySegment fieldValue) {
+        MemorySegment.copy(fieldValue, 0L, struct, translation$OFFSET, translation$LAYOUT.byteSize());
+    }
+
+    private static final OfFloat maxFraction$LAYOUT = (OfFloat)$LAYOUT.select(groupElement("maxFraction"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * float maxFraction
+     * }
+     */
+    public static final OfFloat maxFraction$layout() {
+        return maxFraction$LAYOUT;
+    }
+
+    private static final long maxFraction$OFFSET = $LAYOUT.byteOffset(groupElement("maxFraction"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * float maxFraction
+     * }
+     */
+    public static final long maxFraction$offset() {
+        return maxFraction$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * float maxFraction
+     * }
+     */
+    public static float maxFraction(MemorySegment struct) {
+        return struct.get(maxFraction$LAYOUT, maxFraction$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * float maxFraction
+     * }
+     */
+    public static void maxFraction(MemorySegment struct, float fieldValue) {
+        struct.set(maxFraction$LAYOUT, maxFraction$OFFSET, fieldValue);
+    }
+
+    private static final OfBoolean canEncroach$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("canEncroach"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * _Bool canEncroach
+     * }
+     */
+    public static final OfBoolean canEncroach$layout() {
+        return canEncroach$LAYOUT;
+    }
+
+    private static final long canEncroach$OFFSET = $LAYOUT.byteOffset(groupElement("canEncroach"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * _Bool canEncroach
+     * }
+     */
+    public static final long canEncroach$offset() {
+        return canEncroach$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * _Bool canEncroach
+     * }
+     */
+    public static boolean canEncroach(MemorySegment struct) {
+        return struct.get(canEncroach$LAYOUT, canEncroach$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * _Bool canEncroach
+     * }
+     */
+    public static void canEncroach(MemorySegment struct, boolean fieldValue) {
+        struct.set(canEncroach$LAYOUT, canEncroach$OFFSET, fieldValue);
+    }
+
+    /**
+     * Obtains a slice of {@code arrayParam} which selects the array element at {@code index}.
+     * The returned segment has address {@code arrayParam.address() + index * layout().byteSize()}
+     */
+    public static MemorySegment asSlice(MemorySegment array, long index) {
+        return array.asSlice(layout().byteSize() * index);
+    }
+
+    /**
+     * The size (in bytes) of this struct
+     */
+    public static long sizeof() { return layout().byteSize(); }
+
+    /**
+     * Allocate a segment of size {@code layout().byteSize()} using {@code allocator}
+     */
+    public static MemorySegment allocate(SegmentAllocator allocator) {
+        return allocator.allocate(layout());
+    }
+
+    /**
+     * Allocate an array of size {@code elementCount} using {@code allocator}.
+     * The returned segment has size {@code elementCount * layout().byteSize()}.
+     */
+    public static MemorySegment allocateArray(long elementCount, SegmentAllocator allocator) {
+        return allocator.allocate(MemoryLayout.sequenceLayout(elementCount, layout()));
+    }
+
+    /**
+     * Reinterprets {@code addr} using target {@code arena} and {@code cleanupAction} (if any).
+     * The returned segment has size {@code layout().byteSize()}
+     */
+    public static MemorySegment reinterpret(MemorySegment addr, Arena arena, Consumer<MemorySegment> cleanup) {
+        return reinterpret(addr, 1, arena, cleanup);
+    }
+
+    /**
+     * Reinterprets {@code addr} using target {@code arena} and {@code cleanupAction} (if any).
+     * The returned segment has size {@code elementCount * layout().byteSize()}
+     */
+    public static MemorySegment reinterpret(MemorySegment addr, long elementCount, Arena arena, Consumer<MemorySegment> cleanup) {
+        return addr.reinterpret(layout().byteSize() * elementCount, arena, cleanup);
+    }
+}
 

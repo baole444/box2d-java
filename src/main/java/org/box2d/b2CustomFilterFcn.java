@@ -2,32 +2,71 @@
 
 package org.box2d;
 
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.VarHandle;
-import java.nio.ByteOrder;
+import java.lang.invoke.*;
 import java.lang.foreign.*;
+import java.nio.ByteOrder;
+import java.util.*;
+import java.util.function.*;
+import java.util.stream.*;
+
 import static java.lang.foreign.ValueLayout.*;
+import static java.lang.foreign.MemoryLayout.PathElement.*;
+
 /**
  * {@snippet lang=c :
- * _Bool (*b2CustomFilterFcn)(struct b2ShapeId shapeIdA,struct b2ShapeId shapeIdB,void* context);
+ * typedef _Bool (b2CustomFilterFcn)(b2ShapeId, b2ShapeId, void *)
  * }
  */
-public interface b2CustomFilterFcn {
+public final class b2CustomFilterFcn {
 
-    boolean apply(java.lang.foreign.MemorySegment shapeIdA, java.lang.foreign.MemorySegment shapeIdB, java.lang.foreign.MemorySegment context);
-    static MemorySegment allocate(b2CustomFilterFcn fi, Arena scope) {
-        return RuntimeHelper.upcallStub(constants$147.const$2, fi, constants$147.const$1, scope);
+    private b2CustomFilterFcn() {
+        // Should not be called directly
     }
-    static b2CustomFilterFcn ofAddress(MemorySegment addr, Arena arena) {
-        MemorySegment symbol = addr.reinterpret(arena, null);
-        return (java.lang.foreign.MemorySegment _shapeIdA, java.lang.foreign.MemorySegment _shapeIdB, java.lang.foreign.MemorySegment _context) -> {
-            try {
-                return (boolean)constants$147.const$3.invokeExact(symbol, _shapeIdA, _shapeIdB, _context);
-            } catch (Throwable ex$) {
-                throw new AssertionError("should not reach here", ex$);
-            }
-        };
+
+    /**
+     * The function pointer signature, expressed as a functional interface
+     */
+    public interface Function {
+        boolean apply(MemorySegment shapeIdA, MemorySegment shapeIdB, MemorySegment context);
+    }
+
+    private static final FunctionDescriptor $DESC = FunctionDescriptor.of(
+        Box2D.C_BOOL,
+        b2ShapeId.layout(),
+        b2ShapeId.layout(),
+        Box2D.C_POINTER
+    );
+
+    /**
+     * The descriptor of this function pointer
+     */
+    public static FunctionDescriptor descriptor() {
+        return $DESC;
+    }
+
+    private static final MethodHandle UP$MH = Box2D.upcallHandle(b2CustomFilterFcn.Function.class, "apply", $DESC);
+
+    /**
+     * Allocates a new upcall stub, whose implementation is defined by {@code fi}.
+     * The lifetime of the returned segment is managed by {@code arena}
+     */
+    public static MemorySegment allocate(b2CustomFilterFcn.Function fi, Arena arena) {
+        return Linker.nativeLinker().upcallStub(UP$MH.bindTo(fi), $DESC, arena);
+    }
+
+    private static final MethodHandle DOWN$MH = Linker.nativeLinker().downcallHandle($DESC);
+
+    /**
+     * Invoke the upcall stub {@code funcPtr}, with given parameters
+     */
+    public static boolean invoke(MemorySegment funcPtr, MemorySegment shapeIdA, MemorySegment shapeIdB, MemorySegment context) {
+        try {
+            return (boolean) DOWN$MH.invokeExact(funcPtr, shapeIdA, shapeIdB, context);
+        } catch (Error | RuntimeException ex) {
+            throw ex;
+        } catch (Throwable ex$) {
+            throw new AssertionError("should not reach here", ex$);
+        }
     }
 }
-
 

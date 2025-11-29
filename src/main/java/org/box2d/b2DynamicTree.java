@@ -2,336 +2,588 @@
 
 package org.box2d;
 
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.VarHandle;
-import java.nio.ByteOrder;
+import java.lang.invoke.*;
 import java.lang.foreign.*;
+import java.nio.ByteOrder;
+import java.util.*;
+import java.util.function.*;
+import java.util.stream.*;
+
 import static java.lang.foreign.ValueLayout.*;
+import static java.lang.foreign.MemoryLayout.PathElement.*;
+
 /**
  * {@snippet lang=c :
  * struct b2DynamicTree {
- *     struct b2TreeNode* nodes;
+ *     struct b2TreeNode *nodes;
  *     int root;
  *     int nodeCount;
  *     int nodeCapacity;
  *     int freeList;
  *     int proxyCount;
- *     int* leafIndices;
- *     struct b2AABB* leafBoxes;
- *     struct b2Vec2* leafCenters;
- *     int* binIndices;
+ *     int *leafIndices;
+ *     b2AABB *leafBoxes;
+ *     b2Vec2 *leafCenters;
+ *     int *binIndices;
  *     int rebuildCapacity;
- * };
+ * }
  * }
  */
 public class b2DynamicTree {
 
-    public static MemoryLayout $LAYOUT() {
-        return constants$88.const$0;
+    b2DynamicTree() {
+        // Should not be called directly
     }
-    public static VarHandle nodes$VH() {
-        return constants$88.const$1;
-    }
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * struct b2TreeNode* nodes;
-     * }
-     */
-    public static MemorySegment nodes$get(MemorySegment seg) {
-        return (java.lang.foreign.MemorySegment)constants$88.const$1.get(seg);
-    }
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * struct b2TreeNode* nodes;
-     * }
-     */
-    public static void nodes$set(MemorySegment seg, MemorySegment x) {
-        constants$88.const$1.set(seg, x);
-    }
-    public static MemorySegment nodes$get(MemorySegment seg, long index) {
-        return (java.lang.foreign.MemorySegment)constants$88.const$1.get(seg.asSlice(index*sizeof()));
-    }
-    public static void nodes$set(MemorySegment seg, long index, MemorySegment x) {
-        constants$88.const$1.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static VarHandle root$VH() {
-        return constants$88.const$2;
-    }
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * int root;
-     * }
-     */
-    public static int root$get(MemorySegment seg) {
-        return (int)constants$88.const$2.get(seg);
-    }
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * int root;
-     * }
-     */
-    public static void root$set(MemorySegment seg, int x) {
-        constants$88.const$2.set(seg, x);
-    }
-    public static int root$get(MemorySegment seg, long index) {
-        return (int)constants$88.const$2.get(seg.asSlice(index*sizeof()));
-    }
-    public static void root$set(MemorySegment seg, long index, int x) {
-        constants$88.const$2.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static VarHandle nodeCount$VH() {
-        return constants$88.const$3;
-    }
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * int nodeCount;
-     * }
-     */
-    public static int nodeCount$get(MemorySegment seg) {
-        return (int)constants$88.const$3.get(seg);
-    }
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * int nodeCount;
-     * }
-     */
-    public static void nodeCount$set(MemorySegment seg, int x) {
-        constants$88.const$3.set(seg, x);
-    }
-    public static int nodeCount$get(MemorySegment seg, long index) {
-        return (int)constants$88.const$3.get(seg.asSlice(index*sizeof()));
-    }
-    public static void nodeCount$set(MemorySegment seg, long index, int x) {
-        constants$88.const$3.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static VarHandle nodeCapacity$VH() {
-        return constants$88.const$4;
-    }
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * int nodeCapacity;
-     * }
-     */
-    public static int nodeCapacity$get(MemorySegment seg) {
-        return (int)constants$88.const$4.get(seg);
-    }
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * int nodeCapacity;
-     * }
-     */
-    public static void nodeCapacity$set(MemorySegment seg, int x) {
-        constants$88.const$4.set(seg, x);
-    }
-    public static int nodeCapacity$get(MemorySegment seg, long index) {
-        return (int)constants$88.const$4.get(seg.asSlice(index*sizeof()));
-    }
-    public static void nodeCapacity$set(MemorySegment seg, long index, int x) {
-        constants$88.const$4.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static VarHandle freeList$VH() {
-        return constants$88.const$5;
-    }
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * int freeList;
-     * }
-     */
-    public static int freeList$get(MemorySegment seg) {
-        return (int)constants$88.const$5.get(seg);
-    }
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * int freeList;
-     * }
-     */
-    public static void freeList$set(MemorySegment seg, int x) {
-        constants$88.const$5.set(seg, x);
-    }
-    public static int freeList$get(MemorySegment seg, long index) {
-        return (int)constants$88.const$5.get(seg.asSlice(index*sizeof()));
-    }
-    public static void freeList$set(MemorySegment seg, long index, int x) {
-        constants$88.const$5.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static VarHandle proxyCount$VH() {
-        return constants$89.const$0;
-    }
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * int proxyCount;
-     * }
-     */
-    public static int proxyCount$get(MemorySegment seg) {
-        return (int)constants$89.const$0.get(seg);
-    }
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * int proxyCount;
-     * }
-     */
-    public static void proxyCount$set(MemorySegment seg, int x) {
-        constants$89.const$0.set(seg, x);
-    }
-    public static int proxyCount$get(MemorySegment seg, long index) {
-        return (int)constants$89.const$0.get(seg.asSlice(index*sizeof()));
-    }
-    public static void proxyCount$set(MemorySegment seg, long index, int x) {
-        constants$89.const$0.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static VarHandle leafIndices$VH() {
-        return constants$89.const$1;
-    }
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * int* leafIndices;
-     * }
-     */
-    public static MemorySegment leafIndices$get(MemorySegment seg) {
-        return (java.lang.foreign.MemorySegment)constants$89.const$1.get(seg);
-    }
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * int* leafIndices;
-     * }
-     */
-    public static void leafIndices$set(MemorySegment seg, MemorySegment x) {
-        constants$89.const$1.set(seg, x);
-    }
-    public static MemorySegment leafIndices$get(MemorySegment seg, long index) {
-        return (java.lang.foreign.MemorySegment)constants$89.const$1.get(seg.asSlice(index*sizeof()));
-    }
-    public static void leafIndices$set(MemorySegment seg, long index, MemorySegment x) {
-        constants$89.const$1.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static VarHandle leafBoxes$VH() {
-        return constants$89.const$2;
-    }
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * struct b2AABB* leafBoxes;
-     * }
-     */
-    public static MemorySegment leafBoxes$get(MemorySegment seg) {
-        return (java.lang.foreign.MemorySegment)constants$89.const$2.get(seg);
-    }
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * struct b2AABB* leafBoxes;
-     * }
-     */
-    public static void leafBoxes$set(MemorySegment seg, MemorySegment x) {
-        constants$89.const$2.set(seg, x);
-    }
-    public static MemorySegment leafBoxes$get(MemorySegment seg, long index) {
-        return (java.lang.foreign.MemorySegment)constants$89.const$2.get(seg.asSlice(index*sizeof()));
-    }
-    public static void leafBoxes$set(MemorySegment seg, long index, MemorySegment x) {
-        constants$89.const$2.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static VarHandle leafCenters$VH() {
-        return constants$89.const$3;
-    }
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * struct b2Vec2* leafCenters;
-     * }
-     */
-    public static MemorySegment leafCenters$get(MemorySegment seg) {
-        return (java.lang.foreign.MemorySegment)constants$89.const$3.get(seg);
-    }
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * struct b2Vec2* leafCenters;
-     * }
-     */
-    public static void leafCenters$set(MemorySegment seg, MemorySegment x) {
-        constants$89.const$3.set(seg, x);
-    }
-    public static MemorySegment leafCenters$get(MemorySegment seg, long index) {
-        return (java.lang.foreign.MemorySegment)constants$89.const$3.get(seg.asSlice(index*sizeof()));
-    }
-    public static void leafCenters$set(MemorySegment seg, long index, MemorySegment x) {
-        constants$89.const$3.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static VarHandle binIndices$VH() {
-        return constants$89.const$4;
-    }
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * int* binIndices;
-     * }
-     */
-    public static MemorySegment binIndices$get(MemorySegment seg) {
-        return (java.lang.foreign.MemorySegment)constants$89.const$4.get(seg);
-    }
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * int* binIndices;
-     * }
-     */
-    public static void binIndices$set(MemorySegment seg, MemorySegment x) {
-        constants$89.const$4.set(seg, x);
-    }
-    public static MemorySegment binIndices$get(MemorySegment seg, long index) {
-        return (java.lang.foreign.MemorySegment)constants$89.const$4.get(seg.asSlice(index*sizeof()));
-    }
-    public static void binIndices$set(MemorySegment seg, long index, MemorySegment x) {
-        constants$89.const$4.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static VarHandle rebuildCapacity$VH() {
-        return constants$89.const$5;
-    }
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * int rebuildCapacity;
-     * }
-     */
-    public static int rebuildCapacity$get(MemorySegment seg) {
-        return (int)constants$89.const$5.get(seg);
-    }
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * int rebuildCapacity;
-     * }
-     */
-    public static void rebuildCapacity$set(MemorySegment seg, int x) {
-        constants$89.const$5.set(seg, x);
-    }
-    public static int rebuildCapacity$get(MemorySegment seg, long index) {
-        return (int)constants$89.const$5.get(seg.asSlice(index*sizeof()));
-    }
-    public static void rebuildCapacity$set(MemorySegment seg, long index, int x) {
-        constants$89.const$5.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static long sizeof() { return $LAYOUT().byteSize(); }
-    public static MemorySegment allocate(SegmentAllocator allocator) { return allocator.allocate($LAYOUT()); }
-    public static MemorySegment allocateArray(long len, SegmentAllocator allocator) {
-        return allocator.allocate(MemoryLayout.sequenceLayout(len, $LAYOUT()));
-    }
-    public static MemorySegment ofAddress(MemorySegment addr, Arena arena) { return RuntimeHelper.asArray(addr, $LAYOUT(), 1, arena); }
-}
 
+    private static final GroupLayout $LAYOUT = MemoryLayout.structLayout(
+        Box2D.C_POINTER.withName("nodes"),
+        Box2D.C_INT.withName("root"),
+        Box2D.C_INT.withName("nodeCount"),
+        Box2D.C_INT.withName("nodeCapacity"),
+        Box2D.C_INT.withName("freeList"),
+        Box2D.C_INT.withName("proxyCount"),
+        MemoryLayout.paddingLayout(4),
+        Box2D.C_POINTER.withName("leafIndices"),
+        Box2D.C_POINTER.withName("leafBoxes"),
+        Box2D.C_POINTER.withName("leafCenters"),
+        Box2D.C_POINTER.withName("binIndices"),
+        Box2D.C_INT.withName("rebuildCapacity"),
+        MemoryLayout.paddingLayout(4)
+    ).withName("b2DynamicTree");
+
+    /**
+     * The layout of this struct
+     */
+    public static final GroupLayout layout() {
+        return $LAYOUT;
+    }
+
+    private static final AddressLayout nodes$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("nodes"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * struct b2TreeNode *nodes
+     * }
+     */
+    public static final AddressLayout nodes$layout() {
+        return nodes$LAYOUT;
+    }
+
+    private static final long nodes$OFFSET = $LAYOUT.byteOffset(groupElement("nodes"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * struct b2TreeNode *nodes
+     * }
+     */
+    public static final long nodes$offset() {
+        return nodes$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * struct b2TreeNode *nodes
+     * }
+     */
+    public static MemorySegment nodes(MemorySegment struct) {
+        return struct.get(nodes$LAYOUT, nodes$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * struct b2TreeNode *nodes
+     * }
+     */
+    public static void nodes(MemorySegment struct, MemorySegment fieldValue) {
+        struct.set(nodes$LAYOUT, nodes$OFFSET, fieldValue);
+    }
+
+    private static final OfInt root$LAYOUT = (OfInt)$LAYOUT.select(groupElement("root"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * int root
+     * }
+     */
+    public static final OfInt root$layout() {
+        return root$LAYOUT;
+    }
+
+    private static final long root$OFFSET = $LAYOUT.byteOffset(groupElement("root"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * int root
+     * }
+     */
+    public static final long root$offset() {
+        return root$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * int root
+     * }
+     */
+    public static int root(MemorySegment struct) {
+        return struct.get(root$LAYOUT, root$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * int root
+     * }
+     */
+    public static void root(MemorySegment struct, int fieldValue) {
+        struct.set(root$LAYOUT, root$OFFSET, fieldValue);
+    }
+
+    private static final OfInt nodeCount$LAYOUT = (OfInt)$LAYOUT.select(groupElement("nodeCount"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * int nodeCount
+     * }
+     */
+    public static final OfInt nodeCount$layout() {
+        return nodeCount$LAYOUT;
+    }
+
+    private static final long nodeCount$OFFSET = $LAYOUT.byteOffset(groupElement("nodeCount"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * int nodeCount
+     * }
+     */
+    public static final long nodeCount$offset() {
+        return nodeCount$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * int nodeCount
+     * }
+     */
+    public static int nodeCount(MemorySegment struct) {
+        return struct.get(nodeCount$LAYOUT, nodeCount$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * int nodeCount
+     * }
+     */
+    public static void nodeCount(MemorySegment struct, int fieldValue) {
+        struct.set(nodeCount$LAYOUT, nodeCount$OFFSET, fieldValue);
+    }
+
+    private static final OfInt nodeCapacity$LAYOUT = (OfInt)$LAYOUT.select(groupElement("nodeCapacity"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * int nodeCapacity
+     * }
+     */
+    public static final OfInt nodeCapacity$layout() {
+        return nodeCapacity$LAYOUT;
+    }
+
+    private static final long nodeCapacity$OFFSET = $LAYOUT.byteOffset(groupElement("nodeCapacity"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * int nodeCapacity
+     * }
+     */
+    public static final long nodeCapacity$offset() {
+        return nodeCapacity$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * int nodeCapacity
+     * }
+     */
+    public static int nodeCapacity(MemorySegment struct) {
+        return struct.get(nodeCapacity$LAYOUT, nodeCapacity$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * int nodeCapacity
+     * }
+     */
+    public static void nodeCapacity(MemorySegment struct, int fieldValue) {
+        struct.set(nodeCapacity$LAYOUT, nodeCapacity$OFFSET, fieldValue);
+    }
+
+    private static final OfInt freeList$LAYOUT = (OfInt)$LAYOUT.select(groupElement("freeList"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * int freeList
+     * }
+     */
+    public static final OfInt freeList$layout() {
+        return freeList$LAYOUT;
+    }
+
+    private static final long freeList$OFFSET = $LAYOUT.byteOffset(groupElement("freeList"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * int freeList
+     * }
+     */
+    public static final long freeList$offset() {
+        return freeList$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * int freeList
+     * }
+     */
+    public static int freeList(MemorySegment struct) {
+        return struct.get(freeList$LAYOUT, freeList$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * int freeList
+     * }
+     */
+    public static void freeList(MemorySegment struct, int fieldValue) {
+        struct.set(freeList$LAYOUT, freeList$OFFSET, fieldValue);
+    }
+
+    private static final OfInt proxyCount$LAYOUT = (OfInt)$LAYOUT.select(groupElement("proxyCount"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * int proxyCount
+     * }
+     */
+    public static final OfInt proxyCount$layout() {
+        return proxyCount$LAYOUT;
+    }
+
+    private static final long proxyCount$OFFSET = $LAYOUT.byteOffset(groupElement("proxyCount"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * int proxyCount
+     * }
+     */
+    public static final long proxyCount$offset() {
+        return proxyCount$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * int proxyCount
+     * }
+     */
+    public static int proxyCount(MemorySegment struct) {
+        return struct.get(proxyCount$LAYOUT, proxyCount$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * int proxyCount
+     * }
+     */
+    public static void proxyCount(MemorySegment struct, int fieldValue) {
+        struct.set(proxyCount$LAYOUT, proxyCount$OFFSET, fieldValue);
+    }
+
+    private static final AddressLayout leafIndices$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("leafIndices"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * int *leafIndices
+     * }
+     */
+    public static final AddressLayout leafIndices$layout() {
+        return leafIndices$LAYOUT;
+    }
+
+    private static final long leafIndices$OFFSET = $LAYOUT.byteOffset(groupElement("leafIndices"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * int *leafIndices
+     * }
+     */
+    public static final long leafIndices$offset() {
+        return leafIndices$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * int *leafIndices
+     * }
+     */
+    public static MemorySegment leafIndices(MemorySegment struct) {
+        return struct.get(leafIndices$LAYOUT, leafIndices$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * int *leafIndices
+     * }
+     */
+    public static void leafIndices(MemorySegment struct, MemorySegment fieldValue) {
+        struct.set(leafIndices$LAYOUT, leafIndices$OFFSET, fieldValue);
+    }
+
+    private static final AddressLayout leafBoxes$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("leafBoxes"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * b2AABB *leafBoxes
+     * }
+     */
+    public static final AddressLayout leafBoxes$layout() {
+        return leafBoxes$LAYOUT;
+    }
+
+    private static final long leafBoxes$OFFSET = $LAYOUT.byteOffset(groupElement("leafBoxes"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * b2AABB *leafBoxes
+     * }
+     */
+    public static final long leafBoxes$offset() {
+        return leafBoxes$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * b2AABB *leafBoxes
+     * }
+     */
+    public static MemorySegment leafBoxes(MemorySegment struct) {
+        return struct.get(leafBoxes$LAYOUT, leafBoxes$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * b2AABB *leafBoxes
+     * }
+     */
+    public static void leafBoxes(MemorySegment struct, MemorySegment fieldValue) {
+        struct.set(leafBoxes$LAYOUT, leafBoxes$OFFSET, fieldValue);
+    }
+
+    private static final AddressLayout leafCenters$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("leafCenters"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * b2Vec2 *leafCenters
+     * }
+     */
+    public static final AddressLayout leafCenters$layout() {
+        return leafCenters$LAYOUT;
+    }
+
+    private static final long leafCenters$OFFSET = $LAYOUT.byteOffset(groupElement("leafCenters"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * b2Vec2 *leafCenters
+     * }
+     */
+    public static final long leafCenters$offset() {
+        return leafCenters$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * b2Vec2 *leafCenters
+     * }
+     */
+    public static MemorySegment leafCenters(MemorySegment struct) {
+        return struct.get(leafCenters$LAYOUT, leafCenters$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * b2Vec2 *leafCenters
+     * }
+     */
+    public static void leafCenters(MemorySegment struct, MemorySegment fieldValue) {
+        struct.set(leafCenters$LAYOUT, leafCenters$OFFSET, fieldValue);
+    }
+
+    private static final AddressLayout binIndices$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("binIndices"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * int *binIndices
+     * }
+     */
+    public static final AddressLayout binIndices$layout() {
+        return binIndices$LAYOUT;
+    }
+
+    private static final long binIndices$OFFSET = $LAYOUT.byteOffset(groupElement("binIndices"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * int *binIndices
+     * }
+     */
+    public static final long binIndices$offset() {
+        return binIndices$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * int *binIndices
+     * }
+     */
+    public static MemorySegment binIndices(MemorySegment struct) {
+        return struct.get(binIndices$LAYOUT, binIndices$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * int *binIndices
+     * }
+     */
+    public static void binIndices(MemorySegment struct, MemorySegment fieldValue) {
+        struct.set(binIndices$LAYOUT, binIndices$OFFSET, fieldValue);
+    }
+
+    private static final OfInt rebuildCapacity$LAYOUT = (OfInt)$LAYOUT.select(groupElement("rebuildCapacity"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * int rebuildCapacity
+     * }
+     */
+    public static final OfInt rebuildCapacity$layout() {
+        return rebuildCapacity$LAYOUT;
+    }
+
+    private static final long rebuildCapacity$OFFSET = $LAYOUT.byteOffset(groupElement("rebuildCapacity"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * int rebuildCapacity
+     * }
+     */
+    public static final long rebuildCapacity$offset() {
+        return rebuildCapacity$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * int rebuildCapacity
+     * }
+     */
+    public static int rebuildCapacity(MemorySegment struct) {
+        return struct.get(rebuildCapacity$LAYOUT, rebuildCapacity$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * int rebuildCapacity
+     * }
+     */
+    public static void rebuildCapacity(MemorySegment struct, int fieldValue) {
+        struct.set(rebuildCapacity$LAYOUT, rebuildCapacity$OFFSET, fieldValue);
+    }
+
+    /**
+     * Obtains a slice of {@code arrayParam} which selects the array element at {@code index}.
+     * The returned segment has address {@code arrayParam.address() + index * layout().byteSize()}
+     */
+    public static MemorySegment asSlice(MemorySegment array, long index) {
+        return array.asSlice(layout().byteSize() * index);
+    }
+
+    /**
+     * The size (in bytes) of this struct
+     */
+    public static long sizeof() { return layout().byteSize(); }
+
+    /**
+     * Allocate a segment of size {@code layout().byteSize()} using {@code allocator}
+     */
+    public static MemorySegment allocate(SegmentAllocator allocator) {
+        return allocator.allocate(layout());
+    }
+
+    /**
+     * Allocate an array of size {@code elementCount} using {@code allocator}.
+     * The returned segment has size {@code elementCount * layout().byteSize()}.
+     */
+    public static MemorySegment allocateArray(long elementCount, SegmentAllocator allocator) {
+        return allocator.allocate(MemoryLayout.sequenceLayout(elementCount, layout()));
+    }
+
+    /**
+     * Reinterprets {@code addr} using target {@code arena} and {@code cleanupAction} (if any).
+     * The returned segment has size {@code layout().byteSize()}
+     */
+    public static MemorySegment reinterpret(MemorySegment addr, Arena arena, Consumer<MemorySegment> cleanup) {
+        return reinterpret(addr, 1, arena, cleanup);
+    }
+
+    /**
+     * Reinterprets {@code addr} using target {@code arena} and {@code cleanupAction} (if any).
+     * The returned segment has size {@code elementCount * layout().byteSize()}
+     */
+    public static MemorySegment reinterpret(MemorySegment addr, long elementCount, Arena arena, Consumer<MemorySegment> cleanup) {
+        return addr.reinterpret(layout().byteSize() * elementCount, arena, cleanup);
+    }
+}
 

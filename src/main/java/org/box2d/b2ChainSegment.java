@@ -2,68 +2,264 @@
 
 package org.box2d;
 
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.VarHandle;
-import java.nio.ByteOrder;
+import java.lang.invoke.*;
 import java.lang.foreign.*;
+import java.nio.ByteOrder;
+import java.util.*;
+import java.util.function.*;
+import java.util.stream.*;
+
 import static java.lang.foreign.ValueLayout.*;
+import static java.lang.foreign.MemoryLayout.PathElement.*;
+
 /**
  * {@snippet lang=c :
  * struct b2ChainSegment {
- *     struct b2Vec2 ghost1;
- *     struct b2Segment segment;
- *     struct b2Vec2 ghost2;
+ *     b2Vec2 ghost1;
+ *     b2Segment segment;
+ *     b2Vec2 ghost2;
  *     int chainId;
- * };
+ * }
  * }
  */
 public class b2ChainSegment {
 
-    public static MemoryLayout $LAYOUT() {
-        return constants$69.const$5;
+    b2ChainSegment() {
+        // Should not be called directly
     }
-    public static MemorySegment ghost1$slice(MemorySegment seg) {
-        return seg.asSlice(0, 8);
+
+    private static final GroupLayout $LAYOUT = MemoryLayout.structLayout(
+        b2Vec2.layout().withName("ghost1"),
+        b2Segment.layout().withName("segment"),
+        b2Vec2.layout().withName("ghost2"),
+        Box2D.C_INT.withName("chainId")
+    ).withName("b2ChainSegment");
+
+    /**
+     * The layout of this struct
+     */
+    public static final GroupLayout layout() {
+        return $LAYOUT;
     }
-    public static MemorySegment segment$slice(MemorySegment seg) {
-        return seg.asSlice(8, 16);
+
+    private static final GroupLayout ghost1$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("ghost1"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * b2Vec2 ghost1
+     * }
+     */
+    public static final GroupLayout ghost1$layout() {
+        return ghost1$LAYOUT;
     }
-    public static MemorySegment ghost2$slice(MemorySegment seg) {
-        return seg.asSlice(24, 8);
+
+    private static final long ghost1$OFFSET = $LAYOUT.byteOffset(groupElement("ghost1"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * b2Vec2 ghost1
+     * }
+     */
+    public static final long ghost1$offset() {
+        return ghost1$OFFSET;
     }
-    public static VarHandle chainId$VH() {
-        return constants$70.const$0;
-    }
+
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * int chainId;
+     * b2Vec2 ghost1
      * }
      */
-    public static int chainId$get(MemorySegment seg) {
-        return (int)constants$70.const$0.get(seg);
+    public static MemorySegment ghost1(MemorySegment struct) {
+        return struct.asSlice(ghost1$OFFSET, ghost1$LAYOUT.byteSize());
     }
+
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * int chainId;
+     * b2Vec2 ghost1
      * }
      */
-    public static void chainId$set(MemorySegment seg, int x) {
-        constants$70.const$0.set(seg, x);
+    public static void ghost1(MemorySegment struct, MemorySegment fieldValue) {
+        MemorySegment.copy(fieldValue, 0L, struct, ghost1$OFFSET, ghost1$LAYOUT.byteSize());
     }
-    public static int chainId$get(MemorySegment seg, long index) {
-        return (int)constants$70.const$0.get(seg.asSlice(index*sizeof()));
-    }
-    public static void chainId$set(MemorySegment seg, long index, int x) {
-        constants$70.const$0.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static long sizeof() { return $LAYOUT().byteSize(); }
-    public static MemorySegment allocate(SegmentAllocator allocator) { return allocator.allocate($LAYOUT()); }
-    public static MemorySegment allocateArray(long len, SegmentAllocator allocator) {
-        return allocator.allocate(MemoryLayout.sequenceLayout(len, $LAYOUT()));
-    }
-    public static MemorySegment ofAddress(MemorySegment addr, Arena arena) { return RuntimeHelper.asArray(addr, $LAYOUT(), 1, arena); }
-}
 
+    private static final GroupLayout segment$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("segment"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * b2Segment segment
+     * }
+     */
+    public static final GroupLayout segment$layout() {
+        return segment$LAYOUT;
+    }
+
+    private static final long segment$OFFSET = $LAYOUT.byteOffset(groupElement("segment"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * b2Segment segment
+     * }
+     */
+    public static final long segment$offset() {
+        return segment$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * b2Segment segment
+     * }
+     */
+    public static MemorySegment segment(MemorySegment struct) {
+        return struct.asSlice(segment$OFFSET, segment$LAYOUT.byteSize());
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * b2Segment segment
+     * }
+     */
+    public static void segment(MemorySegment struct, MemorySegment fieldValue) {
+        MemorySegment.copy(fieldValue, 0L, struct, segment$OFFSET, segment$LAYOUT.byteSize());
+    }
+
+    private static final GroupLayout ghost2$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("ghost2"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * b2Vec2 ghost2
+     * }
+     */
+    public static final GroupLayout ghost2$layout() {
+        return ghost2$LAYOUT;
+    }
+
+    private static final long ghost2$OFFSET = $LAYOUT.byteOffset(groupElement("ghost2"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * b2Vec2 ghost2
+     * }
+     */
+    public static final long ghost2$offset() {
+        return ghost2$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * b2Vec2 ghost2
+     * }
+     */
+    public static MemorySegment ghost2(MemorySegment struct) {
+        return struct.asSlice(ghost2$OFFSET, ghost2$LAYOUT.byteSize());
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * b2Vec2 ghost2
+     * }
+     */
+    public static void ghost2(MemorySegment struct, MemorySegment fieldValue) {
+        MemorySegment.copy(fieldValue, 0L, struct, ghost2$OFFSET, ghost2$LAYOUT.byteSize());
+    }
+
+    private static final OfInt chainId$LAYOUT = (OfInt)$LAYOUT.select(groupElement("chainId"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * int chainId
+     * }
+     */
+    public static final OfInt chainId$layout() {
+        return chainId$LAYOUT;
+    }
+
+    private static final long chainId$OFFSET = $LAYOUT.byteOffset(groupElement("chainId"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * int chainId
+     * }
+     */
+    public static final long chainId$offset() {
+        return chainId$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * int chainId
+     * }
+     */
+    public static int chainId(MemorySegment struct) {
+        return struct.get(chainId$LAYOUT, chainId$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * int chainId
+     * }
+     */
+    public static void chainId(MemorySegment struct, int fieldValue) {
+        struct.set(chainId$LAYOUT, chainId$OFFSET, fieldValue);
+    }
+
+    /**
+     * Obtains a slice of {@code arrayParam} which selects the array element at {@code index}.
+     * The returned segment has address {@code arrayParam.address() + index * layout().byteSize()}
+     */
+    public static MemorySegment asSlice(MemorySegment array, long index) {
+        return array.asSlice(layout().byteSize() * index);
+    }
+
+    /**
+     * The size (in bytes) of this struct
+     */
+    public static long sizeof() { return layout().byteSize(); }
+
+    /**
+     * Allocate a segment of size {@code layout().byteSize()} using {@code allocator}
+     */
+    public static MemorySegment allocate(SegmentAllocator allocator) {
+        return allocator.allocate(layout());
+    }
+
+    /**
+     * Allocate an array of size {@code elementCount} using {@code allocator}.
+     * The returned segment has size {@code elementCount * layout().byteSize()}.
+     */
+    public static MemorySegment allocateArray(long elementCount, SegmentAllocator allocator) {
+        return allocator.allocate(MemoryLayout.sequenceLayout(elementCount, layout()));
+    }
+
+    /**
+     * Reinterprets {@code addr} using target {@code arena} and {@code cleanupAction} (if any).
+     * The returned segment has size {@code layout().byteSize()}
+     */
+    public static MemorySegment reinterpret(MemorySegment addr, Arena arena, Consumer<MemorySegment> cleanup) {
+        return reinterpret(addr, 1, arena, cleanup);
+    }
+
+    /**
+     * Reinterprets {@code addr} using target {@code arena} and {@code cleanupAction} (if any).
+     * The returned segment has size {@code elementCount * layout().byteSize()}
+     */
+    public static MemorySegment reinterpret(MemorySegment addr, long elementCount, Arena arena, Consumer<MemorySegment> cleanup) {
+        return addr.reinterpret(layout().byteSize() * elementCount, arena, cleanup);
+    }
+}
 

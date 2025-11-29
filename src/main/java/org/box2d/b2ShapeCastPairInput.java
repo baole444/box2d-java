@@ -2,104 +2,403 @@
 
 package org.box2d;
 
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.VarHandle;
-import java.nio.ByteOrder;
+import java.lang.invoke.*;
 import java.lang.foreign.*;
+import java.nio.ByteOrder;
+import java.util.*;
+import java.util.function.*;
+import java.util.stream.*;
+
 import static java.lang.foreign.ValueLayout.*;
+import static java.lang.foreign.MemoryLayout.PathElement.*;
+
 /**
  * {@snippet lang=c :
  * struct b2ShapeCastPairInput {
- *     struct b2ShapeProxy proxyA;
- *     struct b2ShapeProxy proxyB;
- *     struct b2Transform transformA;
- *     struct b2Transform transformB;
- *     struct b2Vec2 translationB;
+ *     b2ShapeProxy proxyA;
+ *     b2ShapeProxy proxyB;
+ *     b2Transform transformA;
+ *     b2Transform transformB;
+ *     b2Vec2 translationB;
  *     float maxFraction;
  *     _Bool canEncroach;
- * };
+ * }
  * }
  */
 public class b2ShapeCastPairInput {
 
-    public static MemoryLayout $LAYOUT() {
-        return constants$81.const$2;
+    b2ShapeCastPairInput() {
+        // Should not be called directly
     }
-    public static MemorySegment proxyA$slice(MemorySegment seg) {
-        return seg.asSlice(0, 72);
-    }
-    public static MemorySegment proxyB$slice(MemorySegment seg) {
-        return seg.asSlice(72, 72);
-    }
-    public static MemorySegment transformA$slice(MemorySegment seg) {
-        return seg.asSlice(144, 16);
-    }
-    public static MemorySegment transformB$slice(MemorySegment seg) {
-        return seg.asSlice(160, 16);
-    }
-    public static MemorySegment translationB$slice(MemorySegment seg) {
-        return seg.asSlice(176, 8);
-    }
-    public static VarHandle maxFraction$VH() {
-        return constants$81.const$3;
-    }
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * float maxFraction;
-     * }
-     */
-    public static float maxFraction$get(MemorySegment seg) {
-        return (float)constants$81.const$3.get(seg);
-    }
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * float maxFraction;
-     * }
-     */
-    public static void maxFraction$set(MemorySegment seg, float x) {
-        constants$81.const$3.set(seg, x);
-    }
-    public static float maxFraction$get(MemorySegment seg, long index) {
-        return (float)constants$81.const$3.get(seg.asSlice(index*sizeof()));
-    }
-    public static void maxFraction$set(MemorySegment seg, long index, float x) {
-        constants$81.const$3.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static VarHandle canEncroach$VH() {
-        return constants$81.const$4;
-    }
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * _Bool canEncroach;
-     * }
-     */
-    public static boolean canEncroach$get(MemorySegment seg) {
-        return (boolean)constants$81.const$4.get(seg);
-    }
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * _Bool canEncroach;
-     * }
-     */
-    public static void canEncroach$set(MemorySegment seg, boolean x) {
-        constants$81.const$4.set(seg, x);
-    }
-    public static boolean canEncroach$get(MemorySegment seg, long index) {
-        return (boolean)constants$81.const$4.get(seg.asSlice(index*sizeof()));
-    }
-    public static void canEncroach$set(MemorySegment seg, long index, boolean x) {
-        constants$81.const$4.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static long sizeof() { return $LAYOUT().byteSize(); }
-    public static MemorySegment allocate(SegmentAllocator allocator) { return allocator.allocate($LAYOUT()); }
-    public static MemorySegment allocateArray(long len, SegmentAllocator allocator) {
-        return allocator.allocate(MemoryLayout.sequenceLayout(len, $LAYOUT()));
-    }
-    public static MemorySegment ofAddress(MemorySegment addr, Arena arena) { return RuntimeHelper.asArray(addr, $LAYOUT(), 1, arena); }
-}
 
+    private static final GroupLayout $LAYOUT = MemoryLayout.structLayout(
+        b2ShapeProxy.layout().withName("proxyA"),
+        b2ShapeProxy.layout().withName("proxyB"),
+        b2Transform.layout().withName("transformA"),
+        b2Transform.layout().withName("transformB"),
+        b2Vec2.layout().withName("translationB"),
+        Box2D.C_FLOAT.withName("maxFraction"),
+        Box2D.C_BOOL.withName("canEncroach"),
+        MemoryLayout.paddingLayout(3)
+    ).withName("b2ShapeCastPairInput");
+
+    /**
+     * The layout of this struct
+     */
+    public static final GroupLayout layout() {
+        return $LAYOUT;
+    }
+
+    private static final GroupLayout proxyA$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("proxyA"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * b2ShapeProxy proxyA
+     * }
+     */
+    public static final GroupLayout proxyA$layout() {
+        return proxyA$LAYOUT;
+    }
+
+    private static final long proxyA$OFFSET = $LAYOUT.byteOffset(groupElement("proxyA"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * b2ShapeProxy proxyA
+     * }
+     */
+    public static final long proxyA$offset() {
+        return proxyA$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * b2ShapeProxy proxyA
+     * }
+     */
+    public static MemorySegment proxyA(MemorySegment struct) {
+        return struct.asSlice(proxyA$OFFSET, proxyA$LAYOUT.byteSize());
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * b2ShapeProxy proxyA
+     * }
+     */
+    public static void proxyA(MemorySegment struct, MemorySegment fieldValue) {
+        MemorySegment.copy(fieldValue, 0L, struct, proxyA$OFFSET, proxyA$LAYOUT.byteSize());
+    }
+
+    private static final GroupLayout proxyB$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("proxyB"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * b2ShapeProxy proxyB
+     * }
+     */
+    public static final GroupLayout proxyB$layout() {
+        return proxyB$LAYOUT;
+    }
+
+    private static final long proxyB$OFFSET = $LAYOUT.byteOffset(groupElement("proxyB"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * b2ShapeProxy proxyB
+     * }
+     */
+    public static final long proxyB$offset() {
+        return proxyB$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * b2ShapeProxy proxyB
+     * }
+     */
+    public static MemorySegment proxyB(MemorySegment struct) {
+        return struct.asSlice(proxyB$OFFSET, proxyB$LAYOUT.byteSize());
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * b2ShapeProxy proxyB
+     * }
+     */
+    public static void proxyB(MemorySegment struct, MemorySegment fieldValue) {
+        MemorySegment.copy(fieldValue, 0L, struct, proxyB$OFFSET, proxyB$LAYOUT.byteSize());
+    }
+
+    private static final GroupLayout transformA$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("transformA"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * b2Transform transformA
+     * }
+     */
+    public static final GroupLayout transformA$layout() {
+        return transformA$LAYOUT;
+    }
+
+    private static final long transformA$OFFSET = $LAYOUT.byteOffset(groupElement("transformA"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * b2Transform transformA
+     * }
+     */
+    public static final long transformA$offset() {
+        return transformA$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * b2Transform transformA
+     * }
+     */
+    public static MemorySegment transformA(MemorySegment struct) {
+        return struct.asSlice(transformA$OFFSET, transformA$LAYOUT.byteSize());
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * b2Transform transformA
+     * }
+     */
+    public static void transformA(MemorySegment struct, MemorySegment fieldValue) {
+        MemorySegment.copy(fieldValue, 0L, struct, transformA$OFFSET, transformA$LAYOUT.byteSize());
+    }
+
+    private static final GroupLayout transformB$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("transformB"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * b2Transform transformB
+     * }
+     */
+    public static final GroupLayout transformB$layout() {
+        return transformB$LAYOUT;
+    }
+
+    private static final long transformB$OFFSET = $LAYOUT.byteOffset(groupElement("transformB"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * b2Transform transformB
+     * }
+     */
+    public static final long transformB$offset() {
+        return transformB$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * b2Transform transformB
+     * }
+     */
+    public static MemorySegment transformB(MemorySegment struct) {
+        return struct.asSlice(transformB$OFFSET, transformB$LAYOUT.byteSize());
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * b2Transform transformB
+     * }
+     */
+    public static void transformB(MemorySegment struct, MemorySegment fieldValue) {
+        MemorySegment.copy(fieldValue, 0L, struct, transformB$OFFSET, transformB$LAYOUT.byteSize());
+    }
+
+    private static final GroupLayout translationB$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("translationB"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * b2Vec2 translationB
+     * }
+     */
+    public static final GroupLayout translationB$layout() {
+        return translationB$LAYOUT;
+    }
+
+    private static final long translationB$OFFSET = $LAYOUT.byteOffset(groupElement("translationB"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * b2Vec2 translationB
+     * }
+     */
+    public static final long translationB$offset() {
+        return translationB$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * b2Vec2 translationB
+     * }
+     */
+    public static MemorySegment translationB(MemorySegment struct) {
+        return struct.asSlice(translationB$OFFSET, translationB$LAYOUT.byteSize());
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * b2Vec2 translationB
+     * }
+     */
+    public static void translationB(MemorySegment struct, MemorySegment fieldValue) {
+        MemorySegment.copy(fieldValue, 0L, struct, translationB$OFFSET, translationB$LAYOUT.byteSize());
+    }
+
+    private static final OfFloat maxFraction$LAYOUT = (OfFloat)$LAYOUT.select(groupElement("maxFraction"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * float maxFraction
+     * }
+     */
+    public static final OfFloat maxFraction$layout() {
+        return maxFraction$LAYOUT;
+    }
+
+    private static final long maxFraction$OFFSET = $LAYOUT.byteOffset(groupElement("maxFraction"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * float maxFraction
+     * }
+     */
+    public static final long maxFraction$offset() {
+        return maxFraction$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * float maxFraction
+     * }
+     */
+    public static float maxFraction(MemorySegment struct) {
+        return struct.get(maxFraction$LAYOUT, maxFraction$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * float maxFraction
+     * }
+     */
+    public static void maxFraction(MemorySegment struct, float fieldValue) {
+        struct.set(maxFraction$LAYOUT, maxFraction$OFFSET, fieldValue);
+    }
+
+    private static final OfBoolean canEncroach$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("canEncroach"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * _Bool canEncroach
+     * }
+     */
+    public static final OfBoolean canEncroach$layout() {
+        return canEncroach$LAYOUT;
+    }
+
+    private static final long canEncroach$OFFSET = $LAYOUT.byteOffset(groupElement("canEncroach"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * _Bool canEncroach
+     * }
+     */
+    public static final long canEncroach$offset() {
+        return canEncroach$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * _Bool canEncroach
+     * }
+     */
+    public static boolean canEncroach(MemorySegment struct) {
+        return struct.get(canEncroach$LAYOUT, canEncroach$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * _Bool canEncroach
+     * }
+     */
+    public static void canEncroach(MemorySegment struct, boolean fieldValue) {
+        struct.set(canEncroach$LAYOUT, canEncroach$OFFSET, fieldValue);
+    }
+
+    /**
+     * Obtains a slice of {@code arrayParam} which selects the array element at {@code index}.
+     * The returned segment has address {@code arrayParam.address() + index * layout().byteSize()}
+     */
+    public static MemorySegment asSlice(MemorySegment array, long index) {
+        return array.asSlice(layout().byteSize() * index);
+    }
+
+    /**
+     * The size (in bytes) of this struct
+     */
+    public static long sizeof() { return layout().byteSize(); }
+
+    /**
+     * Allocate a segment of size {@code layout().byteSize()} using {@code allocator}
+     */
+    public static MemorySegment allocate(SegmentAllocator allocator) {
+        return allocator.allocate(layout());
+    }
+
+    /**
+     * Allocate an array of size {@code elementCount} using {@code allocator}.
+     * The returned segment has size {@code elementCount * layout().byteSize()}.
+     */
+    public static MemorySegment allocateArray(long elementCount, SegmentAllocator allocator) {
+        return allocator.allocate(MemoryLayout.sequenceLayout(elementCount, layout()));
+    }
+
+    /**
+     * Reinterprets {@code addr} using target {@code arena} and {@code cleanupAction} (if any).
+     * The returned segment has size {@code layout().byteSize()}
+     */
+    public static MemorySegment reinterpret(MemorySegment addr, Arena arena, Consumer<MemorySegment> cleanup) {
+        return reinterpret(addr, 1, arena, cleanup);
+    }
+
+    /**
+     * Reinterprets {@code addr} using target {@code arena} and {@code cleanupAction} (if any).
+     * The returned segment has size {@code elementCount * layout().byteSize()}
+     */
+    public static MemorySegment reinterpret(MemorySegment addr, long elementCount, Arena arena, Consumer<MemorySegment> cleanup) {
+        return addr.reinterpret(layout().byteSize() * elementCount, arena, cleanup);
+    }
+}
 

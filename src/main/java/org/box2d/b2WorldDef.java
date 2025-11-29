@@ -2,584 +2,864 @@
 
 package org.box2d;
 
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.VarHandle;
-import java.nio.ByteOrder;
+import java.lang.invoke.*;
 import java.lang.foreign.*;
+import java.nio.ByteOrder;
+import java.util.*;
+import java.util.function.*;
+import java.util.stream.*;
+
 import static java.lang.foreign.ValueLayout.*;
+import static java.lang.foreign.MemoryLayout.PathElement.*;
+
 /**
  * {@snippet lang=c :
  * struct b2WorldDef {
- *     struct b2Vec2 gravity;
+ *     b2Vec2 gravity;
  *     float restitutionThreshold;
  *     float hitEventThreshold;
  *     float contactHertz;
  *     float contactDampingRatio;
  *     float maxContactPushSpeed;
  *     float maximumLinearSpeed;
- *     float (*frictionCallback)(float,int,float,int);
- *     float (*restitutionCallback)(float,int,float,int);
+ *     b2FrictionCallback *frictionCallback;
+ *     b2RestitutionCallback *restitutionCallback;
  *     _Bool enableSleep;
  *     _Bool enableContinuous;
  *     int workerCount;
- *     void* (*enqueueTask)(void (*)(int,int,unsigned int,void*),int,int,void*,void*);
- *     void (*finishTask)(void*,void*);
- *     void* userTaskContext;
- *     void* userData;
+ *     b2EnqueueTaskCallback *enqueueTask;
+ *     b2FinishTaskCallback *finishTask;
+ *     void *userTaskContext;
+ *     void *userData;
  *     int internalValue;
- * };
+ * }
  * }
  */
 public class b2WorldDef {
 
-    public static MemoryLayout $LAYOUT() {
-        return constants$105.const$2;
-    }
-    public static MemorySegment gravity$slice(MemorySegment seg) {
-        return seg.asSlice(0, 8);
-    }
-    public static VarHandle restitutionThreshold$VH() {
-        return constants$105.const$3;
-    }
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * float restitutionThreshold;
-     * }
-     */
-    public static float restitutionThreshold$get(MemorySegment seg) {
-        return (float)constants$105.const$3.get(seg);
-    }
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * float restitutionThreshold;
-     * }
-     */
-    public static void restitutionThreshold$set(MemorySegment seg, float x) {
-        constants$105.const$3.set(seg, x);
-    }
-    public static float restitutionThreshold$get(MemorySegment seg, long index) {
-        return (float)constants$105.const$3.get(seg.asSlice(index*sizeof()));
-    }
-    public static void restitutionThreshold$set(MemorySegment seg, long index, float x) {
-        constants$105.const$3.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static VarHandle hitEventThreshold$VH() {
-        return constants$105.const$4;
-    }
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * float hitEventThreshold;
-     * }
-     */
-    public static float hitEventThreshold$get(MemorySegment seg) {
-        return (float)constants$105.const$4.get(seg);
-    }
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * float hitEventThreshold;
-     * }
-     */
-    public static void hitEventThreshold$set(MemorySegment seg, float x) {
-        constants$105.const$4.set(seg, x);
-    }
-    public static float hitEventThreshold$get(MemorySegment seg, long index) {
-        return (float)constants$105.const$4.get(seg.asSlice(index*sizeof()));
-    }
-    public static void hitEventThreshold$set(MemorySegment seg, long index, float x) {
-        constants$105.const$4.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static VarHandle contactHertz$VH() {
-        return constants$105.const$5;
-    }
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * float contactHertz;
-     * }
-     */
-    public static float contactHertz$get(MemorySegment seg) {
-        return (float)constants$105.const$5.get(seg);
-    }
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * float contactHertz;
-     * }
-     */
-    public static void contactHertz$set(MemorySegment seg, float x) {
-        constants$105.const$5.set(seg, x);
-    }
-    public static float contactHertz$get(MemorySegment seg, long index) {
-        return (float)constants$105.const$5.get(seg.asSlice(index*sizeof()));
-    }
-    public static void contactHertz$set(MemorySegment seg, long index, float x) {
-        constants$105.const$5.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static VarHandle contactDampingRatio$VH() {
-        return constants$106.const$0;
-    }
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * float contactDampingRatio;
-     * }
-     */
-    public static float contactDampingRatio$get(MemorySegment seg) {
-        return (float)constants$106.const$0.get(seg);
-    }
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * float contactDampingRatio;
-     * }
-     */
-    public static void contactDampingRatio$set(MemorySegment seg, float x) {
-        constants$106.const$0.set(seg, x);
-    }
-    public static float contactDampingRatio$get(MemorySegment seg, long index) {
-        return (float)constants$106.const$0.get(seg.asSlice(index*sizeof()));
-    }
-    public static void contactDampingRatio$set(MemorySegment seg, long index, float x) {
-        constants$106.const$0.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static VarHandle maxContactPushSpeed$VH() {
-        return constants$106.const$1;
-    }
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * float maxContactPushSpeed;
-     * }
-     */
-    public static float maxContactPushSpeed$get(MemorySegment seg) {
-        return (float)constants$106.const$1.get(seg);
-    }
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * float maxContactPushSpeed;
-     * }
-     */
-    public static void maxContactPushSpeed$set(MemorySegment seg, float x) {
-        constants$106.const$1.set(seg, x);
-    }
-    public static float maxContactPushSpeed$get(MemorySegment seg, long index) {
-        return (float)constants$106.const$1.get(seg.asSlice(index*sizeof()));
-    }
-    public static void maxContactPushSpeed$set(MemorySegment seg, long index, float x) {
-        constants$106.const$1.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static VarHandle maximumLinearSpeed$VH() {
-        return constants$106.const$2;
-    }
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * float maximumLinearSpeed;
-     * }
-     */
-    public static float maximumLinearSpeed$get(MemorySegment seg) {
-        return (float)constants$106.const$2.get(seg);
-    }
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * float maximumLinearSpeed;
-     * }
-     */
-    public static void maximumLinearSpeed$set(MemorySegment seg, float x) {
-        constants$106.const$2.set(seg, x);
-    }
-    public static float maximumLinearSpeed$get(MemorySegment seg, long index) {
-        return (float)constants$106.const$2.get(seg.asSlice(index*sizeof()));
-    }
-    public static void maximumLinearSpeed$set(MemorySegment seg, long index, float x) {
-        constants$106.const$2.set(seg.asSlice(index*sizeof()), x);
-    }
-    /**
-     * {@snippet lang=c :
- * float (*frictionCallback)(float,int,float,int);
-     * }
-     */
-    public interface frictionCallback {
-
-        float apply(float restitutionA, int userMaterialIdA, float restitutionB, int userMaterialIdB);
-        static MemorySegment allocate(frictionCallback fi, Arena scope) {
-            return RuntimeHelper.upcallStub(constants$106.const$3, fi, constants$103.const$5, scope);
-        }
-        static frictionCallback ofAddress(MemorySegment addr, Arena arena) {
-            MemorySegment symbol = addr.reinterpret(arena, null);
-            return (float _restitutionA, int _userMaterialIdA, float _restitutionB, int _userMaterialIdB) -> {
-                try {
-                    return (float)constants$104.const$1.invokeExact(symbol, _restitutionA, _userMaterialIdA, _restitutionB, _userMaterialIdB);
-                } catch (Throwable ex$) {
-                    throw new AssertionError("should not reach here", ex$);
-                }
-            };
-        }
+    b2WorldDef() {
+        // Should not be called directly
     }
 
-    public static VarHandle frictionCallback$VH() {
-        return constants$106.const$4;
-    }
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * float (*frictionCallback)(float,int,float,int);
-     * }
-     */
-    public static MemorySegment frictionCallback$get(MemorySegment seg) {
-        return (java.lang.foreign.MemorySegment)constants$106.const$4.get(seg);
-    }
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * float (*frictionCallback)(float,int,float,int);
-     * }
-     */
-    public static void frictionCallback$set(MemorySegment seg, MemorySegment x) {
-        constants$106.const$4.set(seg, x);
-    }
-    public static MemorySegment frictionCallback$get(MemorySegment seg, long index) {
-        return (java.lang.foreign.MemorySegment)constants$106.const$4.get(seg.asSlice(index*sizeof()));
-    }
-    public static void frictionCallback$set(MemorySegment seg, long index, MemorySegment x) {
-        constants$106.const$4.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static frictionCallback frictionCallback(MemorySegment segment, Arena scope) {
-        return frictionCallback.ofAddress(frictionCallback$get(segment), scope);
-    }
-    /**
-     * {@snippet lang=c :
- * float (*restitutionCallback)(float,int,float,int);
-     * }
-     */
-    public interface restitutionCallback {
+    private static final GroupLayout $LAYOUT = MemoryLayout.structLayout(
+        b2Vec2.layout().withName("gravity"),
+        Box2D.C_FLOAT.withName("restitutionThreshold"),
+        Box2D.C_FLOAT.withName("hitEventThreshold"),
+        Box2D.C_FLOAT.withName("contactHertz"),
+        Box2D.C_FLOAT.withName("contactDampingRatio"),
+        Box2D.C_FLOAT.withName("maxContactPushSpeed"),
+        Box2D.C_FLOAT.withName("maximumLinearSpeed"),
+        Box2D.C_POINTER.withName("frictionCallback"),
+        Box2D.C_POINTER.withName("restitutionCallback"),
+        Box2D.C_BOOL.withName("enableSleep"),
+        Box2D.C_BOOL.withName("enableContinuous"),
+        MemoryLayout.paddingLayout(2),
+        Box2D.C_INT.withName("workerCount"),
+        Box2D.C_POINTER.withName("enqueueTask"),
+        Box2D.C_POINTER.withName("finishTask"),
+        Box2D.C_POINTER.withName("userTaskContext"),
+        Box2D.C_POINTER.withName("userData"),
+        Box2D.C_INT.withName("internalValue"),
+        MemoryLayout.paddingLayout(4)
+    ).withName("b2WorldDef");
 
-        float apply(float restitutionA, int userMaterialIdA, float restitutionB, int userMaterialIdB);
-        static MemorySegment allocate(restitutionCallback fi, Arena scope) {
-            return RuntimeHelper.upcallStub(constants$106.const$5, fi, constants$103.const$5, scope);
-        }
-        static restitutionCallback ofAddress(MemorySegment addr, Arena arena) {
-            MemorySegment symbol = addr.reinterpret(arena, null);
-            return (float _restitutionA, int _userMaterialIdA, float _restitutionB, int _userMaterialIdB) -> {
-                try {
-                    return (float)constants$104.const$1.invokeExact(symbol, _restitutionA, _userMaterialIdA, _restitutionB, _userMaterialIdB);
-                } catch (Throwable ex$) {
-                    throw new AssertionError("should not reach here", ex$);
-                }
-            };
-        }
+    /**
+     * The layout of this struct
+     */
+    public static final GroupLayout layout() {
+        return $LAYOUT;
     }
 
-    public static VarHandle restitutionCallback$VH() {
-        return constants$107.const$0;
-    }
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * float (*restitutionCallback)(float,int,float,int);
-     * }
-     */
-    public static MemorySegment restitutionCallback$get(MemorySegment seg) {
-        return (java.lang.foreign.MemorySegment)constants$107.const$0.get(seg);
-    }
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * float (*restitutionCallback)(float,int,float,int);
-     * }
-     */
-    public static void restitutionCallback$set(MemorySegment seg, MemorySegment x) {
-        constants$107.const$0.set(seg, x);
-    }
-    public static MemorySegment restitutionCallback$get(MemorySegment seg, long index) {
-        return (java.lang.foreign.MemorySegment)constants$107.const$0.get(seg.asSlice(index*sizeof()));
-    }
-    public static void restitutionCallback$set(MemorySegment seg, long index, MemorySegment x) {
-        constants$107.const$0.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static restitutionCallback restitutionCallback(MemorySegment segment, Arena scope) {
-        return restitutionCallback.ofAddress(restitutionCallback$get(segment), scope);
-    }
-    public static VarHandle enableSleep$VH() {
-        return constants$107.const$1;
-    }
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * _Bool enableSleep;
-     * }
-     */
-    public static boolean enableSleep$get(MemorySegment seg) {
-        return (boolean)constants$107.const$1.get(seg);
-    }
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * _Bool enableSleep;
-     * }
-     */
-    public static void enableSleep$set(MemorySegment seg, boolean x) {
-        constants$107.const$1.set(seg, x);
-    }
-    public static boolean enableSleep$get(MemorySegment seg, long index) {
-        return (boolean)constants$107.const$1.get(seg.asSlice(index*sizeof()));
-    }
-    public static void enableSleep$set(MemorySegment seg, long index, boolean x) {
-        constants$107.const$1.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static VarHandle enableContinuous$VH() {
-        return constants$107.const$2;
-    }
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * _Bool enableContinuous;
-     * }
-     */
-    public static boolean enableContinuous$get(MemorySegment seg) {
-        return (boolean)constants$107.const$2.get(seg);
-    }
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * _Bool enableContinuous;
-     * }
-     */
-    public static void enableContinuous$set(MemorySegment seg, boolean x) {
-        constants$107.const$2.set(seg, x);
-    }
-    public static boolean enableContinuous$get(MemorySegment seg, long index) {
-        return (boolean)constants$107.const$2.get(seg.asSlice(index*sizeof()));
-    }
-    public static void enableContinuous$set(MemorySegment seg, long index, boolean x) {
-        constants$107.const$2.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static VarHandle workerCount$VH() {
-        return constants$107.const$3;
-    }
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * int workerCount;
-     * }
-     */
-    public static int workerCount$get(MemorySegment seg) {
-        return (int)constants$107.const$3.get(seg);
-    }
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * int workerCount;
-     * }
-     */
-    public static void workerCount$set(MemorySegment seg, int x) {
-        constants$107.const$3.set(seg, x);
-    }
-    public static int workerCount$get(MemorySegment seg, long index) {
-        return (int)constants$107.const$3.get(seg.asSlice(index*sizeof()));
-    }
-    public static void workerCount$set(MemorySegment seg, long index, int x) {
-        constants$107.const$3.set(seg.asSlice(index*sizeof()), x);
-    }
-    /**
-     * {@snippet lang=c :
- * void* (*enqueueTask)(void (*)(int,int,unsigned int,void*),int,int,void*,void*);
-     * }
-     */
-    public interface enqueueTask {
+    private static final GroupLayout gravity$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("gravity"));
 
-        java.lang.foreign.MemorySegment apply(java.lang.foreign.MemorySegment task, int itemCount, int minRange, java.lang.foreign.MemorySegment taskContext, java.lang.foreign.MemorySegment userContext);
-        static MemorySegment allocate(enqueueTask fi, Arena scope) {
-            return RuntimeHelper.upcallStub(constants$107.const$4, fi, constants$103.const$0, scope);
-        }
-        static enqueueTask ofAddress(MemorySegment addr, Arena arena) {
-            MemorySegment symbol = addr.reinterpret(arena, null);
-            return (java.lang.foreign.MemorySegment _task, int _itemCount, int _minRange, java.lang.foreign.MemorySegment _taskContext, java.lang.foreign.MemorySegment _userContext) -> {
-                try {
-                    return (java.lang.foreign.MemorySegment)constants$103.const$2.invokeExact(symbol, _task, _itemCount, _minRange, _taskContext, _userContext);
-                } catch (Throwable ex$) {
-                    throw new AssertionError("should not reach here", ex$);
-                }
-            };
-        }
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * b2Vec2 gravity
+     * }
+     */
+    public static final GroupLayout gravity$layout() {
+        return gravity$LAYOUT;
     }
 
-    public static VarHandle enqueueTask$VH() {
-        return constants$107.const$5;
-    }
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * void* (*enqueueTask)(void (*)(int,int,unsigned int,void*),int,int,void*,void*);
-     * }
-     */
-    public static MemorySegment enqueueTask$get(MemorySegment seg) {
-        return (java.lang.foreign.MemorySegment)constants$107.const$5.get(seg);
-    }
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * void* (*enqueueTask)(void (*)(int,int,unsigned int,void*),int,int,void*,void*);
-     * }
-     */
-    public static void enqueueTask$set(MemorySegment seg, MemorySegment x) {
-        constants$107.const$5.set(seg, x);
-    }
-    public static MemorySegment enqueueTask$get(MemorySegment seg, long index) {
-        return (java.lang.foreign.MemorySegment)constants$107.const$5.get(seg.asSlice(index*sizeof()));
-    }
-    public static void enqueueTask$set(MemorySegment seg, long index, MemorySegment x) {
-        constants$107.const$5.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static enqueueTask enqueueTask(MemorySegment segment, Arena scope) {
-        return enqueueTask.ofAddress(enqueueTask$get(segment), scope);
-    }
-    /**
-     * {@snippet lang=c :
- * void (*finishTask)(void*,void*);
-     * }
-     */
-    public interface finishTask {
+    private static final long gravity$OFFSET = $LAYOUT.byteOffset(groupElement("gravity"));
 
-        void apply(java.lang.foreign.MemorySegment userTask, java.lang.foreign.MemorySegment userContext);
-        static MemorySegment allocate(finishTask fi, Arena scope) {
-            return RuntimeHelper.upcallStub(constants$108.const$0, fi, constants$3.const$1, scope);
-        }
-        static finishTask ofAddress(MemorySegment addr, Arena arena) {
-            MemorySegment symbol = addr.reinterpret(arena, null);
-            return (java.lang.foreign.MemorySegment _userTask, java.lang.foreign.MemorySegment _userContext) -> {
-                try {
-                    constants$103.const$4.invokeExact(symbol, _userTask, _userContext);
-                } catch (Throwable ex$) {
-                    throw new AssertionError("should not reach here", ex$);
-                }
-            };
-        }
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * b2Vec2 gravity
+     * }
+     */
+    public static final long gravity$offset() {
+        return gravity$OFFSET;
     }
 
-    public static VarHandle finishTask$VH() {
-        return constants$108.const$1;
-    }
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * void (*finishTask)(void*,void*);
+     * b2Vec2 gravity
      * }
      */
-    public static MemorySegment finishTask$get(MemorySegment seg) {
-        return (java.lang.foreign.MemorySegment)constants$108.const$1.get(seg);
+    public static MemorySegment gravity(MemorySegment struct) {
+        return struct.asSlice(gravity$OFFSET, gravity$LAYOUT.byteSize());
     }
+
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * void (*finishTask)(void*,void*);
+     * b2Vec2 gravity
      * }
      */
-    public static void finishTask$set(MemorySegment seg, MemorySegment x) {
-        constants$108.const$1.set(seg, x);
+    public static void gravity(MemorySegment struct, MemorySegment fieldValue) {
+        MemorySegment.copy(fieldValue, 0L, struct, gravity$OFFSET, gravity$LAYOUT.byteSize());
     }
-    public static MemorySegment finishTask$get(MemorySegment seg, long index) {
-        return (java.lang.foreign.MemorySegment)constants$108.const$1.get(seg.asSlice(index*sizeof()));
+
+    private static final OfFloat restitutionThreshold$LAYOUT = (OfFloat)$LAYOUT.select(groupElement("restitutionThreshold"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * float restitutionThreshold
+     * }
+     */
+    public static final OfFloat restitutionThreshold$layout() {
+        return restitutionThreshold$LAYOUT;
     }
-    public static void finishTask$set(MemorySegment seg, long index, MemorySegment x) {
-        constants$108.const$1.set(seg.asSlice(index*sizeof()), x);
+
+    private static final long restitutionThreshold$OFFSET = $LAYOUT.byteOffset(groupElement("restitutionThreshold"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * float restitutionThreshold
+     * }
+     */
+    public static final long restitutionThreshold$offset() {
+        return restitutionThreshold$OFFSET;
     }
-    public static finishTask finishTask(MemorySegment segment, Arena scope) {
-        return finishTask.ofAddress(finishTask$get(segment), scope);
-    }
-    public static VarHandle userTaskContext$VH() {
-        return constants$108.const$2;
-    }
+
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * void* userTaskContext;
+     * float restitutionThreshold
      * }
      */
-    public static MemorySegment userTaskContext$get(MemorySegment seg) {
-        return (java.lang.foreign.MemorySegment)constants$108.const$2.get(seg);
+    public static float restitutionThreshold(MemorySegment struct) {
+        return struct.get(restitutionThreshold$LAYOUT, restitutionThreshold$OFFSET);
     }
+
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * void* userTaskContext;
+     * float restitutionThreshold
      * }
      */
-    public static void userTaskContext$set(MemorySegment seg, MemorySegment x) {
-        constants$108.const$2.set(seg, x);
+    public static void restitutionThreshold(MemorySegment struct, float fieldValue) {
+        struct.set(restitutionThreshold$LAYOUT, restitutionThreshold$OFFSET, fieldValue);
     }
-    public static MemorySegment userTaskContext$get(MemorySegment seg, long index) {
-        return (java.lang.foreign.MemorySegment)constants$108.const$2.get(seg.asSlice(index*sizeof()));
+
+    private static final OfFloat hitEventThreshold$LAYOUT = (OfFloat)$LAYOUT.select(groupElement("hitEventThreshold"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * float hitEventThreshold
+     * }
+     */
+    public static final OfFloat hitEventThreshold$layout() {
+        return hitEventThreshold$LAYOUT;
     }
-    public static void userTaskContext$set(MemorySegment seg, long index, MemorySegment x) {
-        constants$108.const$2.set(seg.asSlice(index*sizeof()), x);
+
+    private static final long hitEventThreshold$OFFSET = $LAYOUT.byteOffset(groupElement("hitEventThreshold"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * float hitEventThreshold
+     * }
+     */
+    public static final long hitEventThreshold$offset() {
+        return hitEventThreshold$OFFSET;
     }
-    public static VarHandle userData$VH() {
-        return constants$108.const$3;
-    }
+
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * void* userData;
+     * float hitEventThreshold
      * }
      */
-    public static MemorySegment userData$get(MemorySegment seg) {
-        return (java.lang.foreign.MemorySegment)constants$108.const$3.get(seg);
+    public static float hitEventThreshold(MemorySegment struct) {
+        return struct.get(hitEventThreshold$LAYOUT, hitEventThreshold$OFFSET);
     }
+
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * void* userData;
+     * float hitEventThreshold
      * }
      */
-    public static void userData$set(MemorySegment seg, MemorySegment x) {
-        constants$108.const$3.set(seg, x);
+    public static void hitEventThreshold(MemorySegment struct, float fieldValue) {
+        struct.set(hitEventThreshold$LAYOUT, hitEventThreshold$OFFSET, fieldValue);
     }
-    public static MemorySegment userData$get(MemorySegment seg, long index) {
-        return (java.lang.foreign.MemorySegment)constants$108.const$3.get(seg.asSlice(index*sizeof()));
+
+    private static final OfFloat contactHertz$LAYOUT = (OfFloat)$LAYOUT.select(groupElement("contactHertz"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * float contactHertz
+     * }
+     */
+    public static final OfFloat contactHertz$layout() {
+        return contactHertz$LAYOUT;
     }
-    public static void userData$set(MemorySegment seg, long index, MemorySegment x) {
-        constants$108.const$3.set(seg.asSlice(index*sizeof()), x);
+
+    private static final long contactHertz$OFFSET = $LAYOUT.byteOffset(groupElement("contactHertz"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * float contactHertz
+     * }
+     */
+    public static final long contactHertz$offset() {
+        return contactHertz$OFFSET;
     }
-    public static VarHandle internalValue$VH() {
-        return constants$108.const$4;
-    }
+
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * int internalValue;
+     * float contactHertz
      * }
      */
-    public static int internalValue$get(MemorySegment seg) {
-        return (int)constants$108.const$4.get(seg);
+    public static float contactHertz(MemorySegment struct) {
+        return struct.get(contactHertz$LAYOUT, contactHertz$OFFSET);
     }
+
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * int internalValue;
+     * float contactHertz
      * }
      */
-    public static void internalValue$set(MemorySegment seg, int x) {
-        constants$108.const$4.set(seg, x);
+    public static void contactHertz(MemorySegment struct, float fieldValue) {
+        struct.set(contactHertz$LAYOUT, contactHertz$OFFSET, fieldValue);
     }
-    public static int internalValue$get(MemorySegment seg, long index) {
-        return (int)constants$108.const$4.get(seg.asSlice(index*sizeof()));
+
+    private static final OfFloat contactDampingRatio$LAYOUT = (OfFloat)$LAYOUT.select(groupElement("contactDampingRatio"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * float contactDampingRatio
+     * }
+     */
+    public static final OfFloat contactDampingRatio$layout() {
+        return contactDampingRatio$LAYOUT;
     }
-    public static void internalValue$set(MemorySegment seg, long index, int x) {
-        constants$108.const$4.set(seg.asSlice(index*sizeof()), x);
+
+    private static final long contactDampingRatio$OFFSET = $LAYOUT.byteOffset(groupElement("contactDampingRatio"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * float contactDampingRatio
+     * }
+     */
+    public static final long contactDampingRatio$offset() {
+        return contactDampingRatio$OFFSET;
     }
-    public static long sizeof() { return $LAYOUT().byteSize(); }
-    public static MemorySegment allocate(SegmentAllocator allocator) { return allocator.allocate($LAYOUT()); }
-    public static MemorySegment allocateArray(long len, SegmentAllocator allocator) {
-        return allocator.allocate(MemoryLayout.sequenceLayout(len, $LAYOUT()));
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * float contactDampingRatio
+     * }
+     */
+    public static float contactDampingRatio(MemorySegment struct) {
+        return struct.get(contactDampingRatio$LAYOUT, contactDampingRatio$OFFSET);
     }
-    public static MemorySegment ofAddress(MemorySegment addr, Arena arena) { return RuntimeHelper.asArray(addr, $LAYOUT(), 1, arena); }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * float contactDampingRatio
+     * }
+     */
+    public static void contactDampingRatio(MemorySegment struct, float fieldValue) {
+        struct.set(contactDampingRatio$LAYOUT, contactDampingRatio$OFFSET, fieldValue);
+    }
+
+    private static final OfFloat maxContactPushSpeed$LAYOUT = (OfFloat)$LAYOUT.select(groupElement("maxContactPushSpeed"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * float maxContactPushSpeed
+     * }
+     */
+    public static final OfFloat maxContactPushSpeed$layout() {
+        return maxContactPushSpeed$LAYOUT;
+    }
+
+    private static final long maxContactPushSpeed$OFFSET = $LAYOUT.byteOffset(groupElement("maxContactPushSpeed"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * float maxContactPushSpeed
+     * }
+     */
+    public static final long maxContactPushSpeed$offset() {
+        return maxContactPushSpeed$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * float maxContactPushSpeed
+     * }
+     */
+    public static float maxContactPushSpeed(MemorySegment struct) {
+        return struct.get(maxContactPushSpeed$LAYOUT, maxContactPushSpeed$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * float maxContactPushSpeed
+     * }
+     */
+    public static void maxContactPushSpeed(MemorySegment struct, float fieldValue) {
+        struct.set(maxContactPushSpeed$LAYOUT, maxContactPushSpeed$OFFSET, fieldValue);
+    }
+
+    private static final OfFloat maximumLinearSpeed$LAYOUT = (OfFloat)$LAYOUT.select(groupElement("maximumLinearSpeed"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * float maximumLinearSpeed
+     * }
+     */
+    public static final OfFloat maximumLinearSpeed$layout() {
+        return maximumLinearSpeed$LAYOUT;
+    }
+
+    private static final long maximumLinearSpeed$OFFSET = $LAYOUT.byteOffset(groupElement("maximumLinearSpeed"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * float maximumLinearSpeed
+     * }
+     */
+    public static final long maximumLinearSpeed$offset() {
+        return maximumLinearSpeed$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * float maximumLinearSpeed
+     * }
+     */
+    public static float maximumLinearSpeed(MemorySegment struct) {
+        return struct.get(maximumLinearSpeed$LAYOUT, maximumLinearSpeed$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * float maximumLinearSpeed
+     * }
+     */
+    public static void maximumLinearSpeed(MemorySegment struct, float fieldValue) {
+        struct.set(maximumLinearSpeed$LAYOUT, maximumLinearSpeed$OFFSET, fieldValue);
+    }
+
+    private static final AddressLayout frictionCallback$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("frictionCallback"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * b2FrictionCallback *frictionCallback
+     * }
+     */
+    public static final AddressLayout frictionCallback$layout() {
+        return frictionCallback$LAYOUT;
+    }
+
+    private static final long frictionCallback$OFFSET = $LAYOUT.byteOffset(groupElement("frictionCallback"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * b2FrictionCallback *frictionCallback
+     * }
+     */
+    public static final long frictionCallback$offset() {
+        return frictionCallback$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * b2FrictionCallback *frictionCallback
+     * }
+     */
+    public static MemorySegment frictionCallback(MemorySegment struct) {
+        return struct.get(frictionCallback$LAYOUT, frictionCallback$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * b2FrictionCallback *frictionCallback
+     * }
+     */
+    public static void frictionCallback(MemorySegment struct, MemorySegment fieldValue) {
+        struct.set(frictionCallback$LAYOUT, frictionCallback$OFFSET, fieldValue);
+    }
+
+    private static final AddressLayout restitutionCallback$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("restitutionCallback"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * b2RestitutionCallback *restitutionCallback
+     * }
+     */
+    public static final AddressLayout restitutionCallback$layout() {
+        return restitutionCallback$LAYOUT;
+    }
+
+    private static final long restitutionCallback$OFFSET = $LAYOUT.byteOffset(groupElement("restitutionCallback"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * b2RestitutionCallback *restitutionCallback
+     * }
+     */
+    public static final long restitutionCallback$offset() {
+        return restitutionCallback$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * b2RestitutionCallback *restitutionCallback
+     * }
+     */
+    public static MemorySegment restitutionCallback(MemorySegment struct) {
+        return struct.get(restitutionCallback$LAYOUT, restitutionCallback$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * b2RestitutionCallback *restitutionCallback
+     * }
+     */
+    public static void restitutionCallback(MemorySegment struct, MemorySegment fieldValue) {
+        struct.set(restitutionCallback$LAYOUT, restitutionCallback$OFFSET, fieldValue);
+    }
+
+    private static final OfBoolean enableSleep$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("enableSleep"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * _Bool enableSleep
+     * }
+     */
+    public static final OfBoolean enableSleep$layout() {
+        return enableSleep$LAYOUT;
+    }
+
+    private static final long enableSleep$OFFSET = $LAYOUT.byteOffset(groupElement("enableSleep"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * _Bool enableSleep
+     * }
+     */
+    public static final long enableSleep$offset() {
+        return enableSleep$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * _Bool enableSleep
+     * }
+     */
+    public static boolean enableSleep(MemorySegment struct) {
+        return struct.get(enableSleep$LAYOUT, enableSleep$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * _Bool enableSleep
+     * }
+     */
+    public static void enableSleep(MemorySegment struct, boolean fieldValue) {
+        struct.set(enableSleep$LAYOUT, enableSleep$OFFSET, fieldValue);
+    }
+
+    private static final OfBoolean enableContinuous$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("enableContinuous"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * _Bool enableContinuous
+     * }
+     */
+    public static final OfBoolean enableContinuous$layout() {
+        return enableContinuous$LAYOUT;
+    }
+
+    private static final long enableContinuous$OFFSET = $LAYOUT.byteOffset(groupElement("enableContinuous"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * _Bool enableContinuous
+     * }
+     */
+    public static final long enableContinuous$offset() {
+        return enableContinuous$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * _Bool enableContinuous
+     * }
+     */
+    public static boolean enableContinuous(MemorySegment struct) {
+        return struct.get(enableContinuous$LAYOUT, enableContinuous$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * _Bool enableContinuous
+     * }
+     */
+    public static void enableContinuous(MemorySegment struct, boolean fieldValue) {
+        struct.set(enableContinuous$LAYOUT, enableContinuous$OFFSET, fieldValue);
+    }
+
+    private static final OfInt workerCount$LAYOUT = (OfInt)$LAYOUT.select(groupElement("workerCount"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * int workerCount
+     * }
+     */
+    public static final OfInt workerCount$layout() {
+        return workerCount$LAYOUT;
+    }
+
+    private static final long workerCount$OFFSET = $LAYOUT.byteOffset(groupElement("workerCount"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * int workerCount
+     * }
+     */
+    public static final long workerCount$offset() {
+        return workerCount$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * int workerCount
+     * }
+     */
+    public static int workerCount(MemorySegment struct) {
+        return struct.get(workerCount$LAYOUT, workerCount$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * int workerCount
+     * }
+     */
+    public static void workerCount(MemorySegment struct, int fieldValue) {
+        struct.set(workerCount$LAYOUT, workerCount$OFFSET, fieldValue);
+    }
+
+    private static final AddressLayout enqueueTask$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("enqueueTask"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * b2EnqueueTaskCallback *enqueueTask
+     * }
+     */
+    public static final AddressLayout enqueueTask$layout() {
+        return enqueueTask$LAYOUT;
+    }
+
+    private static final long enqueueTask$OFFSET = $LAYOUT.byteOffset(groupElement("enqueueTask"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * b2EnqueueTaskCallback *enqueueTask
+     * }
+     */
+    public static final long enqueueTask$offset() {
+        return enqueueTask$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * b2EnqueueTaskCallback *enqueueTask
+     * }
+     */
+    public static MemorySegment enqueueTask(MemorySegment struct) {
+        return struct.get(enqueueTask$LAYOUT, enqueueTask$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * b2EnqueueTaskCallback *enqueueTask
+     * }
+     */
+    public static void enqueueTask(MemorySegment struct, MemorySegment fieldValue) {
+        struct.set(enqueueTask$LAYOUT, enqueueTask$OFFSET, fieldValue);
+    }
+
+    private static final AddressLayout finishTask$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("finishTask"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * b2FinishTaskCallback *finishTask
+     * }
+     */
+    public static final AddressLayout finishTask$layout() {
+        return finishTask$LAYOUT;
+    }
+
+    private static final long finishTask$OFFSET = $LAYOUT.byteOffset(groupElement("finishTask"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * b2FinishTaskCallback *finishTask
+     * }
+     */
+    public static final long finishTask$offset() {
+        return finishTask$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * b2FinishTaskCallback *finishTask
+     * }
+     */
+    public static MemorySegment finishTask(MemorySegment struct) {
+        return struct.get(finishTask$LAYOUT, finishTask$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * b2FinishTaskCallback *finishTask
+     * }
+     */
+    public static void finishTask(MemorySegment struct, MemorySegment fieldValue) {
+        struct.set(finishTask$LAYOUT, finishTask$OFFSET, fieldValue);
+    }
+
+    private static final AddressLayout userTaskContext$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("userTaskContext"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * void *userTaskContext
+     * }
+     */
+    public static final AddressLayout userTaskContext$layout() {
+        return userTaskContext$LAYOUT;
+    }
+
+    private static final long userTaskContext$OFFSET = $LAYOUT.byteOffset(groupElement("userTaskContext"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * void *userTaskContext
+     * }
+     */
+    public static final long userTaskContext$offset() {
+        return userTaskContext$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * void *userTaskContext
+     * }
+     */
+    public static MemorySegment userTaskContext(MemorySegment struct) {
+        return struct.get(userTaskContext$LAYOUT, userTaskContext$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * void *userTaskContext
+     * }
+     */
+    public static void userTaskContext(MemorySegment struct, MemorySegment fieldValue) {
+        struct.set(userTaskContext$LAYOUT, userTaskContext$OFFSET, fieldValue);
+    }
+
+    private static final AddressLayout userData$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("userData"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * void *userData
+     * }
+     */
+    public static final AddressLayout userData$layout() {
+        return userData$LAYOUT;
+    }
+
+    private static final long userData$OFFSET = $LAYOUT.byteOffset(groupElement("userData"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * void *userData
+     * }
+     */
+    public static final long userData$offset() {
+        return userData$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * void *userData
+     * }
+     */
+    public static MemorySegment userData(MemorySegment struct) {
+        return struct.get(userData$LAYOUT, userData$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * void *userData
+     * }
+     */
+    public static void userData(MemorySegment struct, MemorySegment fieldValue) {
+        struct.set(userData$LAYOUT, userData$OFFSET, fieldValue);
+    }
+
+    private static final OfInt internalValue$LAYOUT = (OfInt)$LAYOUT.select(groupElement("internalValue"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * int internalValue
+     * }
+     */
+    public static final OfInt internalValue$layout() {
+        return internalValue$LAYOUT;
+    }
+
+    private static final long internalValue$OFFSET = $LAYOUT.byteOffset(groupElement("internalValue"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * int internalValue
+     * }
+     */
+    public static final long internalValue$offset() {
+        return internalValue$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * int internalValue
+     * }
+     */
+    public static int internalValue(MemorySegment struct) {
+        return struct.get(internalValue$LAYOUT, internalValue$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * int internalValue
+     * }
+     */
+    public static void internalValue(MemorySegment struct, int fieldValue) {
+        struct.set(internalValue$LAYOUT, internalValue$OFFSET, fieldValue);
+    }
+
+    /**
+     * Obtains a slice of {@code arrayParam} which selects the array element at {@code index}.
+     * The returned segment has address {@code arrayParam.address() + index * layout().byteSize()}
+     */
+    public static MemorySegment asSlice(MemorySegment array, long index) {
+        return array.asSlice(layout().byteSize() * index);
+    }
+
+    /**
+     * The size (in bytes) of this struct
+     */
+    public static long sizeof() { return layout().byteSize(); }
+
+    /**
+     * Allocate a segment of size {@code layout().byteSize()} using {@code allocator}
+     */
+    public static MemorySegment allocate(SegmentAllocator allocator) {
+        return allocator.allocate(layout());
+    }
+
+    /**
+     * Allocate an array of size {@code elementCount} using {@code allocator}.
+     * The returned segment has size {@code elementCount * layout().byteSize()}.
+     */
+    public static MemorySegment allocateArray(long elementCount, SegmentAllocator allocator) {
+        return allocator.allocate(MemoryLayout.sequenceLayout(elementCount, layout()));
+    }
+
+    /**
+     * Reinterprets {@code addr} using target {@code arena} and {@code cleanupAction} (if any).
+     * The returned segment has size {@code layout().byteSize()}
+     */
+    public static MemorySegment reinterpret(MemorySegment addr, Arena arena, Consumer<MemorySegment> cleanup) {
+        return reinterpret(addr, 1, arena, cleanup);
+    }
+
+    /**
+     * Reinterprets {@code addr} using target {@code arena} and {@code cleanupAction} (if any).
+     * The returned segment has size {@code elementCount * layout().byteSize()}
+     */
+    public static MemorySegment reinterpret(MemorySegment addr, long elementCount, Arena arena, Consumer<MemorySegment> cleanup) {
+        return addr.reinterpret(layout().byteSize() * elementCount, arena, cleanup);
+    }
 }
-
 

@@ -2,84 +2,173 @@
 
 package org.box2d;
 
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.VarHandle;
-import java.nio.ByteOrder;
+import java.lang.invoke.*;
 import java.lang.foreign.*;
+import java.nio.ByteOrder;
+import java.util.*;
+import java.util.function.*;
+import java.util.stream.*;
+
 import static java.lang.foreign.ValueLayout.*;
+import static java.lang.foreign.MemoryLayout.PathElement.*;
+
 /**
  * {@snippet lang=c :
  * struct b2BodyEvents {
- *     struct b2BodyMoveEvent* moveEvents;
+ *     b2BodyMoveEvent *moveEvents;
  *     int moveCount;
- * };
+ * }
  * }
  */
 public class b2BodyEvents {
 
-    public static MemoryLayout $LAYOUT() {
-        return constants$146.const$3;
+    b2BodyEvents() {
+        // Should not be called directly
     }
-    public static VarHandle moveEvents$VH() {
-        return constants$146.const$4;
-    }
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * struct b2BodyMoveEvent* moveEvents;
-     * }
-     */
-    public static MemorySegment moveEvents$get(MemorySegment seg) {
-        return (java.lang.foreign.MemorySegment)constants$146.const$4.get(seg);
-    }
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * struct b2BodyMoveEvent* moveEvents;
-     * }
-     */
-    public static void moveEvents$set(MemorySegment seg, MemorySegment x) {
-        constants$146.const$4.set(seg, x);
-    }
-    public static MemorySegment moveEvents$get(MemorySegment seg, long index) {
-        return (java.lang.foreign.MemorySegment)constants$146.const$4.get(seg.asSlice(index*sizeof()));
-    }
-    public static void moveEvents$set(MemorySegment seg, long index, MemorySegment x) {
-        constants$146.const$4.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static VarHandle moveCount$VH() {
-        return constants$146.const$5;
-    }
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * int moveCount;
-     * }
-     */
-    public static int moveCount$get(MemorySegment seg) {
-        return (int)constants$146.const$5.get(seg);
-    }
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * int moveCount;
-     * }
-     */
-    public static void moveCount$set(MemorySegment seg, int x) {
-        constants$146.const$5.set(seg, x);
-    }
-    public static int moveCount$get(MemorySegment seg, long index) {
-        return (int)constants$146.const$5.get(seg.asSlice(index*sizeof()));
-    }
-    public static void moveCount$set(MemorySegment seg, long index, int x) {
-        constants$146.const$5.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static long sizeof() { return $LAYOUT().byteSize(); }
-    public static MemorySegment allocate(SegmentAllocator allocator) { return allocator.allocate($LAYOUT()); }
-    public static MemorySegment allocateArray(long len, SegmentAllocator allocator) {
-        return allocator.allocate(MemoryLayout.sequenceLayout(len, $LAYOUT()));
-    }
-    public static MemorySegment ofAddress(MemorySegment addr, Arena arena) { return RuntimeHelper.asArray(addr, $LAYOUT(), 1, arena); }
-}
 
+    private static final GroupLayout $LAYOUT = MemoryLayout.structLayout(
+        Box2D.C_POINTER.withName("moveEvents"),
+        Box2D.C_INT.withName("moveCount"),
+        MemoryLayout.paddingLayout(4)
+    ).withName("b2BodyEvents");
+
+    /**
+     * The layout of this struct
+     */
+    public static final GroupLayout layout() {
+        return $LAYOUT;
+    }
+
+    private static final AddressLayout moveEvents$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("moveEvents"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * b2BodyMoveEvent *moveEvents
+     * }
+     */
+    public static final AddressLayout moveEvents$layout() {
+        return moveEvents$LAYOUT;
+    }
+
+    private static final long moveEvents$OFFSET = $LAYOUT.byteOffset(groupElement("moveEvents"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * b2BodyMoveEvent *moveEvents
+     * }
+     */
+    public static final long moveEvents$offset() {
+        return moveEvents$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * b2BodyMoveEvent *moveEvents
+     * }
+     */
+    public static MemorySegment moveEvents(MemorySegment struct) {
+        return struct.get(moveEvents$LAYOUT, moveEvents$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * b2BodyMoveEvent *moveEvents
+     * }
+     */
+    public static void moveEvents(MemorySegment struct, MemorySegment fieldValue) {
+        struct.set(moveEvents$LAYOUT, moveEvents$OFFSET, fieldValue);
+    }
+
+    private static final OfInt moveCount$LAYOUT = (OfInt)$LAYOUT.select(groupElement("moveCount"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * int moveCount
+     * }
+     */
+    public static final OfInt moveCount$layout() {
+        return moveCount$LAYOUT;
+    }
+
+    private static final long moveCount$OFFSET = $LAYOUT.byteOffset(groupElement("moveCount"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * int moveCount
+     * }
+     */
+    public static final long moveCount$offset() {
+        return moveCount$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * int moveCount
+     * }
+     */
+    public static int moveCount(MemorySegment struct) {
+        return struct.get(moveCount$LAYOUT, moveCount$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * int moveCount
+     * }
+     */
+    public static void moveCount(MemorySegment struct, int fieldValue) {
+        struct.set(moveCount$LAYOUT, moveCount$OFFSET, fieldValue);
+    }
+
+    /**
+     * Obtains a slice of {@code arrayParam} which selects the array element at {@code index}.
+     * The returned segment has address {@code arrayParam.address() + index * layout().byteSize()}
+     */
+    public static MemorySegment asSlice(MemorySegment array, long index) {
+        return array.asSlice(layout().byteSize() * index);
+    }
+
+    /**
+     * The size (in bytes) of this struct
+     */
+    public static long sizeof() { return layout().byteSize(); }
+
+    /**
+     * Allocate a segment of size {@code layout().byteSize()} using {@code allocator}
+     */
+    public static MemorySegment allocate(SegmentAllocator allocator) {
+        return allocator.allocate(layout());
+    }
+
+    /**
+     * Allocate an array of size {@code elementCount} using {@code allocator}.
+     * The returned segment has size {@code elementCount * layout().byteSize()}.
+     */
+    public static MemorySegment allocateArray(long elementCount, SegmentAllocator allocator) {
+        return allocator.allocate(MemoryLayout.sequenceLayout(elementCount, layout()));
+    }
+
+    /**
+     * Reinterprets {@code addr} using target {@code arena} and {@code cleanupAction} (if any).
+     * The returned segment has size {@code layout().byteSize()}
+     */
+    public static MemorySegment reinterpret(MemorySegment addr, Arena arena, Consumer<MemorySegment> cleanup) {
+        return reinterpret(addr, 1, arena, cleanup);
+    }
+
+    /**
+     * Reinterprets {@code addr} using target {@code arena} and {@code cleanupAction} (if any).
+     * The returned segment has size {@code elementCount * layout().byteSize()}
+     */
+    public static MemorySegment reinterpret(MemorySegment addr, long elementCount, Arena arena, Consumer<MemorySegment> cleanup) {
+        return addr.reinterpret(layout().byteSize() * elementCount, arena, cleanup);
+    }
+}
 

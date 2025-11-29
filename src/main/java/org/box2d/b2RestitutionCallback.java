@@ -2,32 +2,72 @@
 
 package org.box2d;
 
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.VarHandle;
-import java.nio.ByteOrder;
+import java.lang.invoke.*;
 import java.lang.foreign.*;
+import java.nio.ByteOrder;
+import java.util.*;
+import java.util.function.*;
+import java.util.stream.*;
+
 import static java.lang.foreign.ValueLayout.*;
+import static java.lang.foreign.MemoryLayout.PathElement.*;
+
 /**
  * {@snippet lang=c :
- * float (*b2RestitutionCallback)(float restitutionA,int userMaterialIdA,float restitutionB,int userMaterialIdB);
+ * typedef float (b2RestitutionCallback)(float, int, float, int)
  * }
  */
-public interface b2RestitutionCallback {
+public final class b2RestitutionCallback {
 
-    float apply(float restitutionA, int userMaterialIdA, float restitutionB, int userMaterialIdB);
-    static MemorySegment allocate(b2RestitutionCallback fi, Arena scope) {
-        return RuntimeHelper.upcallStub(constants$104.const$2, fi, constants$103.const$5, scope);
+    private b2RestitutionCallback() {
+        // Should not be called directly
     }
-    static b2RestitutionCallback ofAddress(MemorySegment addr, Arena arena) {
-        MemorySegment symbol = addr.reinterpret(arena, null);
-        return (float _restitutionA, int _userMaterialIdA, float _restitutionB, int _userMaterialIdB) -> {
-            try {
-                return (float)constants$104.const$1.invokeExact(symbol, _restitutionA, _userMaterialIdA, _restitutionB, _userMaterialIdB);
-            } catch (Throwable ex$) {
-                throw new AssertionError("should not reach here", ex$);
-            }
-        };
+
+    /**
+     * The function pointer signature, expressed as a functional interface
+     */
+    public interface Function {
+        float apply(float restitutionA, int userMaterialIdA, float restitutionB, int userMaterialIdB);
+    }
+
+    private static final FunctionDescriptor $DESC = FunctionDescriptor.of(
+        Box2D.C_FLOAT,
+        Box2D.C_FLOAT,
+        Box2D.C_INT,
+        Box2D.C_FLOAT,
+        Box2D.C_INT
+    );
+
+    /**
+     * The descriptor of this function pointer
+     */
+    public static FunctionDescriptor descriptor() {
+        return $DESC;
+    }
+
+    private static final MethodHandle UP$MH = Box2D.upcallHandle(b2RestitutionCallback.Function.class, "apply", $DESC);
+
+    /**
+     * Allocates a new upcall stub, whose implementation is defined by {@code fi}.
+     * The lifetime of the returned segment is managed by {@code arena}
+     */
+    public static MemorySegment allocate(b2RestitutionCallback.Function fi, Arena arena) {
+        return Linker.nativeLinker().upcallStub(UP$MH.bindTo(fi), $DESC, arena);
+    }
+
+    private static final MethodHandle DOWN$MH = Linker.nativeLinker().downcallHandle($DESC);
+
+    /**
+     * Invoke the upcall stub {@code funcPtr}, with given parameters
+     */
+    public static float invoke(MemorySegment funcPtr, float restitutionA, int userMaterialIdA, float restitutionB, int userMaterialIdB) {
+        try {
+            return (float) DOWN$MH.invokeExact(funcPtr, restitutionA, userMaterialIdA, restitutionB, userMaterialIdB);
+        } catch (Error | RuntimeException ex) {
+            throw ex;
+        } catch (Throwable ex$) {
+            throw new AssertionError("should not reach here", ex$);
+        }
     }
 }
-
 

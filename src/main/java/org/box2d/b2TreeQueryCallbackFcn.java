@@ -2,32 +2,71 @@
 
 package org.box2d;
 
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.VarHandle;
-import java.nio.ByteOrder;
+import java.lang.invoke.*;
 import java.lang.foreign.*;
+import java.nio.ByteOrder;
+import java.util.*;
+import java.util.function.*;
+import java.util.stream.*;
+
 import static java.lang.foreign.ValueLayout.*;
+import static java.lang.foreign.MemoryLayout.PathElement.*;
+
 /**
  * {@snippet lang=c :
- * _Bool (*b2TreeQueryCallbackFcn)(int proxyId,unsigned long long userData,void* context);
+ * typedef _Bool (b2TreeQueryCallbackFcn)(int, uint64_t, void *)
  * }
  */
-public interface b2TreeQueryCallbackFcn {
+public final class b2TreeQueryCallbackFcn {
 
-    boolean apply(int proxyId, long userData, java.lang.foreign.MemorySegment context);
-    static MemorySegment allocate(b2TreeQueryCallbackFcn fi, Arena scope) {
-        return RuntimeHelper.upcallStub(constants$93.const$0, fi, constants$92.const$5, scope);
+    private b2TreeQueryCallbackFcn() {
+        // Should not be called directly
     }
-    static b2TreeQueryCallbackFcn ofAddress(MemorySegment addr, Arena arena) {
-        MemorySegment symbol = addr.reinterpret(arena, null);
-        return (int _proxyId, long _userData, java.lang.foreign.MemorySegment _context) -> {
-            try {
-                return (boolean)constants$93.const$1.invokeExact(symbol, _proxyId, _userData, _context);
-            } catch (Throwable ex$) {
-                throw new AssertionError("should not reach here", ex$);
-            }
-        };
+
+    /**
+     * The function pointer signature, expressed as a functional interface
+     */
+    public interface Function {
+        boolean apply(int proxyId, long userData, MemorySegment context);
+    }
+
+    private static final FunctionDescriptor $DESC = FunctionDescriptor.of(
+        Box2D.C_BOOL,
+        Box2D.C_INT,
+        Box2D.C_LONG_LONG,
+        Box2D.C_POINTER
+    );
+
+    /**
+     * The descriptor of this function pointer
+     */
+    public static FunctionDescriptor descriptor() {
+        return $DESC;
+    }
+
+    private static final MethodHandle UP$MH = Box2D.upcallHandle(b2TreeQueryCallbackFcn.Function.class, "apply", $DESC);
+
+    /**
+     * Allocates a new upcall stub, whose implementation is defined by {@code fi}.
+     * The lifetime of the returned segment is managed by {@code arena}
+     */
+    public static MemorySegment allocate(b2TreeQueryCallbackFcn.Function fi, Arena arena) {
+        return Linker.nativeLinker().upcallStub(UP$MH.bindTo(fi), $DESC, arena);
+    }
+
+    private static final MethodHandle DOWN$MH = Linker.nativeLinker().downcallHandle($DESC);
+
+    /**
+     * Invoke the upcall stub {@code funcPtr}, with given parameters
+     */
+    public static boolean invoke(MemorySegment funcPtr, int proxyId, long userData, MemorySegment context) {
+        try {
+            return (boolean) DOWN$MH.invokeExact(funcPtr, proxyId, userData, context);
+        } catch (Error | RuntimeException ex) {
+            throw ex;
+        } catch (Throwable ex$) {
+            throw new AssertionError("should not reach here", ex$);
+        }
     }
 }
-
 

@@ -2,144 +2,311 @@
 
 package org.box2d;
 
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.VarHandle;
-import java.nio.ByteOrder;
+import java.lang.invoke.*;
 import java.lang.foreign.*;
+import java.nio.ByteOrder;
+import java.util.*;
+import java.util.function.*;
+import java.util.stream.*;
+
 import static java.lang.foreign.ValueLayout.*;
+import static java.lang.foreign.MemoryLayout.PathElement.*;
+
 /**
  * {@snippet lang=c :
  * struct b2ExplosionDef {
- *     unsigned long long maskBits;
- *     struct b2Vec2 position;
+ *     uint64_t maskBits;
+ *     b2Vec2 position;
  *     float radius;
  *     float falloff;
  *     float impulsePerLength;
- * };
+ * }
  * }
  */
 public class b2ExplosionDef {
 
-    public static MemoryLayout $LAYOUT() {
-        return constants$141.const$5;
+    b2ExplosionDef() {
+        // Should not be called directly
     }
-    public static VarHandle maskBits$VH() {
-        return constants$142.const$0;
-    }
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * unsigned long long maskBits;
-     * }
-     */
-    public static long maskBits$get(MemorySegment seg) {
-        return (long)constants$142.const$0.get(seg);
-    }
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * unsigned long long maskBits;
-     * }
-     */
-    public static void maskBits$set(MemorySegment seg, long x) {
-        constants$142.const$0.set(seg, x);
-    }
-    public static long maskBits$get(MemorySegment seg, long index) {
-        return (long)constants$142.const$0.get(seg.asSlice(index*sizeof()));
-    }
-    public static void maskBits$set(MemorySegment seg, long index, long x) {
-        constants$142.const$0.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static MemorySegment position$slice(MemorySegment seg) {
-        return seg.asSlice(8, 8);
-    }
-    public static VarHandle radius$VH() {
-        return constants$142.const$1;
-    }
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * float radius;
-     * }
-     */
-    public static float radius$get(MemorySegment seg) {
-        return (float)constants$142.const$1.get(seg);
-    }
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * float radius;
-     * }
-     */
-    public static void radius$set(MemorySegment seg, float x) {
-        constants$142.const$1.set(seg, x);
-    }
-    public static float radius$get(MemorySegment seg, long index) {
-        return (float)constants$142.const$1.get(seg.asSlice(index*sizeof()));
-    }
-    public static void radius$set(MemorySegment seg, long index, float x) {
-        constants$142.const$1.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static VarHandle falloff$VH() {
-        return constants$142.const$2;
-    }
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * float falloff;
-     * }
-     */
-    public static float falloff$get(MemorySegment seg) {
-        return (float)constants$142.const$2.get(seg);
-    }
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * float falloff;
-     * }
-     */
-    public static void falloff$set(MemorySegment seg, float x) {
-        constants$142.const$2.set(seg, x);
-    }
-    public static float falloff$get(MemorySegment seg, long index) {
-        return (float)constants$142.const$2.get(seg.asSlice(index*sizeof()));
-    }
-    public static void falloff$set(MemorySegment seg, long index, float x) {
-        constants$142.const$2.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static VarHandle impulsePerLength$VH() {
-        return constants$142.const$3;
-    }
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * float impulsePerLength;
-     * }
-     */
-    public static float impulsePerLength$get(MemorySegment seg) {
-        return (float)constants$142.const$3.get(seg);
-    }
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * float impulsePerLength;
-     * }
-     */
-    public static void impulsePerLength$set(MemorySegment seg, float x) {
-        constants$142.const$3.set(seg, x);
-    }
-    public static float impulsePerLength$get(MemorySegment seg, long index) {
-        return (float)constants$142.const$3.get(seg.asSlice(index*sizeof()));
-    }
-    public static void impulsePerLength$set(MemorySegment seg, long index, float x) {
-        constants$142.const$3.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static long sizeof() { return $LAYOUT().byteSize(); }
-    public static MemorySegment allocate(SegmentAllocator allocator) { return allocator.allocate($LAYOUT()); }
-    public static MemorySegment allocateArray(long len, SegmentAllocator allocator) {
-        return allocator.allocate(MemoryLayout.sequenceLayout(len, $LAYOUT()));
-    }
-    public static MemorySegment ofAddress(MemorySegment addr, Arena arena) { return RuntimeHelper.asArray(addr, $LAYOUT(), 1, arena); }
-}
 
+    private static final GroupLayout $LAYOUT = MemoryLayout.structLayout(
+        Box2D.C_LONG_LONG.withName("maskBits"),
+        b2Vec2.layout().withName("position"),
+        Box2D.C_FLOAT.withName("radius"),
+        Box2D.C_FLOAT.withName("falloff"),
+        Box2D.C_FLOAT.withName("impulsePerLength"),
+        MemoryLayout.paddingLayout(4)
+    ).withName("b2ExplosionDef");
+
+    /**
+     * The layout of this struct
+     */
+    public static final GroupLayout layout() {
+        return $LAYOUT;
+    }
+
+    private static final OfLong maskBits$LAYOUT = (OfLong)$LAYOUT.select(groupElement("maskBits"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * uint64_t maskBits
+     * }
+     */
+    public static final OfLong maskBits$layout() {
+        return maskBits$LAYOUT;
+    }
+
+    private static final long maskBits$OFFSET = $LAYOUT.byteOffset(groupElement("maskBits"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * uint64_t maskBits
+     * }
+     */
+    public static final long maskBits$offset() {
+        return maskBits$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * uint64_t maskBits
+     * }
+     */
+    public static long maskBits(MemorySegment struct) {
+        return struct.get(maskBits$LAYOUT, maskBits$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * uint64_t maskBits
+     * }
+     */
+    public static void maskBits(MemorySegment struct, long fieldValue) {
+        struct.set(maskBits$LAYOUT, maskBits$OFFSET, fieldValue);
+    }
+
+    private static final GroupLayout position$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("position"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * b2Vec2 position
+     * }
+     */
+    public static final GroupLayout position$layout() {
+        return position$LAYOUT;
+    }
+
+    private static final long position$OFFSET = $LAYOUT.byteOffset(groupElement("position"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * b2Vec2 position
+     * }
+     */
+    public static final long position$offset() {
+        return position$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * b2Vec2 position
+     * }
+     */
+    public static MemorySegment position(MemorySegment struct) {
+        return struct.asSlice(position$OFFSET, position$LAYOUT.byteSize());
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * b2Vec2 position
+     * }
+     */
+    public static void position(MemorySegment struct, MemorySegment fieldValue) {
+        MemorySegment.copy(fieldValue, 0L, struct, position$OFFSET, position$LAYOUT.byteSize());
+    }
+
+    private static final OfFloat radius$LAYOUT = (OfFloat)$LAYOUT.select(groupElement("radius"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * float radius
+     * }
+     */
+    public static final OfFloat radius$layout() {
+        return radius$LAYOUT;
+    }
+
+    private static final long radius$OFFSET = $LAYOUT.byteOffset(groupElement("radius"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * float radius
+     * }
+     */
+    public static final long radius$offset() {
+        return radius$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * float radius
+     * }
+     */
+    public static float radius(MemorySegment struct) {
+        return struct.get(radius$LAYOUT, radius$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * float radius
+     * }
+     */
+    public static void radius(MemorySegment struct, float fieldValue) {
+        struct.set(radius$LAYOUT, radius$OFFSET, fieldValue);
+    }
+
+    private static final OfFloat falloff$LAYOUT = (OfFloat)$LAYOUT.select(groupElement("falloff"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * float falloff
+     * }
+     */
+    public static final OfFloat falloff$layout() {
+        return falloff$LAYOUT;
+    }
+
+    private static final long falloff$OFFSET = $LAYOUT.byteOffset(groupElement("falloff"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * float falloff
+     * }
+     */
+    public static final long falloff$offset() {
+        return falloff$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * float falloff
+     * }
+     */
+    public static float falloff(MemorySegment struct) {
+        return struct.get(falloff$LAYOUT, falloff$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * float falloff
+     * }
+     */
+    public static void falloff(MemorySegment struct, float fieldValue) {
+        struct.set(falloff$LAYOUT, falloff$OFFSET, fieldValue);
+    }
+
+    private static final OfFloat impulsePerLength$LAYOUT = (OfFloat)$LAYOUT.select(groupElement("impulsePerLength"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * float impulsePerLength
+     * }
+     */
+    public static final OfFloat impulsePerLength$layout() {
+        return impulsePerLength$LAYOUT;
+    }
+
+    private static final long impulsePerLength$OFFSET = $LAYOUT.byteOffset(groupElement("impulsePerLength"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * float impulsePerLength
+     * }
+     */
+    public static final long impulsePerLength$offset() {
+        return impulsePerLength$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * float impulsePerLength
+     * }
+     */
+    public static float impulsePerLength(MemorySegment struct) {
+        return struct.get(impulsePerLength$LAYOUT, impulsePerLength$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * float impulsePerLength
+     * }
+     */
+    public static void impulsePerLength(MemorySegment struct, float fieldValue) {
+        struct.set(impulsePerLength$LAYOUT, impulsePerLength$OFFSET, fieldValue);
+    }
+
+    /**
+     * Obtains a slice of {@code arrayParam} which selects the array element at {@code index}.
+     * The returned segment has address {@code arrayParam.address() + index * layout().byteSize()}
+     */
+    public static MemorySegment asSlice(MemorySegment array, long index) {
+        return array.asSlice(layout().byteSize() * index);
+    }
+
+    /**
+     * The size (in bytes) of this struct
+     */
+    public static long sizeof() { return layout().byteSize(); }
+
+    /**
+     * Allocate a segment of size {@code layout().byteSize()} using {@code allocator}
+     */
+    public static MemorySegment allocate(SegmentAllocator allocator) {
+        return allocator.allocate(layout());
+    }
+
+    /**
+     * Allocate an array of size {@code elementCount} using {@code allocator}.
+     * The returned segment has size {@code elementCount * layout().byteSize()}.
+     */
+    public static MemorySegment allocateArray(long elementCount, SegmentAllocator allocator) {
+        return allocator.allocate(MemoryLayout.sequenceLayout(elementCount, layout()));
+    }
+
+    /**
+     * Reinterprets {@code addr} using target {@code arena} and {@code cleanupAction} (if any).
+     * The returned segment has size {@code layout().byteSize()}
+     */
+    public static MemorySegment reinterpret(MemorySegment addr, Arena arena, Consumer<MemorySegment> cleanup) {
+        return reinterpret(addr, 1, arena, cleanup);
+    }
+
+    /**
+     * Reinterprets {@code addr} using target {@code arena} and {@code cleanupAction} (if any).
+     * The returned segment has size {@code elementCount * layout().byteSize()}
+     */
+    public static MemorySegment reinterpret(MemorySegment addr, long elementCount, Arena arena, Consumer<MemorySegment> cleanup) {
+        return addr.reinterpret(layout().byteSize() * elementCount, arena, cleanup);
+    }
+}
 

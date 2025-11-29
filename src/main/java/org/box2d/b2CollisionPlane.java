@@ -2,116 +2,265 @@
 
 package org.box2d;
 
-import java.lang.invoke.MethodHandle;
-import java.lang.invoke.VarHandle;
-import java.nio.ByteOrder;
+import java.lang.invoke.*;
 import java.lang.foreign.*;
+import java.nio.ByteOrder;
+import java.util.*;
+import java.util.function.*;
+import java.util.stream.*;
+
 import static java.lang.foreign.ValueLayout.*;
+import static java.lang.foreign.MemoryLayout.PathElement.*;
+
 /**
  * {@snippet lang=c :
  * struct b2CollisionPlane {
- *     struct b2Plane plane;
+ *     b2Plane plane;
  *     float pushLimit;
  *     float push;
  *     _Bool clipVelocity;
- * };
+ * }
  * }
  */
 public class b2CollisionPlane {
 
-    public static MemoryLayout $LAYOUT() {
-        return constants$97.const$4;
+    b2CollisionPlane() {
+        // Should not be called directly
     }
-    public static MemorySegment plane$slice(MemorySegment seg) {
-        return seg.asSlice(0, 12);
-    }
-    public static VarHandle pushLimit$VH() {
-        return constants$97.const$5;
-    }
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * float pushLimit;
-     * }
-     */
-    public static float pushLimit$get(MemorySegment seg) {
-        return (float)constants$97.const$5.get(seg);
-    }
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * float pushLimit;
-     * }
-     */
-    public static void pushLimit$set(MemorySegment seg, float x) {
-        constants$97.const$5.set(seg, x);
-    }
-    public static float pushLimit$get(MemorySegment seg, long index) {
-        return (float)constants$97.const$5.get(seg.asSlice(index*sizeof()));
-    }
-    public static void pushLimit$set(MemorySegment seg, long index, float x) {
-        constants$97.const$5.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static VarHandle push$VH() {
-        return constants$98.const$0;
-    }
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * float push;
-     * }
-     */
-    public static float push$get(MemorySegment seg) {
-        return (float)constants$98.const$0.get(seg);
-    }
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * float push;
-     * }
-     */
-    public static void push$set(MemorySegment seg, float x) {
-        constants$98.const$0.set(seg, x);
-    }
-    public static float push$get(MemorySegment seg, long index) {
-        return (float)constants$98.const$0.get(seg.asSlice(index*sizeof()));
-    }
-    public static void push$set(MemorySegment seg, long index, float x) {
-        constants$98.const$0.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static VarHandle clipVelocity$VH() {
-        return constants$98.const$1;
-    }
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * _Bool clipVelocity;
-     * }
-     */
-    public static boolean clipVelocity$get(MemorySegment seg) {
-        return (boolean)constants$98.const$1.get(seg);
-    }
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * _Bool clipVelocity;
-     * }
-     */
-    public static void clipVelocity$set(MemorySegment seg, boolean x) {
-        constants$98.const$1.set(seg, x);
-    }
-    public static boolean clipVelocity$get(MemorySegment seg, long index) {
-        return (boolean)constants$98.const$1.get(seg.asSlice(index*sizeof()));
-    }
-    public static void clipVelocity$set(MemorySegment seg, long index, boolean x) {
-        constants$98.const$1.set(seg.asSlice(index*sizeof()), x);
-    }
-    public static long sizeof() { return $LAYOUT().byteSize(); }
-    public static MemorySegment allocate(SegmentAllocator allocator) { return allocator.allocate($LAYOUT()); }
-    public static MemorySegment allocateArray(long len, SegmentAllocator allocator) {
-        return allocator.allocate(MemoryLayout.sequenceLayout(len, $LAYOUT()));
-    }
-    public static MemorySegment ofAddress(MemorySegment addr, Arena arena) { return RuntimeHelper.asArray(addr, $LAYOUT(), 1, arena); }
-}
 
+    private static final GroupLayout $LAYOUT = MemoryLayout.structLayout(
+        b2Plane.layout().withName("plane"),
+        Box2D.C_FLOAT.withName("pushLimit"),
+        Box2D.C_FLOAT.withName("push"),
+        Box2D.C_BOOL.withName("clipVelocity"),
+        MemoryLayout.paddingLayout(3)
+    ).withName("b2CollisionPlane");
+
+    /**
+     * The layout of this struct
+     */
+    public static final GroupLayout layout() {
+        return $LAYOUT;
+    }
+
+    private static final GroupLayout plane$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("plane"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * b2Plane plane
+     * }
+     */
+    public static final GroupLayout plane$layout() {
+        return plane$LAYOUT;
+    }
+
+    private static final long plane$OFFSET = $LAYOUT.byteOffset(groupElement("plane"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * b2Plane plane
+     * }
+     */
+    public static final long plane$offset() {
+        return plane$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * b2Plane plane
+     * }
+     */
+    public static MemorySegment plane(MemorySegment struct) {
+        return struct.asSlice(plane$OFFSET, plane$LAYOUT.byteSize());
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * b2Plane plane
+     * }
+     */
+    public static void plane(MemorySegment struct, MemorySegment fieldValue) {
+        MemorySegment.copy(fieldValue, 0L, struct, plane$OFFSET, plane$LAYOUT.byteSize());
+    }
+
+    private static final OfFloat pushLimit$LAYOUT = (OfFloat)$LAYOUT.select(groupElement("pushLimit"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * float pushLimit
+     * }
+     */
+    public static final OfFloat pushLimit$layout() {
+        return pushLimit$LAYOUT;
+    }
+
+    private static final long pushLimit$OFFSET = $LAYOUT.byteOffset(groupElement("pushLimit"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * float pushLimit
+     * }
+     */
+    public static final long pushLimit$offset() {
+        return pushLimit$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * float pushLimit
+     * }
+     */
+    public static float pushLimit(MemorySegment struct) {
+        return struct.get(pushLimit$LAYOUT, pushLimit$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * float pushLimit
+     * }
+     */
+    public static void pushLimit(MemorySegment struct, float fieldValue) {
+        struct.set(pushLimit$LAYOUT, pushLimit$OFFSET, fieldValue);
+    }
+
+    private static final OfFloat push$LAYOUT = (OfFloat)$LAYOUT.select(groupElement("push"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * float push
+     * }
+     */
+    public static final OfFloat push$layout() {
+        return push$LAYOUT;
+    }
+
+    private static final long push$OFFSET = $LAYOUT.byteOffset(groupElement("push"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * float push
+     * }
+     */
+    public static final long push$offset() {
+        return push$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * float push
+     * }
+     */
+    public static float push(MemorySegment struct) {
+        return struct.get(push$LAYOUT, push$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * float push
+     * }
+     */
+    public static void push(MemorySegment struct, float fieldValue) {
+        struct.set(push$LAYOUT, push$OFFSET, fieldValue);
+    }
+
+    private static final OfBoolean clipVelocity$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("clipVelocity"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * _Bool clipVelocity
+     * }
+     */
+    public static final OfBoolean clipVelocity$layout() {
+        return clipVelocity$LAYOUT;
+    }
+
+    private static final long clipVelocity$OFFSET = $LAYOUT.byteOffset(groupElement("clipVelocity"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * _Bool clipVelocity
+     * }
+     */
+    public static final long clipVelocity$offset() {
+        return clipVelocity$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * _Bool clipVelocity
+     * }
+     */
+    public static boolean clipVelocity(MemorySegment struct) {
+        return struct.get(clipVelocity$LAYOUT, clipVelocity$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * _Bool clipVelocity
+     * }
+     */
+    public static void clipVelocity(MemorySegment struct, boolean fieldValue) {
+        struct.set(clipVelocity$LAYOUT, clipVelocity$OFFSET, fieldValue);
+    }
+
+    /**
+     * Obtains a slice of {@code arrayParam} which selects the array element at {@code index}.
+     * The returned segment has address {@code arrayParam.address() + index * layout().byteSize()}
+     */
+    public static MemorySegment asSlice(MemorySegment array, long index) {
+        return array.asSlice(layout().byteSize() * index);
+    }
+
+    /**
+     * The size (in bytes) of this struct
+     */
+    public static long sizeof() { return layout().byteSize(); }
+
+    /**
+     * Allocate a segment of size {@code layout().byteSize()} using {@code allocator}
+     */
+    public static MemorySegment allocate(SegmentAllocator allocator) {
+        return allocator.allocate(layout());
+    }
+
+    /**
+     * Allocate an array of size {@code elementCount} using {@code allocator}.
+     * The returned segment has size {@code elementCount * layout().byteSize()}.
+     */
+    public static MemorySegment allocateArray(long elementCount, SegmentAllocator allocator) {
+        return allocator.allocate(MemoryLayout.sequenceLayout(elementCount, layout()));
+    }
+
+    /**
+     * Reinterprets {@code addr} using target {@code arena} and {@code cleanupAction} (if any).
+     * The returned segment has size {@code layout().byteSize()}
+     */
+    public static MemorySegment reinterpret(MemorySegment addr, Arena arena, Consumer<MemorySegment> cleanup) {
+        return reinterpret(addr, 1, arena, cleanup);
+    }
+
+    /**
+     * Reinterprets {@code addr} using target {@code arena} and {@code cleanupAction} (if any).
+     * The returned segment has size {@code elementCount * layout().byteSize()}
+     */
+    public static MemorySegment reinterpret(MemorySegment addr, long elementCount, Arena arena, Consumer<MemorySegment> cleanup) {
+        return addr.reinterpret(layout().byteSize() * elementCount, arena, cleanup);
+    }
+}
 
