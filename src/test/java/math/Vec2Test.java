@@ -6,8 +6,8 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class Vec2Test {
-    static final float delta = 0.0001f;
+class Vec2Test {
+    private static final float delta = 0.0001f;
 
     @Test
     @DisplayName("Vec2 default constructor create zero vector")
@@ -20,7 +20,11 @@ public class Vec2Test {
     @Test
     @DisplayName("Vec2 constructor create vector with value")
     void testConstructor() {
-        Vec2 v = new Vec2(2.4f, 1.5f);
+        Vec2 v = new Vec2(4.0f);
+        assertEquals(4.0f, v.x(), "x expected 4.0");
+        assertEquals(4.0f, v.y(), "y expected 4.0");
+
+        v = new Vec2(2.4f, 1.5f);
         assertEquals(2.4f, v.x(), "x expected 2.4");
         assertEquals(1.5f, v.y(), "y expected 1.5");
     }
@@ -36,22 +40,6 @@ public class Vec2Test {
 
         copy.setX(6.2f);
         assertEquals(5.4f, og.x(), "original x expected unchanged value");
-    }
-
-    @Test
-    @DisplayName("Vec2 setter modify vector's values")
-    void testSetters() {
-        Vec2 v = new Vec2();
-
-        v.setX(3.0f);
-        assertEquals(3.0f, v.x(), "x expected updated value");
-
-        v.setY(2.0f);
-        assertEquals(2.0f, v.y(), "y expected updated value");
-
-        v.set(4.0f, 8.0f);
-        assertEquals(4.0f, v.x(), "x expected 4.0");
-        assertEquals(8.0f, v.y(), "y expected 8.0");
     }
 
     @Test

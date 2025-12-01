@@ -72,6 +72,10 @@ public class NativeLoader {
         }
     }
 
+    /**
+     * Get the load status of the Box2D native library in the system.
+     * @return true if loaded
+     */
     public static boolean isLoaded() {
         return loaded;
     }

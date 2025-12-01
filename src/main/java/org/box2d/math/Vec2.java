@@ -2,6 +2,7 @@ package org.box2d.math;
 
 import org.box2d.NativeLoader;
 import org.box2d.internal.b2Vec2;
+import org.box2d.internal.nBox2D;
 
 import java.lang.foreign.Arena;
 import java.lang.foreign.MemorySegment;
@@ -26,7 +27,15 @@ public class Vec2 {
     }
 
     /**
-     * Create a new {@link Vec2} and initialize its components to the given value
+     * Create a new {@link Vec2} and initialize its components to the given value.
+     * @param f the value for both x and y components
+     */
+    public Vec2(float f) {
+        this(f, f);
+    }
+
+    /**
+     * Create a new {@link Vec2} and initialize its components to the given values.
      * @param x the x component
      * @param y the y component
      */
@@ -56,7 +65,8 @@ public class Vec2 {
     }
 
     /**
-     * Create a new {@link Vec2} and initialize its components in the given arena.
+     * Create a new {@link Vec2} and initialize its components
+     * in the given arena, with the given values.
      * @param arena the arena to allocate in
      * @param x the x component
      * @param y the y component
@@ -64,10 +74,12 @@ public class Vec2 {
     public Vec2(Arena arena, float x, float y) {
         this.arena = null;
         this.segment = arena.allocate(b2Vec2.layout());
+        setX(x);
+        setY(y);
     }
 
     /**
-     * Create a new {@link Vec2} with its components initialized to this vector's components value.
+     * Create a new {@link Vec2} with its components initialized to this vector's component values.
      * @return a new {@link Vec2}
      */
     public Vec2 copy() {
@@ -330,9 +342,7 @@ public class Vec2 {
      * @return true if valid
      */
     public boolean isValid() {
-        float x = x();
-        float y = y();
-        return !Float.isNaN(x) && !Float.isNaN(y) && !Float.isInfinite(x) && !Float.isInfinite(y);
+        return nBox2D.nIsValidVec2(segment);
     }
 
     /**
@@ -352,7 +362,7 @@ public class Vec2 {
     }
 
     /**
-     * Get a new {@link Vec2} that is a unit vector along the x-axis {@code (1, 0)}.
+     * Get a new {@link Vec2} that is a unit vector along the X axis {@code (1, 0)}.
      * @return a new x unit {@link Vec2}
      */
     public static Vec2 unitX() {
@@ -360,7 +370,7 @@ public class Vec2 {
     }
 
     /**
-     * Get a new {@link Vec2} that is a unit vector along the y-axis {@code (0, 1)}.
+     * Get a new {@link Vec2} that is a unit vector along the Y axis {@code (0, 1)}.
      * @return a new y unit {@link Vec2}
      */
     public static Vec2 unitY() {
