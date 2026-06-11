@@ -1,0 +1,126 @@
+name: Build Natives
+
+# Manual job that rebuilds the Box2D shared libraries for every supported platform,
+# validates each library by running the test suite on its own runner, and then commits them back into src/main/resources/natives.
+#
+# This should only be run when native Box2D library needs a version bump.
+
+on:
+  workflow_dispatch:
+    inputs:
+      box2d_ref:
+        description: "Box2D git tag to build (upstream erincatto/box2d)"
+        default: "v3.1.1"
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build & test ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: linux
+            os: ubuntu-latest
+            lib: libbox2d.so
+            out: box2d-src/build/bin/libbox2d.so
+          - name: win
+            os: windows-latest
+            lib: box2d.dll
+            out: box2d-src/build/bin/Release/box2d.dll
+          - name: mac
+            os: macos-latest   # arm64 (Apple Silicon)
+            lib: libbox2d.dylib
+            out: box2d-src/build/bin/libbox2d.dylib
+            cmake_extra: -DCMAKE_OSX_ARCHITECTURES=arm64
+    steps:
+      - name: Checkout this repository
+        uses: actions/checkout@v4
+
+      - name: Checkout Box2D source
+        uses: actions/checkout@v4
+        with:
+          repository: erincatto/box2d
+          ref: ${{ inputs.box2d_ref }}
+          path: box2d-src
+
+      - name: Setup JDK 25
+        uses: actions/setup-java@v5
+        with:
+          distribution: 'temurin'
+          java-version: '25'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v6
+
+      - name: Configure CMake
+        run: >
+          cmake -S box2d-src -B box2d-src/build
+          -DCMAKE_BUILD_TYPE=Release
+          -DBUILD_SHARED_LIBS=ON
+          -DBOX2D_SAMPLES=OFF
+          -DBOX2D_UNIT_TESTS=OFF
+          -DBOX2D_BENCHMARKS=OFF
+          -DBOX2D_DOCS=OFF
+          ${{ matrix.cmake_extra }}
+
+      - name: Build Box2D
+        run: cmake --build box2d-src/build --config Release
+
+      # cmake -E copy resolves the version symlink (e.g. libbox2d.so ->
+      # libbox2d.so.x.y.z) and writes a plain, unversioned file with the real
+      # content, which is what NativeLoader expects on the classpath.
+      - name: Place native library into resources
+        run: >
+          cmake -E copy "${{ matrix.out }}"
+          "src/main/resources/natives/${{ matrix.name }}/${{ matrix.lib }}"
+
+      - name: Make gradlew executable
+        if: runner.os != 'Windows'
+        run: chmod +x gradlew
+
+      - name: Run tests against freshly-built library
+        shell: bash
+        run: ./gradlew test --no-daemon
+
+      - name: Upload validated library
+        uses: actions/upload-artifact@v4
+        with:
+          name: native-${{ matrix.name }}
+          path: src/main/resources/natives/${{ matrix.name }}/${{ matrix.lib }}
+          if-no-files-found: error
+
+  commit:
+    name: Commit libraries
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout this repository
+        uses: actions/checkout@v4
+
+      - name: Download validated libraries
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Place libraries into resources
+        run: |
+          install -D artifacts/native-linux/libbox2d.so     src/main/resources/natives/linux/libbox2d.so
+          install -D artifacts/native-win/box2d.dll         src/main/resources/natives/win/box2d.dll
+          install -D artifacts/native-mac/libbox2d.dylib    src/main/resources/natives/mac/libbox2d.dylib
+
+      - name: Commit and push
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add src/main/resources/natives
+          if git diff --staged --quiet; then
+            echo "Native libraries are unchanged; nothing to commit."
+          else
+            git commit -m "Rebuild Box2D ${{ inputs.box2d_ref }} native libraries"
+            git push
+          fi

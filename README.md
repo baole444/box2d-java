@@ -12,7 +12,7 @@
 
 ## Requirements
 
-This library use Java FFM API, `java.lang.foreign`, [JDK 25](https://adoptium.net/temurin/releases?version=25&os=any&arch=any) will be required to run this library.
+This library use Java FFM API, `java.lang.foreign`, [JDK 25](https://adoptium.net/temurin/releases?version=25&os=any&arch=any) is required.
 
 As a native library is loaded during runtime, native access must be granted with one of these JVM arguments:
 - On the module path: `--enable-native-access=org.box2d`

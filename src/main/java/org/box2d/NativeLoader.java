@@ -13,7 +13,8 @@ import java.nio.file.StandardCopyOption;
 public class NativeLoader {
     private enum Platform {
         Windows("win", "box2d.dll"),
-        Linux("linux", "libbox2d.so");
+        Linux("linux", "libbox2d.so"),
+        Mac("mac", "libbox2d.dylib");
 
         final String dir;
         final String lib;
@@ -26,6 +27,11 @@ public class NativeLoader {
             String os = System.getProperty("os.name").toLowerCase();
             if (os.contains(Windows.dir)) return Windows;
             if (os.contains(Linux.dir)) return Linux;
+            if (os.contains(Mac.dir)) {
+                String arch = System.getProperty("os.arch").toLowerCase();
+                if (arch.contains("aarch664") || arch.contains("arm")) return Mac;
+                throw new UnsatisfiedLinkError("Unsupported macOS architecture: " + arch + " (only arm64 is supported)");
+            }
             throw new UnsatisfiedLinkError("Unsupported operating system: " + os);
         }
     }
