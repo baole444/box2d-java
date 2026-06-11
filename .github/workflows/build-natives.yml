@@ -39,10 +39,10 @@ jobs:
             cmake_extra: -DCMAKE_OSX_ARCHITECTURES=arm64
     steps:
       - name: Checkout this repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Checkout Box2D source
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           repository: erincatto/box2d
           ref: ${{ inputs.box2d_ref }}
@@ -88,7 +88,7 @@ jobs:
         run: ./gradlew test --no-daemon
 
       - name: Upload validated library
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: native-${{ matrix.name }}
           path: src/main/resources/natives/${{ matrix.name }}/${{ matrix.lib }}
@@ -100,10 +100,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout this repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Download validated libraries
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           path: artifacts
 
