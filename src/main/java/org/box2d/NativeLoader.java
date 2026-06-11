@@ -29,7 +29,7 @@ public class NativeLoader {
             if (os.contains(Linux.dir)) return Linux;
             if (os.contains(Mac.dir)) {
                 String arch = System.getProperty("os.arch").toLowerCase();
-                if (arch.contains("aarch664") || arch.contains("arm")) return Mac;
+                if (arch.contains("aarch64") || arch.contains("arm")) return Mac;
                 throw new UnsatisfiedLinkError("Unsupported macOS architecture: " + arch + " (only arm64 is supported)");
             }
             throw new UnsatisfiedLinkError("Unsupported operating system: " + os);
