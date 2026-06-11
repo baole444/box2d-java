@@ -1,7 +1,5 @@
-package math;
+package org.box2d.math;
 
-import org.box2d.math.Rot;
-import org.box2d.math.Vec2;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

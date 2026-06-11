@@ -1,11 +1,13 @@
 plugins {
     id 'java'
+    id 'maven-publish'
+    id 'signing'
 }
 
 def targetJavaVersion = 25
 
-group = 'io.github.baole444'
-version = '3.1.1'
+group = project.project_group
+version = project.binding_version
 
 repositories {
     mavenCentral()
@@ -19,6 +21,9 @@ dependencies {
 
 test {
     useJUnitPlatform()
+    // Grant native access for testing.
+    // For library user, grant '--enable-native-access=org.box2d' instead.
+    jvmArgs('--enable-native-access=ALL-UNNAMED')
 }
 
 tasks.withType(JavaCompile).configureEach {

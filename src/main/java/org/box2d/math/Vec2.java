@@ -8,12 +8,12 @@ import java.lang.foreign.Arena;
 import java.lang.foreign.MemorySegment;
 
 /**
- * 2D vector, represent a point or free vector.<br>
- * Wrapper for native {@link b2Vec2}
+ * 2D vector, represent a point or free vector.
+ * <p>
+ * Wrapper for native {@link b2Vec2}.
  */
 public class Vec2 {
     private final MemorySegment segment;
-    private final Arena arena;
 
     static {
         if (!NativeLoader.isLoaded()) NativeLoader.load();
@@ -40,8 +40,7 @@ public class Vec2 {
      * @param y the y component
      */
     public Vec2(float x, float y) {
-        arena = Arena.ofAuto();
-        segment = arena.allocate(b2Vec2.layout());
+        segment = Arena.ofAuto().allocate(b2Vec2.layout());
         setX(x);
         setY(y);
     }
@@ -61,7 +60,6 @@ public class Vec2 {
      */
     public Vec2(MemorySegment segment) {
         this.segment = segment;
-        arena = null;
     }
 
     /**
@@ -72,7 +70,6 @@ public class Vec2 {
      * @param y the y component
      */
     public Vec2(Arena arena, float x, float y) {
-        this.arena = null;
         this.segment = arena.allocate(b2Vec2.layout());
         setX(x);
         setY(y);
@@ -119,6 +116,16 @@ public class Vec2 {
      */
     public Vec2 setY(float y) {
         b2Vec2.y(segment, y);
+        return this;
+    }
+
+    /**
+     * Set the x and y components to that of the given vector.
+     * @param other the other {@link Vec2} to set the values from
+     * @return this
+     */
+    public Vec2 set(Vec2 other) {
+        set(other.x(), other.y());
         return this;
     }
 
@@ -198,16 +205,6 @@ public class Vec2 {
     }
 
     /**
-     * Multiply the components of this vector by the given scalar values.
-     * @param x the x component to multiply this vector by
-     * @param y the y component to multiply this vector by
-     * @return this
-     */
-    public Vec2 mul(float x, float y) {
-        return set(x() * x, y() * y);
-    }
-
-    /**
      * Multiply this vector component-wise by another vector.
      * @param other the vector to multiply by
      * @return this
@@ -223,16 +220,6 @@ public class Vec2 {
      */
     public Vec2 div(float scalar) {
         return set(x() / scalar, y() / scalar);
-    }
-
-    /**
-     * Divide the components of this vector by the given scalar values.
-     * @param x the x component to divide this vector by
-     * @param y the y component to divide this vector by
-     * @return this
-     */
-    public Vec2 div(float x, float y) {
-        return set(x() / x, y() / y);
     }
 
     /**
@@ -379,7 +366,7 @@ public class Vec2 {
 
     @Override
     public String toString() {
-        return String.format("Vec2(%.3f, %.3f", x(), y());
+        return String.format("Vec2(%.3f, %.3f)", x(), y());
     }
 
     @Override

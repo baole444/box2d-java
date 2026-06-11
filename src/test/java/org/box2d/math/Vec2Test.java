@@ -1,6 +1,5 @@
-package math;
+package org.box2d.math;
 
-import org.box2d.math.Vec2;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -105,11 +104,6 @@ class Vec2Test {
         v.mul(4.5f);
         assertEquals(9.0f, v.x(), "x expected 9.0");
         assertEquals(22.5f, v.y(), "y expected 22.5f");
-
-        v.set(4.0f, 2.0f);
-        v.mul(3.0f, 5.0f);
-        assertEquals(12.0f, v.x(), "x expected 12.0");
-        assertEquals(10.0f, v.y(), "y expected 10.0");
     }
 
     @Test
@@ -129,11 +123,6 @@ class Vec2Test {
         v.div(3.0f);
         assertEquals(2.2f, v.x(), delta, "x expected 2.2");
         assertEquals(3.1f, v.y(), delta, "y expected 3.1");
-
-        v.set(12.0f, 24.0f);
-        v.div(4.0f, 3.0f);
-        assertEquals(3.0f, v.x(), "x expected 3.0");
-        assertEquals(8.0f, v.y(), "y expected 8.0");
     }
 
     @Test

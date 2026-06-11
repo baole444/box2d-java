@@ -7,12 +7,12 @@ import java.lang.foreign.Arena;
 import java.lang.foreign.MemorySegment;
 
 /**
- * 2D rigid transform, represent position and rotation.<br>
- * Wrapper for native {@link b2Transform}
+ * 2D rigid transform, represent position and rotation.
+ * <p>
+ * Wrapper for native {@link b2Transform}.
  */
 public class Transform {
     private final MemorySegment segment;
-    private final Arena arena;
 
     static {
         if (!NativeLoader.isLoaded()) NativeLoader.load();
@@ -50,8 +50,7 @@ public class Transform {
      * @param rotation the rotation component
      */
     public Transform(Vec2 position, Rot rotation) {
-        arena = Arena.ofAuto();
-        segment = arena.allocate(b2Transform.layout());
+        segment = Arena.ofAuto().allocate(b2Transform.layout());
         setPosition(position);
         setRotation(rotation);
     }
@@ -63,8 +62,7 @@ public class Transform {
      * @param angle the angle value in Radians for the rotation component
      */
     public Transform(float x, float y, float angle) {
-        arena = Arena.ofAuto();
-        segment = arena.allocate(b2Transform.layout());
+        segment = Arena.ofAuto().allocate(b2Transform.layout());
         setPosition(x, y);
         setRotation(angle);
     }
@@ -84,7 +82,6 @@ public class Transform {
      */
     public Transform(MemorySegment segment) {
         this.segment = segment;
-        arena = null;
     }
 
     /**
@@ -95,7 +92,6 @@ public class Transform {
      * @param rotation the rotation component
      */
     public Transform(Arena arena, Vec2 position, Rot rotation) {
-        this.arena = null;
         segment = arena.allocate(b2Transform.layout());
         setPosition(position);
         setRotation(rotation);
@@ -282,7 +278,7 @@ public class Transform {
     public int hashCode() {
         final int prime = 31;
         int result = position().hashCode();
-        result = prime * result * rotation().hashCode();
+        result = prime * result + rotation().hashCode();
         return result;
     }
 }

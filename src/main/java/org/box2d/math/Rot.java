@@ -9,12 +9,12 @@ import java.lang.foreign.MemorySegment;
 
 /**
  * 2D rotation, represent cosine and sine.
- * This is similar to using a complex number for rotation.<br>
- * Wrapper for native {@link b2Rot}
+ * This is similar to using a complex number for rotation.
+ * <p>
+ * Wrapper for native {@link b2Rot}.
  */
 public class Rot {
     private final MemorySegment segment;
-    private final Arena arena;
 
     static {
         if (!NativeLoader.isLoaded()) NativeLoader.load();
@@ -33,8 +33,7 @@ public class Rot {
      * @param angle the angle to initialize this rotation's components with
      */
     public Rot(float angle) {
-        arena = Arena.ofAuto();
-        segment = arena.allocate(b2Rot.layout());
+        segment = Arena.ofAuto().allocate(b2Rot.layout());
         setAngle(angle);
     }
 
@@ -44,8 +43,7 @@ public class Rot {
      * @param sine the sine component
      */
     public Rot(float cosine, float sine) {
-        arena = Arena.ofAuto();
-        segment = arena.allocate(b2Rot.layout());
+        segment = Arena.ofAuto().allocate(b2Rot.layout());
         setC(cosine);
         setS(sine);
     }
@@ -65,7 +63,6 @@ public class Rot {
      */
     public Rot(MemorySegment segment) {
         this.segment = segment;
-        arena = null;
     }
 
     /**
@@ -75,7 +72,6 @@ public class Rot {
      * @param angle the angle to initialize this rotation's components with
      */
     public Rot(Arena arena, float angle) {
-        this.arena = null;
         segment = arena.allocate(b2Rot.layout());
         setAngle(angle);
     }
@@ -88,7 +84,6 @@ public class Rot {
      * @param sine the sine component
      */
     public Rot(Arena arena, float cosine, float sine) {
-        this.arena = null;
         segment = arena.allocate(b2Rot.layout());
         setC(cosine);
         setS(sine);
@@ -127,6 +122,16 @@ public class Rot {
      */
     public Rot setS(float sine) {
         b2Rot.s(segment, sine);
+        return this;
+    }
+
+    /**
+     * Set the cosine and sine components to that of the given rotation.
+     * @param other the other {@link Rot} to set the values from
+     * @return this
+     */
+    public Rot set(Rot other) {
+        set(other.c(), other.s());
         return this;
     }
 
@@ -262,8 +267,8 @@ public class Rot {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result * Float.floatToIntBits(c());
-        result = prime * result * Float.floatToIntBits(s());
+        result = prime * result + Float.floatToIntBits(c());
+        result = prime * result + Float.floatToIntBits(s());
         return result;
     }
 }
