@@ -10,7 +10,7 @@ import java.nio.file.StandardCopyOption;
  * Loader for the Box2D native library file.
  * Most wrapper classes will contain static block to check and load the native library.<br>
  */
-public class NativeLoader {
+public final class NativeLoader {
     private enum Platform {
         Windows("win", "box2d.dll"),
         Linux("linux", "libbox2d.so"),

@@ -164,4 +164,19 @@ class RotTest {
         assertEquals(r1, r1, "Same reference expected equal");
         assertNotEquals(null, r1, "Rotation and null expected not equal");
     }
+
+    @Test
+    @DisplayName("Rot component equals uses arithmetic comparison")
+    void testComponentEquals() {
+        Rot r = new Rot(0.6f, 0.8f);
+        assertTrue(r.equals(0.6f, 0.8f), "matching components expected equal");
+        assertFalse(r.equals(0.6f, 0.5f), "differing components expected not equal");
+
+        Rot identity = new Rot(1.0f, 0.0f);
+        assertTrue(identity.equals(1.0f, -0.0f), "negative zero expected arithmetically equal to zero");
+        assertNotEquals(new Rot(1.0f, 0.0f), new Rot(1.0f, -0.0f), "bit-based equals expected to distinguish negative zero");
+
+        Rot nan = new Rot(Float.NaN, Float.NaN);
+        assertFalse(nan.equals(Float.NaN, Float.NaN), "NaN expected never arithmetically equal");
+    }
 }

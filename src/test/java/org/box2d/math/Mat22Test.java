@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class Mat22Test {
+class Mat22Test {
     private static final float delta = 0.0001f;
 
     @Test
@@ -23,7 +23,7 @@ public class Mat22Test {
     }
 
     @Test
-    @DisplayName("Mat22 component constructor round-trips")
+    @DisplayName("Mat22 component constructor create matrix with values")
     void testComponentConstructor() {
         Mat22 m = new Mat22(1.0f, 2.0f, 3.0f, 4.0f);
         assertEquals(1.0f, m.m00(), "m00 expected 1.0");
@@ -33,7 +33,7 @@ public class Mat22Test {
     }
 
     @Test
-    @DisplayName("Mat22 column constructor round-trips")
+    @DisplayName("Mat22 column constructor create matrix with values")
     void testColumnConstructor() {
         Mat22 m = new Mat22(new Vec2(1.0f, 2.0f), new Vec2(3.0f, 4.0f));
         assertEquals(1.0f, m.cx().x(), "cx.x expected 1.0");

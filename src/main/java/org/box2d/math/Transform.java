@@ -11,7 +11,7 @@ import java.lang.foreign.MemorySegment;
  * <p>
  * Wrapper for native {@link b2Transform}.
  */
-public class Transform {
+public final class Transform {
     private final MemorySegment segment;
 
     static {
@@ -98,8 +98,16 @@ public class Transform {
     }
 
     /**
+     * Create a new {@link Transform} with its components initialized to this transform's component values.
+     * @return a new {@link Transform}
+     */
+    public Transform copy() {
+        return new Transform(position(), rotation());
+    }
+
+    /**
      * Get the position's x coordinate of this transform.
-     * @return value of x coordinate
+     * @return the x coordinate value
      */
     public float x() {
         return position().x();
@@ -117,7 +125,7 @@ public class Transform {
 
     /**
      * Get the position's y coordinate of this transform.
-     * @return value of y coordinate
+     * @return the y coordinate value
      */
     public float y() {
         return position().y();
@@ -236,14 +244,6 @@ public class Transform {
         setPosition(0.0f, 0.0f);
         setRotation(0.0f);
         return this;
-    }
-
-    /**
-     * Create a new {@link Transform} with its components initialized to this transform's component values.
-     * @return a new {@link Transform}
-     */
-    public Transform copy() {
-        return new Transform(position(), rotation());
     }
 
     /**

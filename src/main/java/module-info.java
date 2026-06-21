@@ -7,9 +7,9 @@
 module box2d.java {
     exports org.box2d;
     exports org.box2d.math;
+    exports org.box2d.collision;
+    exports org.box2d.dynamics;
     // Uncomment these when there are actual API inside them.
-    // exports org.box2d.collision;
-    // exports org.box2d.dynamics;
     // exports org.box2d.dynamics.joints;
     // exports org.box2d.events;
 }

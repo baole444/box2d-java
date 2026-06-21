@@ -13,7 +13,7 @@ import java.lang.foreign.MemorySegment;
  * <p>
  * Wrapper for native {@link b2Rot}.
  */
-public class Rot {
+public final class Rot {
     private final MemorySegment segment;
 
     static {
@@ -90,8 +90,16 @@ public class Rot {
     }
 
     /**
+     * Create a new {@link Rot} with its components initialized to this rotation's component values.
+     * @return a new {@link Rot}
+     */
+    public Rot copy() {
+        return new Rot(c(), s());
+    }
+
+    /**
      * Get the cosine component of this rotation.
-     * @return value of cosine component
+     * @return the cosine component value
      */
     public float c() {
         return b2Rot.c(segment);
@@ -109,7 +117,7 @@ public class Rot {
 
     /**
      * Get the sine component of this rotation.
-     * @return value of sine component
+     * @return the sine component value
      */
     public float s() {
         return b2Rot.s(segment);
@@ -149,7 +157,7 @@ public class Rot {
 
     /**
      * Get the angle of this rotation in Radians.
-     * @return value of the rotation angle
+     * @return the rotation angle value
      */
     public float angle() {
         return (float) Math.atan2(s(), c());
@@ -202,14 +210,6 @@ public class Rot {
     }
 
     /**
-     * Create a new {@link Rot} with its components initialized to this rotation's component values.
-     * @return a new {@link Rot}
-     */
-    public Rot copy() {
-        return new Rot(c(), s());
-    }
-
-    /**
      * Check if this rotation is valid.
      * @return true if valid
      */
@@ -249,6 +249,16 @@ public class Rot {
      */
     public static Rot fromDegrees(float degree) {
         return new Rot((float) Math.toRadians(degree));
+    }
+
+    /**
+     * Check if this rotation's components equal to the given values, using arithmetic {@code ==} comparison.
+     * @param cosine the cosine value to compare against
+     * @param sine the sine value to compare against
+     * @return true if both components are arithmetically equal to the given values
+     */
+    public boolean equals(float cosine, float sine) {
+        return c() == cosine && s() == sine;
     }
 
     @Override

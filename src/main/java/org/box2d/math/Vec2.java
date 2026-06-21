@@ -12,7 +12,7 @@ import java.lang.foreign.MemorySegment;
  * <p>
  * Wrapper for native {@link b2Vec2}.
  */
-public class Vec2 {
+public final class Vec2 {
     private final MemorySegment segment;
 
     static {
@@ -85,7 +85,7 @@ public class Vec2 {
 
     /**
      * Get the x component of this vector.
-     * @return value of x component
+     * @return the x component value
      */
     public float x() {
         return b2Vec2.x(segment);
@@ -103,7 +103,7 @@ public class Vec2 {
 
     /**
      * Get the y component of this vector.
-     * @return value of y component
+     * @return the y component value
      */
     public float y() {
         return b2Vec2.y(segment);
@@ -234,7 +234,7 @@ public class Vec2 {
     /**
      * Get the dot product of this and another vector.
      * @param other the other vector to calculate the dot product with
-     * @return the value of dot product
+     * @return the dot product value
      */
     public float dot(Vec2 other) {
         return x() * other.x() + y() * other.y();
@@ -244,7 +244,7 @@ public class Vec2 {
      * Get the cross product of this and another vector.
      * In 2D, this will result in the z component of the 3D cross product.
      * @param other the other vector to calculate the cross product with
-     * @return the value of cross product (scalar)
+     * @return the cross product (scalar) value
      */
     public float cross(Vec2 other) {
         return x() * other.y() - y() * other.x();
@@ -362,6 +362,16 @@ public class Vec2 {
      */
     public static Vec2 unitY() {
         return new Vec2(0.0f, 1.0f);
+    }
+
+    /**
+     * Check if this vector's components equal to the given values, using arithmetic {@code ==} comparison.
+     * @param x the x value to compare against
+     * @param y the y value to compare against
+     * @return true if both components are arithmetically rqual to the give values
+     */
+    public boolean equals(float x, float y) {
+        return x() == x && y() == y;
     }
 
     @Override

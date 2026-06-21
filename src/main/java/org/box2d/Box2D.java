@@ -5,9 +5,9 @@ import org.box2d.math.Rot;
 import org.box2d.math.Vec2;
 
 /**
- * Public API of Box2D
+ * Public API of Box2D, a collection of static methods from native implement, with additional safety check.
  */
-public class Box2D {
+public final class Box2D {
     static {
         if (!NativeLoader.isLoaded()) NativeLoader.load();
     }

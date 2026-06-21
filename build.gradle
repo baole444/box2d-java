@@ -37,17 +37,20 @@ tasks.withType(JavaCompile).configureEach {
     }
 }
 
-// Box2D binding generation (jextract)
-// Regenerates the FFM bindings under src/main/java/org/box2d/internal using the (patched) jextract on PATH, then syncs them into the source tree.
-// Run manually: ./gradlew generateBindings
-// Generating straight into the final package avoids the manual IDE package move.
-// Hand written files in the package (e.g. nBox2D.java) are preserved.
-//
-// Options (override with -P):
-//   -PbindingPackage=org.box2d.internal   target package for generated code
-//   -Pbox2dInclude=<path>/include         Box2D headers root
-//                                         (default: box2d-<binding_version>/include)
-//   -PjextractCmd=jextract                jextract executable name/path
+/*
+Box2D binding generation (jextract)
+
+Regenerates the FFM bindings under src/main/java/org/box2d/internal using the (patched) jextract on PATH, then syncs them into the source tree.
+Run manually: ./gradlew generateBindings
+Generating straight into the final package avoids the manual IDE package move.
+Hand written files in the package (e.g. nBox2D.java) are preserved.
+
+Options (override with -P):
+  -PbindingPackage=org.box2d.internal   target package for generated code
+  -Pbox2dInclude=<path>/include         Box2D headers root
+                                        (default: box2d-<binding_version>/include)
+  -PjextractCmd=jextract                jextract executable name/path
+*/
 def bindingPackage = (findProperty("bindingPackage") ?: "org.box2d.internal").toString()
 def box2dInclude = file(findProperty("box2dInclude") ?: "box2d-${project.binding_version}/include")
 def isWindows = System.getProperty("os.name").toLowerCase().contains("win")

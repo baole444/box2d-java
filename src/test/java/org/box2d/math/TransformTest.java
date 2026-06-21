@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TransformTest {
+class TransformTest {
     private static final float delta = 0.0001f;
 
     @Test

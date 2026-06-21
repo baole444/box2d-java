@@ -14,7 +14,7 @@ import java.lang.foreign.MemorySegment;
  * </p>
  * Wrapper for native {@link b2Mat22}.
  */
-public class Mat22 {
+public final class Mat22 {
     private final MemorySegment segment;
 
     static {

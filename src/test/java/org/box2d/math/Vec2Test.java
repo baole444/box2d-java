@@ -289,4 +289,19 @@ class Vec2Test {
         assertEquals(v1, v1, "The same vector reference expected equal");
         assertNotEquals(null, v1, "Vector and null expected not equal");
     }
+
+    @Test
+    @DisplayName("Vec2 component equals uses arithmetic comparison")
+    void testComponentEquals() {
+        Vec2 v = new Vec2(2.0f, 4.0f);
+        assertTrue(v.equals(2.0f, 4.0f), "matching components expected equal");
+        assertFalse(v.equals(2.0f, 5.0f), "differing components expected not equal");
+
+        Vec2 zero = new Vec2(0.0f, 0.0f);
+        assertTrue(zero.equals(-0.0f, -0.0f), "negative zero expected arithmetically equal to zero");
+        assertNotEquals(new Vec2(0.0f, 0.0f), new Vec2(-0.0f, -0.0f), "bit-based equals expected to distinguish negative zero");
+
+        Vec2 nan = new Vec2(Float.NaN, Float.NaN);
+        assertFalse(nan.equals(Float.NaN, Float.NaN), "NaN expected never arithmetically equal");
+    }
 }
