@@ -16,5 +16,5 @@ This library use Java FFM API, `java.lang.foreign`, [JDK 25](https://adoptium.ne
 
 As a native library is loaded during runtime, native access must be granted with one of these JVM arguments:
 - On the module path: `--enable-native-access=org.box2d`
-- On the classpath: `--enable-native-access=ALL-UNANMED`
+- On the classpath: `--enable-native-access=ALL-UNNAMED`
 

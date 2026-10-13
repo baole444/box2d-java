@@ -4,7 +4,7 @@
  * Native access is required for the binding to load and call into the Box2D native library.
  * User must run with {@code --enable-native-access=org.box2d}, or {@code ALL-UNNAMED} when used off the module path.
  */
-module box2d.java {
+module org.box2d {
     exports org.box2d;
     exports org.box2d.math;
     exports org.box2d.collision;
