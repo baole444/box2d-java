@@ -23,7 +23,7 @@ public final class Filter {
     }
 
     /**
-     * Create a new {@link Filter} and initialize it with Box2D's default values
+     * Create a new {@link Filter} and initialise it with Box2D's default values
      * (category bit 1, all mask bits set, group index 0.)
      */
     public Filter() {
@@ -44,7 +44,7 @@ public final class Filter {
     }
 
     /**
-     * Create a new {@link Filter} and initialize it to the one of the given filter
+     * Create a new {@link Filter} and initialise it to the one of the given filter
      * @param other the {@link Filter} to set the value from
      */
     public Filter(Filter other) {
@@ -61,7 +61,7 @@ public final class Filter {
     }
 
     /**
-     * Create a new {@link Filter} with its values initialized to this filter's values.
+     * Create a new {@link Filter} with its values initialised to this filter's values.
      * @return a new {@link Filter}
      */
     public Filter copy() {

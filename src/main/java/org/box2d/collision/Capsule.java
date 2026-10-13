@@ -57,7 +57,7 @@ public final class Capsule {
     }
 
     /**
-     * Create a new {@link Capsule} and initialize it to the one of the given capsule.
+     * Create a new {@link Capsule} and initialise it to the one of the given capsule.
      * @param other the {@link Capsule} to copy the value from
      */
     public Capsule(Capsule other) {
@@ -126,7 +126,7 @@ public final class Capsule {
     }
 
     /**
-     * Create a new {@link Capsule} with its values initialized to this capsule's values.
+     * Create a new {@link Capsule} with its values initialised to this capsule's values.
      * @return a new {@link Capsule}
      */
     public Capsule copy() {

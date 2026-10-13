@@ -54,7 +54,7 @@ public final class Segment {
     }
 
     /**
-     * Create a new {@link Segment} and initialize it to the one of the given segment.
+     * Create a new {@link Segment} and initialise it to the one of the given segment.
      * @param other the {@link Segment} to copy the value from
      */
     public Segment(Segment other) {
@@ -83,7 +83,7 @@ public final class Segment {
     }
 
     /**
-     * Create a new {@link Segment} with its endpoints initialized to this segment's endpoints.
+     * Create a new {@link Segment} with its endpoints initialised to this segment's endpoints.
      * @return a new {@link Segment}
      */
     public Segment copy() {

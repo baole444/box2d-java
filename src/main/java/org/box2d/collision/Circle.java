@@ -61,7 +61,7 @@ public final class Circle {
     }
 
     /**
-     * Create a new {@link Circle} and initialize it to the one of the given circle.
+     * Create a new {@link Circle} and initialise it to the one of the given circle.
      * @param other the {@link Circle} to copy the value from
      */
     public Circle(Circle other) {
@@ -90,7 +90,7 @@ public final class Circle {
     }
 
     /**
-     * Create a new {@link Circle} with its values initialized to this circle's values.
+     * Create a new {@link Circle} with its values initialised to this circle's values.
      * @return a new {@link Circle}
      */
     public Circle copy() {

@@ -94,7 +94,7 @@ public final class Polygon {
     }
 
     /**
-     * Create a new {@link Polygon} with its values initialized to this polygon's values.
+     * Create a new {@link Polygon} with its values initialised to this polygon's values.
      * @return a new {@link Polygon}
      */
     public Polygon copy() {

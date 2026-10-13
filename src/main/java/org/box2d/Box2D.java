@@ -16,7 +16,7 @@ public final class Box2D {
 
     /**
      * Check if a rotation is valid.
-     * A valid rotation is normalized and its components are not NaN or infinite.
+     * A valid rotation is normalised and its components are not NaN or infinite.
      * @param rotation the rotation to validate
      * @return true if valid
      */

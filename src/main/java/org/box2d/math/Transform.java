@@ -19,7 +19,7 @@ public final class Transform {
     }
 
     /**
-     * Create a new {@link Transform} and initialize its components
+     * Create a new {@link Transform} and initialise its components
      * to that of an identity transform (position = (0,0), rotation = 0 Rad).
      */
     public Transform() {
@@ -27,7 +27,7 @@ public final class Transform {
     }
 
     /**
-     * Create a new {@link Transform} and initialized its position using the given vector
+     * Create a new {@link Transform} and initialised its position using the given vector
      * and rotation to identity rotation.
      * @param position the position component
      */
@@ -36,7 +36,7 @@ public final class Transform {
     }
 
     /**
-     * Create a new {@link Transform} and initialize its components to the given values.
+     * Create a new {@link Transform} and initialise its components to the given values.
      * @param position the position component
      * @param angle the angle value in Radians for the rotation component
      */
@@ -45,7 +45,7 @@ public final class Transform {
     }
 
     /**
-     * Create a new {@link Transform} and initialize its components to the given values.
+     * Create a new {@link Transform} and initialise its components to the given values.
      * @param position the position component
      * @param rotation the rotation component
      */
@@ -56,7 +56,7 @@ public final class Transform {
     }
 
     /**
-     * Create a new {@link Transform} and initialize its components to the given values.
+     * Create a new {@link Transform} and initialise its components to the given values.
      * @param x the position's x coordinate
      * @param y the position's y coordinate
      * @param angle the angle value in Radians for the rotation component
@@ -68,7 +68,7 @@ public final class Transform {
     }
 
     /**
-     * Create a new {@link Transform} and initialize its components to the one of the given transform.
+     * Create a new {@link Transform} and initialise its components to the one of the given transform.
      * @param other the {@link Transform} to copy the value from
      */
     public Transform(Transform other) {
@@ -85,7 +85,7 @@ public final class Transform {
     }
 
     /**
-     * Create a new {@link Transform} and initialize its components
+     * Create a new {@link Transform} and initialise its components
      * in the given arena, with the given values.
      * @param arena the arena to allocate in
      * @param position the position component
@@ -98,7 +98,7 @@ public final class Transform {
     }
 
     /**
-     * Create a new {@link Transform} with its components initialized to this transform's component values.
+     * Create a new {@link Transform} with its components initialised to this transform's component values.
      * @return a new {@link Transform}
      */
     public Transform copy() {

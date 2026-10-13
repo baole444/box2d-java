@@ -27,7 +27,7 @@ public final class MassData {
     }
 
     /**
-     * Create a new {@link MassData} and initialize its values.
+     * Create a new {@link MassData} and initialise its values.
      * @param mass the total mass
      * @param center the local centre of mass
      * @param rotationalInertia the rotational inertia about the local origin
@@ -40,7 +40,7 @@ public final class MassData {
     }
 
     /**
-     * Create a new {@link MassData} and initialize its values.
+     * Create a new {@link MassData} and initialise its values.
      * @param mass the total mass
      * @param centerX the local centre of mass x coordinate
      * @param centerY the local centre of mass y coordinate
@@ -54,7 +54,7 @@ public final class MassData {
     }
 
     /**
-     * Create a new {@link MassData} and initialize its values to the one of the given mass data.
+     * Create a new {@link MassData} and initialise its values to the one of the given mass data.
      * @param other the {@link MassData} to copy the value from
      */
     public MassData(MassData other) {

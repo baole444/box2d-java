@@ -20,14 +20,14 @@ public final class Vec2 {
     }
 
     /**
-     * Create a new {@link Vec2} and initialize its components to zero.
+     * Create a new {@link Vec2} and initialise its components to zero.
      */
     public Vec2() {
         this(0f, 0f);
     }
 
     /**
-     * Create a new {@link Vec2} and initialize its components to the given value.
+     * Create a new {@link Vec2} and initialise its components to the given value.
      * @param f the value for both x and y components
      */
     public Vec2(float f) {
@@ -35,7 +35,7 @@ public final class Vec2 {
     }
 
     /**
-     * Create a new {@link Vec2} and initialize its components to the given values.
+     * Create a new {@link Vec2} and initialise its components to the given values.
      * @param x the x component
      * @param y the y component
      */
@@ -46,7 +46,7 @@ public final class Vec2 {
     }
 
     /**
-     * Create a new {@link Vec2} and initialize its components to the one of the given vector.
+     * Create a new {@link Vec2} and initialise its components to the one of the given vector.
      * @param other the {@link Vec2} to copy the value from
      */
     public Vec2(Vec2 other) {
@@ -63,7 +63,7 @@ public final class Vec2 {
     }
 
     /**
-     * Create a new {@link Vec2} and initialize its components
+     * Create a new {@link Vec2} and initialise its components
      * in the given arena, with the given values.
      * @param arena the arena to allocate in
      * @param x the x component
@@ -76,7 +76,7 @@ public final class Vec2 {
     }
 
     /**
-     * Create a new {@link Vec2} with its components initialized to this vector's component values.
+     * Create a new {@link Vec2} with its components initialised to this vector's component values.
      * @return a new {@link Vec2}
      */
     public Vec2 copy() {
@@ -253,7 +253,7 @@ public final class Vec2 {
     /**
      * Get the cross product between this vector and the given scalar.
      * @param scalar the value to calculate the cross product with
-     * @return a new {@link Vec2} with its components initialized as the cross product result
+     * @return a new {@link Vec2} with its components initialised as the cross product result
      */
     public Vec2 cross(float scalar) {
         return new Vec2(scalar * y(), -scalar * x());
@@ -341,7 +341,7 @@ public final class Vec2 {
     }
 
     /**
-     * Get a new {@link Vec2} with its components initialized to zero.
+     * Get a new {@link Vec2} with its components initialised to zero.
      * @return a new {@link Vec2}
      */
     public static Vec2 zero() {

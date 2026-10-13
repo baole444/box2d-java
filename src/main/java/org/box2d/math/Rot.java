@@ -21,7 +21,7 @@ public final class Rot {
     }
 
     /**
-     * Create a new {@link Rot} and initialize its components
+     * Create a new {@link Rot} and initialise its components
      * to that of an identity rotation (angle = 0 Rad).
      */
     public Rot() {
@@ -29,8 +29,8 @@ public final class Rot {
     }
 
     /**
-     * Create a new {@link Rot} and initialize its components using the given angle in Radians.
-     * @param angle the angle to initialize this rotation's components with
+     * Create a new {@link Rot} and initialise its components using the given angle in Radians.
+     * @param angle the angle to initialise this rotation's components with
      */
     public Rot(float angle) {
         segment = Arena.ofAuto().allocate(b2Rot.layout());
@@ -38,7 +38,7 @@ public final class Rot {
     }
 
     /**
-     * Create a new {@link Rot} and initialize its components to the given values.
+     * Create a new {@link Rot} and initialise its components to the given values.
      * @param cosine the cosine component
      * @param sine the sine component
      */
@@ -49,7 +49,7 @@ public final class Rot {
     }
 
     /**
-     * Create a new {@link Rot} and initialize its components to the one of the given rotation.
+     * Create a new {@link Rot} and initialise its components to the one of the given rotation.
      * @param other the {@link Rot} to copy the value from
      */
     public Rot(Rot other) {
@@ -66,10 +66,10 @@ public final class Rot {
     }
 
     /**
-     * Create a new {@link Rot} and initialize its components
+     * Create a new {@link Rot} and initialise its components
      * in the given arena, with the given angle in Radian.
      * @param arena the arena to allocate in
-     * @param angle the angle to initialize this rotation's components with
+     * @param angle the angle to initialise this rotation's components with
      */
     public Rot(Arena arena, float angle) {
         segment = arena.allocate(b2Rot.layout());
@@ -77,7 +77,7 @@ public final class Rot {
     }
 
     /**
-     * Create a new {@link Rot} and initialize its components
+     * Create a new {@link Rot} and initialise its components
      * in the given arena, with the given values.
      * @param arena the arena to allocate in
      * @param cosine the cosine component
@@ -90,7 +90,7 @@ public final class Rot {
     }
 
     /**
-     * Create a new {@link Rot} with its components initialized to this rotation's component values.
+     * Create a new {@link Rot} with its components initialised to this rotation's component values.
      * @return a new {@link Rot}
      */
     public Rot copy() {
@@ -234,8 +234,8 @@ public final class Rot {
     }
 
     /**
-     * Get a new {@link Rot} with its components initialized using the given angle in Radians.
-     * @param radians the angle to initialize the rotation's components with
+     * Get a new {@link Rot} with its components initialised using the given angle in Radians.
+     * @param radians the angle to initialise the rotation's components with
      * @return a new {@link Rot}
      */
     public static Rot fromRadians(float radians) {
@@ -243,8 +243,8 @@ public final class Rot {
     }
 
     /**
-     * Get a new {@link Rot} with its components initialized using the given angle in Degrees.
-     * @param degree the angle to initialize the rotation's components with
+     * Get a new {@link Rot} with its components initialised using the given angle in Degrees.
+     * @param degree the angle to initialise the rotation's components with
      * @return a new {@link Rot}
      */
     public static Rot fromDegrees(float degree) {

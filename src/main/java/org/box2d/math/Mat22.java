@@ -22,7 +22,7 @@ public final class Mat22 {
     }
 
     /**
-     * Create a new {@link Mat22} initialized to the identity matrix.
+     * Create a new {@link Mat22} initialised to the identity matrix.
      */
     public Mat22() {
         this(1.0f, 0.0f, 0.0f, 1.0f);
@@ -68,7 +68,7 @@ public final class Mat22 {
     }
 
     /**
-     * Create a new {@link Mat22} and initialize its components to the one of the given matrix.
+     * Create a new {@link Mat22} and initialise its components to the one of the given matrix.
      * @param other the {@link Mat22} to copy the value from
      */
     public Mat22(Mat22 other) {
@@ -393,7 +393,7 @@ public final class Mat22 {
     }
 
     /**
-     * Create a new {@link Mat22} with its components initialized to this matrix's component values.
+     * Create a new {@link Mat22} with its components initialised to this matrix's component values.
      * @return a new {@link Mat22}
      */
     public Mat22 copy() {

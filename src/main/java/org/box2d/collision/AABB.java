@@ -27,7 +27,7 @@ public final class AABB {
     }
 
     /**
-     * Create a new {@link AABB} and initialize its bounds to the given vectors.
+     * Create a new {@link AABB} and initialise its bounds to the given vectors.
      * @param lowerBound the lower bound
      * @param upperBound the upper bound
      */
@@ -38,7 +38,7 @@ public final class AABB {
     }
 
     /**
-     * Create a new {@link AABB} and initialize its bounds to the given values.
+     * Create a new {@link AABB} and initialise its bounds to the given values.
      * @param lowerX the lower bound x coordinate
      * @param lowerY the lower bound y coordinate
      * @param upperX the upper bound x coordinate
@@ -51,7 +51,7 @@ public final class AABB {
     }
 
     /**
-     * Create a new {@link AABB} and initialize its bounds to the one of the given box.
+     * Create a new {@link AABB} and initialise its bounds to the one of the given box.
      * @param other the {@link AABB} to copy the value from
      */
     public AABB(AABB other) {
@@ -80,7 +80,7 @@ public final class AABB {
     }
 
     /**
-     * Create a new {@link AABB} with its bounds initialized to this box's bounds.
+     * Create a new {@link AABB} with its bounds initialised to this box's bounds.
      * @return a new {@link AABB}
      */
     public AABB copy() {
