@@ -1,5 +1,7 @@
 package org.box2d.dynamics;
 
+import org.box2d.collision.AABB;
+import org.box2d.collision.MassData;
 import org.box2d.math.Vec2;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -74,6 +76,87 @@ class WorldTest {
         assertEquals(5.0f, world.contactDampingRatio(), delta, "contact damping ratio expected 5");
         assertEquals(2.0f, world.contactSpeed(), delta, "contact speed expected 2");
         assertEquals(0.0f, world.contactRecycleDistance(), delta, "contact recycle distance expected 0");
+    }
+
+    @Test
+    @DisplayName("World restitution iterations round-trip, clamp to the maximum and reject negatives")
+    void testRestitutionIterations() {
+        assertEquals(2, world.restitutionIterations(), "default restitution iterations expected 2");
+        world.restitutionIterations(0);
+        assertEquals(0, world.restitutionIterations(), "restitution iterations expected 0");
+        world.restitutionIterations(5);
+        assertEquals(5, world.restitutionIterations(), "restitution iterations expected 5");
+        world.restitutionIterations(-1);
+        assertEquals(5, world.restitutionIterations(), "negative restitution iterations expected rejected");
+        world.restitutionIterations(World.MaxRestitutionIterations + 10);
+        assertEquals(World.MaxRestitutionIterations, world.restitutionIterations(), "restitution iterations expected clamped to the maximum");
+
+        World other = new World(new WorldDef().restitutionIterations(100));
+        try {
+            assertEquals(World.MaxRestitutionIterations, other.restitutionIterations(), "def value expected clamped to the maximum");
+        } finally {
+            other.destroy();
+        }
+    }
+
+    @Test
+    @DisplayName("World created from an invalid definition is invalid")
+    void testInvalidDef() {
+        assertFalse(new World(new WorldDef().restitutionIterations(-1)).isValid(), "negative restitution iterations expected invalid world");
+        assertFalse(new World(new WorldDef().gravity(Float.NaN, 0.0f)).isValid(), "non-finite gravity expected invalid world");
+        assertFalse(new World(new WorldDef().maxLinearSpeed(0.0f)).isValid(), "non-positive max linear speed expected invalid world");
+    }
+
+    @Test
+    @DisplayName("World max capacity records the peak counts and feeds back into a definition")
+    void testMaxCapacity() {
+        assertEquals(new Capacity(), world.maxCapacity(), "fresh world expected zero max capacity");
+        world.createBody(new BodyDef().type(BodyType.StaticBody));
+        for (int i = 0; i < 3; i++) world.createBody(new BodyDef().type(BodyType.DynamicBody));
+        world.step(1.0f / 60.0f, 4);
+        Capacity capacity = world.maxCapacity();
+        assertEquals(1, capacity.staticBodyCount(), "static body count expected 1");
+        assertEquals(3, capacity.dynamicBodyCount(), "dynamic body count expected 3");
+
+        World other = new World(new WorldDef().capacity(capacity));
+        try {
+            assertTrue(other.isValid(), "world from a recorded capacity expected valid");
+        } finally {
+            other.destroy();
+        }
+    }
+
+    @Test
+    @DisplayName("World bounds of a world without shapes is the zero box")
+    void testEmptyBounds() {
+        world.createBody(new BodyDef().type(BodyType.DynamicBody).position(5.0f, 5.0f));
+        assertEquals(new AABB(), world.bounds(), "world without shapes expected the zero box");
+    }
+
+    @Test
+    @DisplayName("World state hash matches for identical worlds and changes when they diverge")
+    void testStateHash() {
+        World other = new World();
+        try {
+            Body a = world.createBody(new BodyDef().type(BodyType.DynamicBody).position(1.0f, 2.0f));
+            Body b = other.createBody(new BodyDef().type(BodyType.DynamicBody).position(1.0f, 2.0f));
+            a.massData(new MassData(1.0f, new Vec2(), 1.0f));
+            b.massData(new MassData(1.0f, new Vec2(), 1.0f));
+            for (int i = 0; i < 10; i++) {
+                world.step(1.0f / 60.0f, 4);
+                other.step(1.0f / 60.0f, 4);
+            }
+            assertEquals(world.stateHash(), other.stateHash(), "identical worlds expected the same hash");
+
+            long before = other.stateHash();
+            b.applyLinearImpulseToCenter(new Vec2(1.0f, 0.0f), true);
+            world.step(1.0f / 60.0f, 4);
+            other.step(1.0f / 60.0f, 4);
+            assertNotEquals(world.stateHash(), other.stateHash(), "diverged worlds expected different hashes");
+            assertNotEquals(before, other.stateHash(), "stepped world expected a new hash");
+        } finally {
+            other.destroy();
+        }
     }
 
     @Test

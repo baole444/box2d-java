@@ -85,6 +85,26 @@ public final class WorldDef {
     }
 
     /**
+     * Get the number of iterations of the restitution solver.
+     * @return the restitution iterations
+     */
+    public int restitutionIterations() {
+        return b2WorldDef.restitutionIterations(segment);
+    }
+
+    /**
+     * Set the number of iterations of the restitution solver. More iterations can lead to less box spinning.
+     * <p>
+     * Must not be negative. The created world clamps values above {@link World#MaxRestitutionIterations} to it.
+     * @param iterations the restitution iterations
+     * @return this
+     */
+    public WorldDef restitutionIterations(int iterations) {
+        b2WorldDef.restitutionIterations(segment, iterations);
+        return this;
+    }
+
+    /**
      * Get the threshold speed for hit events, usually in m/s.
      * @return the hit event threshold
      */
@@ -172,7 +192,7 @@ public final class WorldDef {
 
     /**
      * Set the maximum linear speed, usually in m/s.
-     * @param maxLinearSpeed the maximum linear speed
+     * @param maxLinearSpeed the positive maximum linear speed
      * @return this
      */
     public WorldDef maxLinearSpeed(float maxLinearSpeed) {
@@ -217,6 +237,27 @@ public final class WorldDef {
     }
 
     /**
+     * Get the optional initial capacities, used to avoid run-time allocations.
+     * This returns a wrapper, not a new copy.
+     * @return a {@link Capacity} that wraps this definition's capacities
+     * @see World#maxCapacity()
+     */
+    public Capacity capacity() {
+        return new Capacity(b2WorldDef.capacity(segment));
+    }
+
+    /**
+     * Set the optional initial capacities, used to avoid run-time allocations.
+     * @param capacity the capacities to copy into this definition
+     * @return this
+     * @see World#maxCapacity()
+     */
+    public WorldDef capacity(Capacity capacity) {
+        b2WorldDef.capacity(segment, capacity.segment());
+        return this;
+    }
+
+    /**
      * Get the application specific data given to a world on creation.
      * @return the user data, or null if none
      */
@@ -246,10 +287,9 @@ public final class WorldDef {
 
     @Override
     public String toString() {
-        return String.format("WorldDef{gravity=%s, restitutionThreshold=%.2f, hitEventThreshold=%.2f, "
-                        + "contactHertz=%.2f, contactDampingRatio=%.2f, contactSpeed=%.2f, "
-                        + "maxLinearSpeed=%.2f, sleepingEnabled=%b, continuousEnabled=%b, userData=%s}",
-                gravity(), restitutionThreshold(), hitEventThreshold(), contactHertz(), contactDampingRatio(),
-                contactSpeed(), maxLinearSpeed(), sleepingEnabled(), continuousEnabled(), userData);
+        return String.format("WorldDef{gravity=%s, restitutionThreshold=%.2f, restitutionIterations=%d, hitEventThreshold=%.2f, contactHertz=%.2f, contactDampingRatio=%.2f, "
+                        + "contactSpeed=%.2f, maxLinearSpeed=%.2f, sleepingEnabled=%b, continuousEnabled=%b, capacity=%s, userData=%s}",
+                gravity(), restitutionThreshold(), restitutionIterations(), hitEventThreshold(), contactHertz(), contactDampingRatio(),
+                contactSpeed(), maxLinearSpeed(), sleepingEnabled(), continuousEnabled(), capacity(), userData);
     }
 }

@@ -383,6 +383,19 @@ public final class Body {
     }
 
     /**
+     * Clear the force and torque on this body.
+     * <p>
+     * Forces and torques are automatically cleared after each world step.
+     * So this only needs to be called if the application wants to remove the effect of
+     * previous calls to apply forces and torques before the world step is called.
+     * @return this
+     */
+    public Body clearForces() {
+        nBox2D.nBodyClearForces(checked());
+        return this;
+    }
+
+    /**
      * Get the mass of the body, usually in kilograms.
      * @return the mass
      */
@@ -428,7 +441,7 @@ public final class Body {
      * Normally this is computed automatically using the shape geometry and density. This information is lost if a shape is added or removed or if the body type changes.
      * <p>
      * If motion locks are used to fix rotation then the rotational inertia value is ignored and rotational inertia remains fixed at zero.
-     * @param massData the mass data to apply
+     * @param massData the mass data to apply, with a non-negative mass and rotational inertia
      * @return this
      */
     public Body massData(MassData massData) {
@@ -525,6 +538,17 @@ public final class Body {
     }
 
     /**
+     * Wake the bodies touching this body. Works for static bodies.
+     * <p>
+     * Ignored while the world is {@link World#isLocked() locked}.
+     * @return this
+     */
+    public Body wakeTouching() {
+        nBox2D.nBodyWakeTouching(checked());
+        return this;
+    }
+
+    /**
      * Check if this body is allowed to sleep.
      * @return true if sleeping is enabled
      */
@@ -574,7 +598,7 @@ public final class Body {
      * Set the continuous collision safety factor, non-dimensional.
      * <p>
      * Smaller is safer but can lead to hitching. Recommended range [0.01, 0.5].
-     * @param safetyFactor the safety factor
+     * @param safetyFactor the non-negative safety factor
      * @return this
      */
     public Body safetyFactor(float safetyFactor) {

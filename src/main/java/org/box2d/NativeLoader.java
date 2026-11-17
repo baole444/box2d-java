@@ -1,5 +1,7 @@
 package org.box2d;
 
+import org.box2d.internal.LogBridge;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -70,6 +72,7 @@ public final class NativeLoader {
             }
             try {
                 System.load(tmpLib.getAbsolutePath());
+                LogBridge.install();
             } catch (IllegalCallerException e) {
                 throw nativeAccessDenied(e);
             }

@@ -234,6 +234,30 @@ class BodyTest {
     }
 
     @Test
+    @DisplayName("Body clearForces removes forces applied before the step")
+    void testClearForces() {
+        world.gravity(new Vec2(0.0f, 0.0f));
+        Body body = dynamicBody();
+        body.massData(new MassData(1.0f, new Vec2(), 1.0f));
+        assertSame(body, body.applyForceToCenter(new Vec2(100.0f, 0.0f), true).applyTorque(10.0f, true).clearForces(), "clearForces expected to return this");
+        world.step(1.0f / 60.0f, 4);
+        assertEquals(new Vec2(0.0f, 0.0f), body.linearVelocity(), "cleared force expected no linear velocity");
+        assertEquals(0.0f, body.angularVelocity(), "cleared torque expected no angular velocity");
+
+        body.applyForceToCenter(new Vec2(100.0f, 0.0f), true);
+        world.step(1.0f / 60.0f, 4);
+        assertTrue(body.linearVelocity().x() > 0.0f, "uncleared force expected to accelerate the body");
+    }
+
+    @Test
+    @DisplayName("Body wakeTouching returns this and is a no-op without shapes")
+    void testWakeTouching() {
+        Body body = world.createBody(new BodyDef().type(BodyType.StaticBody));
+        assertSame(body, body.wakeTouching(), "wakeTouching expected to return this");
+        assertTrue(body.isValid(), "body expected still valid");
+    }
+
+    @Test
     @DisplayName("Canary: a dynamic body falls under gravity")
     void testFallsUnderGravity() {
         Body body = world.createBody(new BodyDef().type(BodyType.DynamicBody).position(0.0f, 10.0f));

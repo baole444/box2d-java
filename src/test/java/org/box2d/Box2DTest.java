@@ -1,16 +1,19 @@
 package org.box2d;
 
+import org.box2d.dynamics.World;
 import org.box2d.internal.b2CosSin;
 import org.box2d.math.CosSin;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
 import java.lang.foreign.Arena;
 import java.lang.foreign.MemorySegment;
+import java.nio.charset.StandardCharsets;
 import java.util.Random;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * The deterministic trigonometry is a Java port, so these tests compare it bit-for-bit against the
@@ -39,6 +42,35 @@ class Box2DTest {
     }
 
     @Test
+    @DisplayName("logStream receives Box2D log messages and discards them when null")
+    void testLogStream() {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        PrintStream stream = new PrintStream(bytes, true, StandardCharsets.UTF_8);
+        World world = new World();
+        try {
+            assertNull(Box2D.logStream(), "logging expected off by default");
+            world.restitutionIterations(-1);
+            assertEquals(0, bytes.size(), "no stream expected nothing printed");
+
+            Box2D.logStream(stream);
+            assertSame(stream, Box2D.logStream(), "stream expected stored");
+            world.restitutionIterations(-1);
+            String log = bytes.toString(StandardCharsets.UTF_8);
+            assertTrue(log.contains("invalid input"), () -> "rejected input expected logged, got: " + log);
+            assertTrue(log.contains("b2World_SetRestitutionIterations"), () -> "log expected to name the function, got: " + log);
+            assertTrue(log.endsWith(System.lineSeparator()) && !log.endsWith(System.lineSeparator() + System.lineSeparator()), () -> "one message expected per line, got: " + log);
+
+            Box2D.logStream(null);
+            int size = bytes.size();
+            world.restitutionIterations(-1);
+            assertEquals(size, bytes.size(), "null stream expected to discard messages");
+        } finally {
+            Box2D.logStream(null);
+            world.destroy();
+        }
+    }
+
+    @Test
     @DisplayName("atan2 matches native b2Atan2 bit for bit on a grid")
     void testAtan2GridParity() {
         for (int i = -200; i <= 200; i++) {
@@ -54,8 +86,7 @@ class Box2DTest {
             float scale = (float) Math.pow(10.0, random.nextInt(13) - 6);
             assertAtan2Parity((random.nextFloat() * 2.0f - 1.0f) * scale, (random.nextFloat() * 2.0f - 1.0f) * scale);
         }
-        float[] special = {0.0f, -0.0f, 1.0f, -1.0f, Float.MIN_VALUE, -Float.MIN_VALUE, Float.MAX_VALUE, -Float.MAX_VALUE,
-                Float.POSITIVE_INFINITY, Float.NEGATIVE_INFINITY, Float.NaN};
+        float[] special = {0.0f, -0.0f, 1.0f, -1.0f, Float.MIN_VALUE, -Float.MIN_VALUE, Float.MAX_VALUE, -Float.MAX_VALUE, Float.POSITIVE_INFINITY, Float.NEGATIVE_INFINITY, Float.NaN};
         for (float y : special) {
             for (float x : special) assertAtan2Parity(y, x);
         }

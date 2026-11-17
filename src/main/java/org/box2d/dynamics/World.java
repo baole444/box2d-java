@@ -1,6 +1,7 @@
 package org.box2d.dynamics;
 
 import org.box2d.NativeLoader;
+import org.box2d.collision.AABB;
 import org.box2d.internal.*;
 import org.box2d.math.Vec2;
 
@@ -16,6 +17,12 @@ import java.lang.foreign.MemorySegment;
  * Wrapper for native {@code b2WorldId}.
  */
 public final class World {
+    /**
+     * The maximum number of iterations for the restitution solver.
+     * @see #restitutionIterations(int)
+     */
+    public static final int MaxRestitutionIterations = 63;
+
     private final MemorySegment id;
     private final UserDataTable userDataTable = new UserDataTable();
     private boolean destroyed = false;
@@ -39,7 +46,10 @@ public final class World {
      * A world contains bodies, shapes, and constraints. Up to 128 worlds can be created.
      * Each world is completely independent and may be simulated in parallel.
      * @param def the world definition
-     * @apiNote The provided definition is copied, so it can be changed and reused later.
+     * @apiNote
+     * The provided definition is copied, so it can be changed and reused later.
+     * <p>
+     * A definition holding an invalid value gives a world that is {@link #isValid() invalid}, see <a href="package-summary.html">invalid input</a>.
      */
     public World(WorldDef def) {
         MemorySegment defSegment = def.segment();
@@ -67,7 +77,9 @@ public final class World {
     }
 
     /**
-     * Check if this world is valid. A world is invalid when destroyed.
+     * Check if this world is valid.
+     * <p>
+     * A world is invalid when destroyed, or when created from an invalid definition.
      * @return true if valid
      */
     public boolean isValid() {
@@ -112,8 +124,7 @@ public final class World {
      * <p>
      * No new body is created while this world is {@link #isLocked() locked}, making the returned handle {@link Body#isValid() invalid}.
      * <p>
-     * Box2D also rejects a definition with an invalid value and logs it: a non-finite position, rotation, velocity or gravity scale,
-     * or a negative or non-finite damping, sleep threshold or safety factor. The returned handle is then invalid too.
+     * A definition holding an invalid value also gives an invalid handle, see <a href="package-summary.html">invalid input</a>.
      */
     public Body createBody(BodyDef def) {
         MemorySegment worldId = checked();
@@ -233,6 +244,27 @@ public final class World {
     }
 
     /**
+     * Get the number of iterations used by the restitution solver.
+     * @return the restitution iterations
+     */
+    public int restitutionIterations() {
+        return nBox2D.nWorldGetRestitutionIterations(checked());
+    }
+
+    /**
+     * Set the number of iterations used by the restitution solver. More iterations can lead to less box spinning.
+     * <p>
+     * Must not be negative. Values above {@link #MaxRestitutionIterations} are clamped to it.
+     * Ignored while this world is {@link #isLocked() locked}.
+     * @param iterations the restitution iterations
+     * @return this
+     */
+    public World restitutionIterations(int iterations) {
+        nBox2D.nWorldSetRestitutionIterations(checked(), iterations);
+        return this;
+    }
+
+    /**
      * Get the hit event threshold, usually in m/s.
      * @return the hit event threshold
      */
@@ -262,11 +294,11 @@ public final class World {
 
     /**
      * Set the maximum linear speed, usually in m/s.
-     * @param maximumLinearSpeed the maximum linear speed
+     * @param maxLinearSpeed the positive maximum linear speed
      * @return this
      */
-    public World maxLinearSpeed(float maximumLinearSpeed) {
-        nBox2D.nWorldSetMaxLinearSpeed(checked(), maximumLinearSpeed);
+    public World maxLinearSpeed(float maxLinearSpeed) {
+        nBox2D.nWorldSetMaxLinearSpeed(checked(), maxLinearSpeed);
         return this;
     }
 
@@ -338,6 +370,37 @@ public final class World {
      */
     public int awakeBodyCount() {
         return nBox2D.nWorldGetAwakeBodyCount(checked());
+    }
+
+    /**
+     * Get the world bounds, the union of all shape bounds.
+     * <p>
+     * A world without shapes, or a world that is {@link #isLocked() locked}, gives a box with both bounds at the origin.
+     * @return a new {@link AABB} holding the world bounds
+     */
+    public AABB bounds() {
+        return new AABB(nBox2D.nWorldGetBounds(checked()));
+    }
+
+    /**
+     * Get the maximum capacities this world has reached, recorded on each step.
+     * <p>
+     * This can be used with {@link WorldDef#capacity(Capacity)} to avoid run-time allocations and copies.
+     * @return a new {@link Capacity} holding the maximum counts
+     */
+    public Capacity maxCapacity() {
+        return new Capacity(nBox2D.nWorldGetMaxCapacity(checked()));
+    }
+
+    /**
+     * Compute a hash of the simulation state.
+     * <p>
+     * Use this to detect desyncs, for example in rollback resimulation:
+     * worlds in the same state give the same hash.
+     * @return the 64-bit hash, to be read as unsigned (see {@link Long#toUnsignedString(long)})
+     */
+    public long stateHash() {
+        return nBox2D.nWorldGetStateHash(checked());
     }
 
     /**

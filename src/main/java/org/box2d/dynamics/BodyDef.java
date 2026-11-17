@@ -341,7 +341,7 @@ public final class BodyDef {
      * Set the continuous collision safety factor, non-dimensional.
      * <p>
      * This improves performance and prevents movement hitches. Recommended range [0.01, 0.5]. Default is 0.5 for high performance with low tunnelling risk.
-     * @param safetyFactor the safety factor
+     * @param safetyFactor the non-negative safety factor
      * @return this
      * @apiNote
      * The solver only uses continuous collision if there is a risk of tunnelling. If the body is moving fast enough to risk tunnelling then it is considered a "fast body".

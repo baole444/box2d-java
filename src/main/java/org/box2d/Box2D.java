@@ -1,9 +1,12 @@
 package org.box2d;
 
+import org.box2d.internal.LogBridge;
 import org.box2d.internal.nBox2D;
 import org.box2d.math.CosSin;
 import org.box2d.math.Rot;
 import org.box2d.math.Vec2;
+
+import java.io.PrintStream;
 
 /**
  * Public API of Box2D, a collection of static methods from native implement, with additional safety check.
@@ -22,6 +25,29 @@ public final class Box2D {
     public static final float Pi = 3.14159265359f;
 
     private Box2D() {}
+
+    /**
+     * Get the stream receiving Box2D's log messages.
+     * @return the log stream, or null if log messages are discarded
+     * @see #logStream(PrintStream)
+     */
+    public static PrintStream logStream() {
+        return LogBridge.stream();
+    }
+
+    /**
+     * Set the stream receiving Box2D's log messages, one message per line. Logging is off by default.
+     * <p>
+     * Box2D logs warnings, such as invalid input it rejects (see {@link org.box2d.dynamics}), an unstable body
+     * whose velocity became NaN or infinite during a step, or denormal flushing that breaks determinism.
+     * <p>
+     * Log messages may arrive on any thread calling into Box2D, including inside {@code World.step}.
+     * An exception thrown by the stream is discarded.
+     * @param stream the stream to print to, such as {@link System#err}, or null to discard log messages
+     */
+    public static void logStream(PrintStream stream) {
+        LogBridge.stream(stream);
+    }
 
     /**
      * Compute an approximate arctangent in the range [-pi, pi].

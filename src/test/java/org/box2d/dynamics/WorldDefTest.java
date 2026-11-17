@@ -23,7 +23,24 @@ class WorldDefTest {
         assertEquals(400.0f, def.maxLinearSpeed(), delta, "default max linear speed expected 400");
         assertTrue(def.sleepingEnabled(), "sleeping expected enabled by default");
         assertTrue(def.continuousEnabled(), "continuous expected enabled by default");
+        assertEquals(2, def.restitutionIterations(), "default restitution iterations expected 2");
+        assertEquals(new Capacity(), def.capacity(), "default capacity expected all zero");
         assertNull(def.userData(), "user data expected null by default");
+    }
+
+    @Test
+    @DisplayName("WorldDef restitution iterations and capacity round-trip")
+    void testRestitutionIterationsAndCapacity() {
+        Capacity capacity = new Capacity(1, 2, 3, 4, 5, 6);
+        WorldDef def = new WorldDef().restitutionIterations(7).capacity(capacity);
+        assertEquals(7, def.restitutionIterations(), "restitution iterations expected 7");
+        assertEquals(capacity, def.capacity(), "capacity expected copied into the def");
+
+        capacity.contactCount(50);
+        assertEquals(5, def.capacity().contactCount(), "changing the source expected not to affect the def");
+
+        def.capacity().contactCount(40);
+        assertEquals(40, def.capacity().contactCount(), "the capacity view expected to write through");
     }
 
     @Test

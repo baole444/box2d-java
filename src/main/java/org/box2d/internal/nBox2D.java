@@ -1051,4 +1051,65 @@ public class nBox2D {
     public static void nWorldStep(MemorySegment worldId, float timeStep, int subStepCount) {
         Box2D.b2World_Step(worldId, timeStep, subStepCount);
     }
+
+    /**
+     * Native implement of {@code b2Body_ClearForces}.
+     * @param bodyId the memory segment of the {@link b2BodyId}
+     */
+    public static void nBodyClearForces(MemorySegment bodyId) {
+        Box2D.b2Body_ClearForces(bodyId);
+    }
+
+    /**
+     * Native implement of {@code b2Body_WakeTouching}.
+     * @param bodyId the memory segment of the {@link b2BodyId}
+     */
+    public static void nBodyWakeTouching(MemorySegment bodyId) {
+        Box2D.b2Body_WakeTouching(bodyId);
+    }
+
+    /**
+     * Native implement of {@code b2World_GetRestitutionIterations}.
+     * @param worldId the memory segment of the {@link b2WorldId}
+     * @return the number of restitution solver iterations
+     */
+    public static int nWorldGetRestitutionIterations(MemorySegment worldId) {
+        return Box2D.b2World_GetRestitutionIterations(worldId);
+    }
+
+    /**
+     * Native implement of {@code b2World_SetRestitutionIterations}.
+     * @param worldId the memory segment of the {@link b2WorldId}
+     * @param iterations the number of restitution solver iterations
+     */
+    public static void nWorldSetRestitutionIterations(MemorySegment worldId, int iterations) {
+        Box2D.b2World_SetRestitutionIterations(worldId, iterations);
+    }
+
+    /**
+     * Native implement of {@code b2World_GetBounds}.
+     * @param worldId the memory segment of the {@link b2WorldId}
+     * @return the memory segment of the resulting {@link b2AABB}
+     */
+    public static MemorySegment nWorldGetBounds(MemorySegment worldId) {
+        return Box2D.b2World_GetBounds(Arena.ofAuto(), worldId);
+    }
+
+    /**
+     * Native implement of {@code b2World_GetMaxCapacity}.
+     * @param worldId the memory segment of the {@link b2WorldId}
+     * @return the memory segment of the resulting {@link b2Capacity}
+     */
+    public static MemorySegment nWorldGetMaxCapacity(MemorySegment worldId) {
+        return Box2D.b2World_GetMaxCapacity(Arena.ofAuto(), worldId);
+    }
+
+    /**
+     * Native implement of {@code b2World_GetStateHash}.
+     * @param worldId the memory segment of the {@link b2WorldId}
+     * @return the unsigned 64-bit simulation state hash
+     */
+    public static long nWorldGetStateHash(MemorySegment worldId) {
+        return Box2D.b2World_GetStateHash(worldId);
+    }
 }
