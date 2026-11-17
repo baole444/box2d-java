@@ -1,0 +1,185 @@
+name: Check Bindings
+
+# Checks that jextract binding generation is host independent: the bindings are generated on Linux, Windows and macOS with the stock upstream jextract,
+#  and the three outputs must be byte-identical. When the Box2D tag is the repository's binding_version, the output must also match the bindings committed under src/main/java/org/box2d/internal.
+#
+# Runs on its own: it does not compile the wrappers or run the test suite.
+
+on:
+  workflow_dispatch:
+    inputs:
+      box2d_ref:
+        description: "Box2D git tag to generate from (upstream erincatto/box2d). Empty: v<binding_version> from gradle.properties"
+        default: ""
+        required: false
+  push:
+    paths:
+      - build.gradle
+      - gradle.properties
+      - jextract/**
+      - src/main/java/org/box2d/internal/**
+      - .github/workflows/check-bindings.yml
+  pull_request:
+    paths:
+      - build.gradle
+      - gradle.properties
+      - jextract/**
+      - src/main/java/org/box2d/internal/**
+      - .github/workflows/check-bindings.yml
+
+permissions:
+  contents: read
+
+env:
+  # Stock upstream early-access build (https://jdk.java.net/jextract/). Bump all four together.
+  JEXTRACT_BASE_URL: https://download.java.net/java/early_access/jextract/25/2
+  JEXTRACT_FILE_PREFIX: openjdk-25-jextract+2-4
+
+jobs:
+  generate:
+    name: Generate on ${{ matrix.name }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: linux
+            os: ubuntu-latest
+            jextract_platform: linux-x64
+            jextract_sha256: d0cc481abc1adb16fb9514e1c5e0bfc08d38c29228bece667fb5054ceaffaa42
+          - name: win
+            os: windows-latest
+            jextract_platform: windows-x64
+            jextract_sha256: b03533eb6b249a154752b7c7bf93cdb8c147cf2f9699422e615e84b7fb652872
+          - name: mac
+            os: macos-latest   # arm64 (Apple Silicon)
+            jextract_platform: macos-aarch64
+            jextract_sha256: 3dd1dd1bde059d271739e2cc2290c64f93f85488c86c01e566c0e374eece798f
+    defaults:
+      run:
+        shell: bash
+    outputs:
+      box2d_ref: ${{ steps.ref.outputs.box2d_ref }}
+      binding_ref: ${{ steps.ref.outputs.binding_ref }}
+    steps:
+      - name: Checkout this repository
+        uses: actions/checkout@v7
+
+      - name: Resolve Box2D tag
+        id: ref
+        env:
+          INPUT_REF: ${{ inputs.box2d_ref }}
+        run: |
+          version=$(grep -E '^\s*binding_version\s*=' gradle.properties | cut -d= -f2 | tr -d ' \r')
+          binding_ref="v${version}"
+          box2d_ref="${INPUT_REF:-$binding_ref}"
+          echo "binding_ref=${binding_ref}" >> "$GITHUB_OUTPUT"
+          echo "box2d_ref=${box2d_ref}" >> "$GITHUB_OUTPUT"
+          echo "Generating from Box2D ${box2d_ref} (binding_version ${binding_ref})"
+
+      - name: Checkout Box2D source
+        uses: actions/checkout@v7
+        with:
+          repository: erincatto/box2d
+          ref: ${{ steps.ref.outputs.box2d_ref }}
+          path: box2d-src
+
+      - name: Setup JDK 25
+        uses: actions/setup-java@v6
+        with:
+          distribution: 'temurin'
+          java-version: '25'
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v6
+
+      # Relative paths only: GNU tar on Windows reads "D:\..." as a remote host.
+      - name: Install jextract
+        id: jextract
+        run: |
+          file="${JEXTRACT_FILE_PREFIX}_${{ matrix.jextract_platform }}_bin.tar.gz"
+          mkdir -p "$RUNNER_TEMP/jextract"
+          cd "$RUNNER_TEMP/jextract"
+          curl -fsSL -o "$file" "${JEXTRACT_BASE_URL}/${file}"
+          if command -v sha256sum >/dev/null; then sum=sha256sum; else sum="shasum -a 256"; fi
+          echo "${{ matrix.jextract_sha256 }}  ${file}" | $sum -c -
+          tar -xzf "$file"
+          name=jextract; [ "$RUNNER_OS" = "Windows" ] && name=jextract.bat
+          cmd=$(find "$PWD" -path "*/bin/${name}" -type f | head -n 1)
+          [ -n "$cmd" ] || { echo "::error::bin/${name} not found in ${file}"; exit 1; }
+          "$cmd" --version
+          # Gradle needs a native path on Windows.
+          if [ "$RUNNER_OS" = "Windows" ]; then cmd=$(cygpath -w "$cmd"); fi
+          echo "cmd=${cmd}" >> "$GITHUB_OUTPUT"
+
+      - name: Make gradlew executable
+        if: runner.os != 'Windows'
+        run: chmod +x gradlew
+
+      - name: Generate bindings
+        run: >
+          ./gradlew runJextract --no-daemon
+          "-Pbox2dInclude=box2d-src/include"
+          "-PjextractCmd=${{ steps.jextract.outputs.cmd }}"
+
+      - name: Upload bindings
+        uses: actions/upload-artifact@v7
+        with:
+          name: bindings-${{ matrix.name }}
+          path: build/generated/jextract/org/box2d/internal/
+          if-no-files-found: error
+
+  cross-platform:
+    name: Identical on every platform
+    needs: generate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download bindings
+        uses: actions/download-artifact@v8
+        with:
+          pattern: bindings-*
+          path: generated
+
+      - name: Compare with the Linux output
+        run: |
+          status=0
+          for p in win mac; do
+            if diff -r generated/bindings-linux "generated/bindings-$p" > "diff-$p.txt"; then
+              echo "linux and $p outputs are identical ($(ls generated/bindings-linux | wc -l) files)"
+            else
+              echo "::error::Bindings generated on $p differ from those generated on linux"
+              head -n 100 "diff-$p.txt"
+              status=1
+            fi
+          done
+          exit $status
+
+  committed:
+    name: Committed bindings up to date
+    needs: generate
+    if: needs.generate.outputs.box2d_ref == needs.generate.outputs.binding_ref
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout this repository
+        uses: actions/checkout@v7
+
+      - name: Download Linux bindings
+        uses: actions/download-artifact@v8
+        with:
+          name: bindings-linux
+          path: generated
+
+      # Handwritten files in the package (e.g. nBox2D.java) lack the jextract marker and are skipped.
+      - name: Compare with src/main/java/org/box2d/internal
+        run: |
+          mkdir committed
+          for f in src/main/java/org/box2d/internal/*.java; do
+            if head -n 1 "$f" | grep -q '^// Generated by jextract'; then cp "$f" committed/; fi
+          done
+          if diff -r committed generated > diff.txt; then
+            echo "Committed bindings match the generated ones ($(ls generated | wc -l) files)"
+          else
+            echo "::error::Committed bindings differ from the generated ones; run ./gradlew generateBindings and commit the result"
+            head -n 100 diff.txt
+            exit 1
+          fi
