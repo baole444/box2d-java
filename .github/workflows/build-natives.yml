@@ -1,9 +1,11 @@
 name: Build Natives
 
 # Manual job that rebuilds the Box2D shared libraries for every supported platform,
-# validates each library by running the test suite on its own runner, and then commits them back into src/main/resources/natives.
+# optionally validates each library by running the test suite on its own runner, and then commits them back into src/main/resources/natives.
 #
 # This should only be run when native Box2D library needs a version bump.
+# Disable `run_tests` when retargeting to a Box2D version the Java bindings do not yet support,
+# since the test suite is expected to fail until the bindings are regenerated.
 
 on:
   workflow_dispatch:
@@ -12,6 +14,10 @@ on:
         description: "Box2D git tag to build (upstream erincatto/box2d)"
         default: "v3.2.0"
         required: true
+      run_tests:
+        description: "Run the test suite against each freshly-built library before committing"
+        type: boolean
+        default: true
 
 permissions:
   contents: write
