@@ -1,7 +1,7 @@
 name: Check Bindings
 
 # Checks that jextract binding generation is host independent: the bindings are generated on Linux, Windows and macOS with the jextract fork (built from source on each runner),
-#  and the three outputs must be byte-identical. When the Box2D tag is the repository's binding_version, the output must also match the bindings committed under src/main/java/org/box2d/internal.
+# and the three outputs must be byte-identical. When the Box2D tag is the repository's binding_version, the output must also match the bindings committed under src/main/java/org/box2d/internal.
 #
 # Runs on its own: it does not compile the wrappers or run the test suite.
 
@@ -92,8 +92,18 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v6
 
-      # The built jextract image is self-contained (its own runtime and libclang), so it is cached
-      # and rebuilt only when the commit, the fork patch or the LLVM version changes.
+      # LLVM's official 18.1.8 Linux build (made on Ubuntu 18.04) links libclang against libtinfo.so.5, which current Ubuntu runners no longer ship.
+      # Install Ubuntu 22.04's package (release pocket, so the file does not move). Needed on every run, cached jextract included.
+      - name: Install libtinfo5
+        if: runner.os == 'Linux'
+        run: |
+          deb="$RUNNER_TEMP/libtinfo5.deb"
+          curl -fsSL -o "$deb" https://archive.ubuntu.com/ubuntu/pool/universe/n/ncurses/libtinfo5_6.3-2_amd64.deb
+          echo "d2597b5aec92a930cf549e1b429ad892595813e72ec7814685ea146a9fb715e5  $deb" | sha256sum -c -
+          sudo dpkg -i "$deb"
+
+      # The built jextract image is self-contained (its own runtime and libclang; on Linux also the system libtinfo5 installed above),
+      # so it is cached and rebuilt only when the commit, the fork patch or the LLVM version changes.
       - name: Restore jextract
         id: jextract-cache
         uses: actions/cache@v6
