@@ -214,15 +214,15 @@ public final class Capsule {
     /**
      * Check if the given point is inside this capsule's local frame or not.
      * @param point the point to test, in local coordinates
-     * @return tru8 if the point is inside this capsule
+     * @return true if the point is inside this capsule
      */
     public boolean pointInCapsule(Vec2 point) {
-        return nBox2D.nPointInCapsule(point.segment(), segment);
+        return nBox2D.nPointInCapsule(segment, point.segment());
     }
 
     /**
      * Compute the mass properties of this capsule for the given density.
-     * @param density the area density in kg/m^2
+     * @param density the area density in kg/m²
      * @return a new {@link MassData} for this capsule
      */
     public MassData computeMass(float density) {
@@ -234,8 +234,8 @@ public final class Capsule {
      * @param transform the transform to place this capsule with
      * @return a new {@link AABB} containing this capsule
      */
-    public AABB computeAABB(Transform transform) {
-        return new AABB(nBox2D.nComputeCapsuleAABB(segment, transform.segment()));
+    public AABB computeBounds(Transform transform) {
+        return new AABB(nBox2D.nComputeCapsuleBounds(segment, transform.segment()));
     }
 
     /**

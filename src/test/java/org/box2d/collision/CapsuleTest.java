@@ -42,7 +42,7 @@ class CapsuleTest {
     void testVertical() {
         Capsule capsule = Capsule.vertical(2.0f, 6.0f);
         assertEquals(1.0f, capsule.radius(), delta, "radius expected width/2");
-        AABB box = capsule.computeAABB(new Transform());
+        AABB box = capsule.computeBounds(new Transform());
         assertEquals(-1.0f, box.lowerBound().x(), delta, "lower x expected -width/2");
         assertEquals(-3.0f, box.lowerBound().y(), delta, "lower y expected -height/2");
         assertEquals(1.0f, box.upperBound().x(), delta, "upper x expected width/2");
@@ -54,7 +54,7 @@ class CapsuleTest {
     void testHorizontal() {
         Capsule capsule = Capsule.horizontal(6.0f, 2.0f);
         assertEquals(1.0f, capsule.radius(), delta, "radius expected height/2");
-        AABB box = capsule.computeAABB(new Transform());
+        AABB box = capsule.computeBounds(new Transform());
         assertEquals(-3.0f, box.lowerBound().x(), delta, "lower x expected -width/2");
         assertEquals(-1.0f, box.lowerBound().y(), delta, "lower y expected -height/2");
         assertEquals(3.0f, box.upperBound().x(), delta, "upper x expected width/2");
@@ -89,9 +89,9 @@ class CapsuleTest {
 
     @Test
     @DisplayName("Capsule compute AABB")
-    void testComputeAABB() {
+    void testComputeBounds() {
         Capsule capsule = new Capsule(new Vec2(-1.0f, 0.0f), new Vec2(1.0f, 0.0f), 0.5f);
-        AABB box = capsule.computeAABB(new Transform());
+        AABB box = capsule.computeBounds(new Transform());
         assertEquals(-1.5f, box.lowerBound().x(), delta, "lower x expected -1.5");
         assertEquals(-0.5f, box.lowerBound().y(), delta, "lower y expected -0.5");
         assertEquals(1.5f, box.upperBound().x(), delta, "upper x expected 1.5");

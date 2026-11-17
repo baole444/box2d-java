@@ -151,12 +151,12 @@ public final class Circle {
      * @return true if the point is inside this circle
      */
     public boolean pointInCircle(Vec2 point) {
-        return nBox2D.nPointInCircle(point.segment(), segment);
+        return nBox2D.nPointInCircle(segment, point.segment());
     }
 
     /**
      * Compute the mass properties of this circle for the given density.
-     * @param density the area density in kg/m^2
+     * @param density the area density in kg/m²
      * @return a new {@link MassData} for this circle
      */
     public MassData computeMass(float density) {
@@ -168,8 +168,8 @@ public final class Circle {
      * @param transform the transform to place this circle with
      * @return a new {@link AABB} containing this circle
      */
-    public AABB computeAABB(Transform transform) {
-        return new AABB(nBox2D.nComputeCircleAABB(segment, transform.segment()));
+    public AABB computeBounds(Transform transform) {
+        return new AABB(nBox2D.nComputeCircleBounds(segment, transform.segment()));
     }
 
     /**

@@ -42,9 +42,9 @@ class SegmentTest {
 
     @Test
     @DisplayName("Segment compute AABB")
-    void testComputeAABB() {
+    void testComputeBounds() {
         Segment segment = new Segment(-1.0f, 0.0f, 1.0f, 0.0f);
-        AABB box = segment.computeAABB(new Transform());
+        AABB box = segment.computeBounds(new Transform());
         assertEquals(-1.0f, box.lowerBound().x(), delta, "lower x expected -1.0");
         assertEquals(0.0f, box.lowerBound().y(), delta, "lower y expected 0.0");
         assertEquals(1.0f, box.upperBound().x(), delta, "upper x expected 1.0");

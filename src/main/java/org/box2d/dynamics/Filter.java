@@ -9,9 +9,10 @@ import java.lang.foreign.MemorySegment;
 /**
  * Collision filtering data for a shape.
  * <p>
- * Two shapes collided when the category bits of each are present in the mask bits of each other.
- * In case where both are on the same none zero group index, a positive group always collides,
- * while negative group never, as this overridden the category and mask test.
+ * Two shapes collide when the category bits of each are present in the mask bits of the other.
+ * <p>
+ * When both share the same non-zero group index, a positive group always collides and a negative group never does,
+ * as non-zero group filtering always wins against the mask bits.
  * <p>
  * Wrapper for native {@link b2Filter}
  */
@@ -115,7 +116,7 @@ public final class Filter {
     /**
      * Set the collision group index of this shape.
      * <p>
-     * A positive group always collides, while negative group does not. When the value is 0, collision is base on category and mask test.
+     * A positive group always collides, while negative group does not. When the value is 0, collision is based on category and mask test.
      * @param groupIndex the group index
      * @return this
      */

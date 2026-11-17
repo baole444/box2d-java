@@ -133,7 +133,7 @@ public final class WorldDef {
     /**
      * Set the contact bounciness, non-dimensional.
      * <p>
-     * Overlap recovery can be sped up by decreasing this, but it will make overlap resolution becomes more energetic.
+     * Overlap recovery can be sped up by decreasing this, with the trade-off that overlap resolution becomes more energetic.
      * @param contactDampingRatio the contact damping ratio
      * @return this
      */
@@ -144,21 +144,21 @@ public final class WorldDef {
 
     /**
      * Get the cap on how fast overlap is resolved, usually in m/s.
-     * @return the maximum contact push speed
+     * @return the contact speed
      */
-    public float maxContactPushSpeed() {
-        return b2WorldDef.maxContactPushSpeed(segment);
+    public float contactSpeed() {
+        return b2WorldDef.contactSpeed(segment);
     }
 
     /**
      * Set the cap on how fast overlap is resolved, usually in m/s.
      * <p>
-     * This only puts a cap on the resolution speed, which is affected by changing the hertz and/or the damping ratio.
-     * @param maxContactPushSpeed the maximum contact push speed
+     * This only puts a cap on the resolution speed. The resolution speed is increased by increasing the hertz and/or decreasing the damping ratio.
+     * @param contactSpeed the contact speed
      * @return this
      */
-    public WorldDef maxContactPushSpeed(float maxContactPushSpeed) {
-        b2WorldDef.maxContactPushSpeed(segment, maxContactPushSpeed);
+    public WorldDef contactSpeed(float contactSpeed) {
+        b2WorldDef.contactSpeed(segment, contactSpeed);
         return this;
     }
 
@@ -166,17 +166,17 @@ public final class WorldDef {
      * Get the maximum linear speed, usually in m/s.
      * @return the maximum linear speed
      */
-    public float maximumLinearSpeed() {
+    public float maxLinearSpeed() {
         return b2WorldDef.maximumLinearSpeed(segment);
     }
 
     /**
      * Set the maximum linear speed, usually in m/s.
-     * @param maximumLinearSpeed the maximum linear speed
+     * @param maxLinearSpeed the maximum linear speed
      * @return this
      */
-    public WorldDef maximumLinearSpeed(float maximumLinearSpeed) {
-        b2WorldDef.maximumLinearSpeed(segment, maximumLinearSpeed);
+    public WorldDef maxLinearSpeed(float maxLinearSpeed) {
+        b2WorldDef.maximumLinearSpeed(segment, maxLinearSpeed);
         return this;
     }
 
@@ -247,9 +247,9 @@ public final class WorldDef {
     @Override
     public String toString() {
         return String.format("WorldDef{gravity=%s, restitutionThreshold=%.2f, hitEventThreshold=%.2f, "
-                        + "contactHertz=%.2f, contactDampingRatio=%.2f, maxContactPushSpeed=%.2f, "
-                        + "maximumLinearSpeed=%.2f, enableSleep=%b, continuousEnabled=%b, userData=%s}",
+                        + "contactHertz=%.2f, contactDampingRatio=%.2f, contactSpeed=%.2f, "
+                        + "maxLinearSpeed=%.2f, sleepingEnabled=%b, continuousEnabled=%b, userData=%s}",
                 gravity(), restitutionThreshold(), hitEventThreshold(), contactHertz(), contactDampingRatio(),
-                maxContactPushSpeed(), maximumLinearSpeed(), sleepingEnabled(), continuousEnabled(), userData);
+                contactSpeed(), maxLinearSpeed(), sleepingEnabled(), continuousEnabled(), userData);
     }
 }

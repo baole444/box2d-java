@@ -29,7 +29,7 @@ class PolygonTest {
     void testSquare() {
         Polygon square = Polygon.square(2.0f);
         assertEquals(4, square.count(), "square expected 4 vertices");
-        AABB box = square.computeAABB(new Transform());
+        AABB box = square.computeBounds(new Transform());
         assertEquals(-2.0f, box.lowerBound().x(), delta, "lower x expected -2.0");
         assertEquals(2.0f, box.upperBound().y(), delta, "upper y expected 2.0");
     }
@@ -80,9 +80,9 @@ class PolygonTest {
 
     @Test
     @DisplayName("Polygon compute AABB")
-    void testComputeAABB() {
+    void testComputeBounds() {
         Polygon box = Polygon.box(1.0f, 2.0f);
-        AABB aabb = box.computeAABB(new Transform());
+        AABB aabb = box.computeBounds(new Transform());
         assertEquals(-1.0f, aabb.lowerBound().x(), delta, "lower x expected -1.0");
         assertEquals(-2.0f, aabb.lowerBound().y(), delta, "lower y expected -2.0");
         assertEquals(1.0f, aabb.upperBound().x(), delta, "upper x expected 1.0");

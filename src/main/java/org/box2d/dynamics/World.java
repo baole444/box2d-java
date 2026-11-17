@@ -37,6 +37,7 @@ public final class World {
      * Create a world for rigid body simulation.
      * <p>
      * A world contains bodies, shapes, and constraints. Up to 128 worlds can be created.
+     * Each world is completely independent and may be simulated in parallel.
      * @param def the world definition
      * @apiNote The provided definition is copied, so it can be changed and reused later.
      */
@@ -110,6 +111,9 @@ public final class World {
      * The definition is copied, so it can be changed and reused later.
      * <p>
      * No new body is created while this world is {@link #isLocked() locked}, making the returned handle {@link Body#isValid() invalid}.
+     * <p>
+     * Box2D also rejects a definition with an invalid value and logs it: a non-finite position, rotation, velocity or gravity scale,
+     * or a negative or non-finite damping, sleep threshold or safety factor. The returned handle is then invalid too.
      */
     public Body createBody(BodyDef def) {
         MemorySegment worldId = checked();
@@ -252,8 +256,8 @@ public final class World {
      * Get the maximum linear speed, usually in m/s.
      * @return the maximum linear speed
      */
-    public float maximumLinearSpeed() {
-        return nBox2D.nWorldGetMaximumLinearSpeed(checked());
+    public float maxLinearSpeed() {
+        return nBox2D.nWorldGetMaxLinearSpeed(checked());
     }
 
     /**
@@ -261,21 +265,70 @@ public final class World {
      * @param maximumLinearSpeed the maximum linear speed
      * @return this
      */
-    public World maximumLinearSpeed(float maximumLinearSpeed) {
-        nBox2D.nWorldSetMaximumLinearSpeed(checked(), maximumLinearSpeed);
+    public World maxLinearSpeed(float maximumLinearSpeed) {
+        nBox2D.nWorldSetMaxLinearSpeed(checked(), maximumLinearSpeed);
         return this;
     }
 
     /**
-     * Adjust contact tuning parameters.
-     * @param hertz the contact stiffness (cycles per second)
-     * @param dampingRatio the contact bounciness with 1 being critical damping (non-dimensional)
-     * @param pushSpeed the maximum contact constraint push out speed (meters per second)
+     * Get the contact stiffness, in cycles per second.
+     * @return the contact hertz
+     */
+    public float contactHertz() {
+        return nBox2D.nWorldGetContactTuning(checked())[0];
+    }
+
+    /**
+     * Get the contact bounciness, non-dimensional, with 1 being critical damping.
+     * @return the contact damping ratio
+     */
+    public float contactDampingRatio() {
+        return nBox2D.nWorldGetContactTuning(checked())[1];
+    }
+
+    /**
+     * Get the cap on how fast overlap is resolved, usually in m/s.
+     * @return the contact speed
+     */
+    public float contactSpeed() {
+        return nBox2D.nWorldGetContactTuning(checked())[2];
+    }
+
+    /**
+     * Adjust the contact tuning parameters.
+     * <p>
+     * Increasing the stiffness increases the speed of overlap recovery, but can introduce jitter.
+     * Decreasing the damping ratio also speeds up overlap recovery, with the trade-off that overlap resolution becomes more energetic.
+     * <p>
+     * The contact speed only puts a cap on the resolution speed. Negative values are clamped to zero.
+     * @param hertz the contact stiffness, in cycles per second
+     * @param dampingRatio the contact bounciness with 1 being critical damping, non-dimensional
+     * @param contactSpeed the maximum contact constraint push out speed, usually in m/s
      * @return this
      * @apiNote Advanced feature
      */
-    public World setContactTuning(float hertz, float dampingRatio, float pushSpeed) {
-        nBox2D.nWorldSetContactTuning(checked(), hertz, dampingRatio, pushSpeed);
+    public World setContactTuning(float hertz, float dampingRatio, float contactSpeed) {
+        nBox2D.nWorldSetContactTuning(checked(), hertz, dampingRatio, contactSpeed);
+        return this;
+    }
+
+    /**
+     * Get the contact point recycling distance, usually in meters.
+     * @return the recycle distance
+     */
+    public float contactRecycleDistance() {
+        return nBox2D.nWorldGetContactRecycleDistance(checked());
+    }
+
+    /**
+     * Set the contact point recycling distance, usually in meters.
+     * <p>
+     * Setting this to zero disables contact point recycling.
+     * @param recycleDistance the recycle distance
+     * @return this
+     */
+    public World contactRecycleDistance(float recycleDistance) {
+        nBox2D.nWorldSetContactRecycleDistance(checked(), recycleDistance);
         return this;
     }
 

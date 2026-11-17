@@ -183,6 +183,10 @@ public final class AABB {
         return new Vec2(0.5f * (lower.x() + upper.x()), 0.5f * (lower.y() + upper.y()));
     }
 
+    /**
+     * Get the extents of this box (half-widths).
+     * @return a new {@link Vec2} holding the half-width and half-height of this box
+     */
     public Vec2 extents() {
         Vec2 lower = lowerBound();
         Vec2 upper = upperBound();

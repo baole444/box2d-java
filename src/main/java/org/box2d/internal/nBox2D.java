@@ -4,6 +4,7 @@ import org.box2d.NativeLoader;
 
 import java.lang.foreign.Arena;
 import java.lang.foreign.MemorySegment;
+import java.lang.foreign.ValueLayout;
 
 /**
  * Facade for native implementations of Box2D.
@@ -21,12 +22,12 @@ public class nBox2D {
     private nBox2D() {}
 
     /**
-     * Native implement of {@code b2IsValidRotation}.
+     * Native implement of {@code b2IsValidRot}.
      * @param segment the memory segment of a {@link b2Rot}
      * @return true if the rotation is valid
      */
-    public static boolean nIsValidRotation(MemorySegment segment) {
-        return Box2D_1.b2IsValidRotation(segment);
+    public static boolean nIsValidRot(MemorySegment segment) {
+        return Box2D.b2IsValidRot(segment);
     }
 
     /**
@@ -35,7 +36,7 @@ public class nBox2D {
      * @return true if the vector is valid
      */
     public static boolean nIsValidVec2(MemorySegment segment) {
-        return Box2D_1.b2IsValidVec2(segment);
+        return Box2D.b2IsValidVec2(segment);
     }
 
     /**
@@ -44,7 +45,7 @@ public class nBox2D {
      * @return true if the value is valid
      */
     public static boolean nIsValidFloat(float val) {
-        return Box2D_1.b2IsValidFloat(val);
+        return Box2D.b2IsValidFloat(val);
     }
 
     /**
@@ -52,7 +53,7 @@ public class nBox2D {
      * @return the memory segment of a {@link b2Filter}, initialised with Box2D's default values
      */
     public static MemorySegment nDefaultFilter() {
-        return Box2D_1.b2DefaultFilter(Arena.ofAuto());
+        return Box2D.b2DefaultFilter(Arena.ofAuto());
     }
 
     /**
@@ -62,7 +63,7 @@ public class nBox2D {
      * @return the memory segment of the resulting {@link b2Polygon}
      */
     public static MemorySegment nMakeBox(float halfWidth, float halfHeight) {
-        return Box2D_1.b2MakeBox(Arena.ofAuto(), halfWidth, halfHeight);
+        return Box2D.b2MakeBox(Arena.ofAuto(), halfWidth, halfHeight);
     }
 
     /**
@@ -71,7 +72,7 @@ public class nBox2D {
      * @return the memory segment of the resulting {@link b2Polygon}
      */
     public static MemorySegment nMakeSquare(float halfWidth) {
-        return Box2D_1.b2MakeSquare(Arena.ofAuto(), halfWidth);
+        return Box2D.b2MakeSquare(Arena.ofAuto(), halfWidth);
     }
 
     /**
@@ -83,7 +84,7 @@ public class nBox2D {
      * @return the memory segment of the resulting {@link b2Polygon}
      */
     public static MemorySegment nMakeOffsetBox(float halfWidth, float halfHeight, MemorySegment centre, MemorySegment rotation) {
-        return Box2D_1.b2MakeOffsetBox(Arena.ofAuto(), halfWidth, halfHeight, centre, rotation);
+        return Box2D.b2MakeOffsetBox(Arena.ofAuto(), halfWidth, halfHeight, centre, rotation);
     }
 
     /**
@@ -93,7 +94,7 @@ public class nBox2D {
      * @return the memory segment of the resulting {@link b2Hull}, its {@code count} is 0 when the hull is degenerate
      */
     public static MemorySegment nComputeHull(MemorySegment points, int count) {
-        return Box2D_1.b2ComputeHull(Arena.ofAuto(), points, count);
+        return Box2D.b2ComputeHull(Arena.ofAuto(), points, count);
     }
 
     /**
@@ -103,107 +104,107 @@ public class nBox2D {
      * @return the memory segment of the resulting {@link b2Polygon}
      */
     public static MemorySegment nMakePolygon(MemorySegment hull, float radius) {
-        return Box2D_1.b2MakePolygon(Arena.ofAuto(), hull, radius);
+        return Box2D.b2MakePolygon(Arena.ofAuto(), hull, radius);
     }
 
     /**
      * Native implement of {@code b2ComputeCircleMass}.
      * @param circle the memory segment of a {@link b2Circle}
-     * @param density the area density in kg/m^2
+     * @param density the area density in kg/m²
      * @return the memory segment of the resulting {@link b2MassData}
      */
     public static MemorySegment nComputeCircleMass(MemorySegment circle, float density) {
-        return Box2D_1.b2ComputeCircleMass(Arena.ofAuto(), circle, density);
+        return Box2D.b2ComputeCircleMass(Arena.ofAuto(), circle, density);
     }
 
     /**
      * Native implement of {@code b2ComputeCapsuleMass}.
      * @param capsule the memory segment of a {@link b2Capsule}
-     * @param density the area density in kg/m^2
+     * @param density the area density in kg/m²
      * @return the memory segment of the resulting {@link b2MassData}
      */
     public static MemorySegment nComputeCapsuleMass(MemorySegment capsule, float density) {
-        return Box2D_1.b2ComputeCapsuleMass(Arena.ofAuto(), capsule, density);
+        return Box2D.b2ComputeCapsuleMass(Arena.ofAuto(), capsule, density);
     }
 
     /**
      * Native implement of {@code b2ComputePolygonMass}.
      * @param polygon the memory segment of a {@link b2Polygon}
-     * @param density the area density in kg/m^2
+     * @param density the area density in kg/m²
      * @return the memory segment of the resulting {@link b2MassData}
      */
     public static MemorySegment nComputePolygonMass(MemorySegment polygon, float density) {
-        return Box2D_1.b2ComputePolygonMass(Arena.ofAuto(), polygon, density);
+        return Box2D.b2ComputePolygonMass(Arena.ofAuto(), polygon, density);
     }
 
     /**
-     * Native implement of {@code b2ComputeCircleAABB}.
+     * Native implement of {@code b2ComputeCircleBounds}.
      * @param circle the memory segment of a {@link b2Circle}
-     * @param transform the memory segment of the {@link b2Transform} to place the shape with
+     * @param transform the memory segment of the {@link b2WorldTransform} to place the shape with
      * @return the memory segment of the resulting {@link b2AABB}
      */
-    public static MemorySegment nComputeCircleAABB(MemorySegment circle, MemorySegment transform) {
-        return Box2D_1.b2ComputeCircleAABB(Arena.ofAuto(), circle, transform);
+    public static MemorySegment nComputeCircleBounds(MemorySegment circle, MemorySegment transform) {
+        return Box2D.b2ComputeCircleBounds(Arena.ofAuto(), circle, transform);
     }
 
     /**
-     * Native implement of {@code b2ComputeCapsuleAABB}.
+     * Native implement of {@code b2ComputeCapsuleBounds}.
      * @param capsule the memory segment of a {@link b2Capsule}
-     * @param transform the memory segment of the {@link b2Transform} to place the shape with
+     * @param transform the memory segment of the {@link b2WorldTransform} to place the shape with
      * @return the memory segment of the resulting {@link b2AABB}
      */
-    public static MemorySegment nComputeCapsuleAABB(MemorySegment capsule, MemorySegment transform) {
-        return Box2D_1.b2ComputeCapsuleAABB(Arena.ofAuto(), capsule, transform);
+    public static MemorySegment nComputeCapsuleBounds(MemorySegment capsule, MemorySegment transform) {
+        return Box2D.b2ComputeCapsuleBounds(Arena.ofAuto(), capsule, transform);
     }
 
     /**
-     * Native implement of {@code b2ComputePolygonAABB}.
+     * Native implement of {@code b2ComputePolygonBounds}.
      * @param polygon the memory segment of a {@link b2Polygon}
-     * @param transform the memory segment of the {@link b2Transform} to place the shape with
+     * @param transform the memory segment of the {@link b2WorldTransform} to place the shape with
      * @return the memory segment of the resulting {@link b2AABB}
      */
-    public static MemorySegment nComputePolygonAABB(MemorySegment polygon, MemorySegment transform) {
-        return Box2D_1.b2ComputePolygonAABB(Arena.ofAuto(), polygon, transform);
+    public static MemorySegment nComputePolygonBounds(MemorySegment polygon, MemorySegment transform) {
+        return Box2D.b2ComputePolygonBounds(Arena.ofAuto(), polygon, transform);
     }
 
     /**
-     * Native implement of {@code b2ComputeSegmentAABB}.
+     * Native implement of {@code b2ComputeSegmentBounds}.
      * @param segment the memory segment of a {@link b2Segment}
-     * @param transform the memory segment of the {@link b2Transform} to place the shape with
+     * @param transform the memory segment of the {@link b2WorldTransform} to place the shape with
      * @return the memory segment of the resulting {@link b2AABB}
      */
-    public static MemorySegment nComputeSegmentAABB(MemorySegment segment, MemorySegment transform) {
-        return Box2D_1.b2ComputeSegmentAABB(Arena.ofAuto(), segment, transform);
+    public static MemorySegment nComputeSegmentBounds(MemorySegment segment, MemorySegment transform) {
+        return Box2D.b2ComputeSegmentBounds(Arena.ofAuto(), segment, transform);
     }
 
     /**
      * Native implement of {@code b2PointInCircle}.
-     * @param localPoint the memory segment of the {@link b2Vec2} in the shape local coordinates
      * @param circle the memory segment of a {@link b2Circle}
+     * @param localPoint the memory segment of the {@link b2Vec2} in the shape local coordinates
      * @return true if the point is inside the circle
      */
-    public static boolean nPointInCircle(MemorySegment localPoint, MemorySegment circle) {
-        return Box2D_1.b2PointInCircle(localPoint, circle);
+    public static boolean nPointInCircle(MemorySegment circle, MemorySegment localPoint) {
+        return Box2D.b2PointInCircle(circle, localPoint);
     }
 
     /**
      * Native implement of {@code b2PointInCapsule}.
-     * @param localPoint the memory segment of the {@link b2Vec2} in the shape local coordinates
      * @param capsule the memory segment of a {@link b2Capsule}
+     * @param localPoint the memory segment of the {@link b2Vec2} in the shape local coordinates
      * @return true if the point is inside the capsule
      */
-    public static boolean nPointInCapsule(MemorySegment localPoint, MemorySegment capsule) {
-        return Box2D_1.b2PointInCapsule(localPoint, capsule);
+    public static boolean nPointInCapsule(MemorySegment capsule, MemorySegment localPoint) {
+        return Box2D.b2PointInCapsule(capsule, localPoint);
     }
 
     /**
      * Native implement of {@code b2PointInPolygon}.
-     * @param point the memory segment of the {@link b2Vec2} in the shape's local frame
      * @param polygon the memory segment of a {@link b2Polygon}
+     * @param localPoint the memory segment of the {@link b2Vec2} in the shape local coordinates
      * @return true if the point is inside the polygon
      */
-    public static boolean nPointInPolygon(MemorySegment point, MemorySegment polygon) {
-        return Box2D_1.b2PointInPolygon(point, polygon);
+    public static boolean nPointInPolygon(MemorySegment polygon, MemorySegment localPoint) {
+        return Box2D.b2PointInPolygon(polygon, localPoint);
     }
 
     /**
@@ -211,7 +212,7 @@ public class nBox2D {
      * @return the enum value for native {@code b2BodyType}'s static body
      */
     public static int nStaticBody() {
-        return Box2D_1.b2_staticBody();
+        return Box2D.b2_staticBody();
     }
 
     /**
@@ -219,7 +220,7 @@ public class nBox2D {
      * @return the enum value for native {@code b2BodyType}'s kinematic body
      */
     public static int nKinematicBody() {
-        return Box2D_1.b2_kinematicBody();
+        return Box2D.b2_kinematicBody();
     }
 
     /**
@@ -227,7 +228,7 @@ public class nBox2D {
      * @return the enum value for native {@code b2BodyType}'s dynamic body
      */
     public static int nDynamicBody() {
-        return Box2D_1.b2_dynamicBody();
+        return Box2D.b2_dynamicBody();
     }
 
     /**
@@ -236,16 +237,16 @@ public class nBox2D {
      * @return the memory segment of the resulting linear velocity {@link b2Vec2} at the centre of mass
      */
     public static MemorySegment nBodyGetLinearVelocity(MemorySegment bodyId) {
-        return Box2D_1.b2Body_GetLinearVelocity(Arena.ofAuto(), bodyId);
+        return Box2D.b2Body_GetLinearVelocity(Arena.ofAuto(), bodyId);
     }
 
     /**
-     * Native implement of {@code b2Body_GetLocalCenterOfMass}.
+     * Native implement of {@code b2Body_GetLocalCenter}.
      * @param bodyId the memory segment of the {@link b2BodyId}
      * @return the memory segment of the resulting centre of mass {@link b2Vec2} in body local coordinate
      */
-    public static MemorySegment nBodyGetLocalCenterOfMass(MemorySegment bodyId) {
-        return Box2D_1.b2Body_GetLocalCenterOfMass(Arena.ofAuto(), bodyId);
+    public static MemorySegment nBodyGetLocalCenter(MemorySegment bodyId) {
+        return Box2D.b2Body_GetLocalCenter(Arena.ofAuto(), bodyId);
     }
 
     /**
@@ -255,7 +256,7 @@ public class nBox2D {
      * @return the memory segment of the resulting linear velocity {@link b2Vec2} of the point
      */
     public static MemorySegment nBodyGetLocalPoint(MemorySegment bodyId, MemorySegment worldPoint) {
-        return Box2D_1.b2Body_GetLocalPoint(Arena.ofAuto(), bodyId, worldPoint);
+        return Box2D.b2Body_GetLocalPoint(Arena.ofAuto(), bodyId, worldPoint);
     }
 
     /**
@@ -265,7 +266,7 @@ public class nBox2D {
      * @return the memory segment of the resulting linear velocity {@link b2Vec2} of the point
      */
     public static MemorySegment nBodyGetLocalPointVelocity(MemorySegment bodyId, MemorySegment localPoint) {
-        return Box2D_1.b2Body_GetLocalPointVelocity(Arena.ofAuto(), bodyId, localPoint);
+        return Box2D.b2Body_GetLocalPointVelocity(Arena.ofAuto(), bodyId, localPoint);
     }
 
     /**
@@ -275,7 +276,7 @@ public class nBox2D {
      * @return the memory segment of the resulting {@link b2Vec2} in body local coordinates
      */
     public static MemorySegment nBodyGetLocalVector(MemorySegment bodyId, MemorySegment worldVector) {
-        return Box2D_1.b2Body_GetLocalVector(Arena.ofAuto(), bodyId, worldVector);
+        return Box2D.b2Body_GetLocalVector(Arena.ofAuto(), bodyId, worldVector);
     }
 
     /**
@@ -284,16 +285,34 @@ public class nBox2D {
      * @return the memory segment of the resulting {@link b2MassData}
      */
     public static MemorySegment nBodyGetMassData(MemorySegment bodyId) {
-        return Box2D_1.b2Body_GetMassData(Arena.ofAuto(), bodyId);
+        return Box2D.b2Body_GetMassData(Arena.ofAuto(), bodyId);
     }
 
     /**
      * Native implement of {@code b2Body_GetName}.
      * @param bodyId the memory segment of the {@link b2BodyId}
-     * @return a pointer to the body's null-terminated name (32 bytes), valid until the body is destroyed
+     * @return a pointer to the body's null-terminated name ({@code B2_NAME_LENGTH} + 1 bytes), valid until the body is destroyed
      */
     public static MemorySegment nBodyGetName(MemorySegment bodyId) {
-        return Box2D_1.b2Body_GetName(bodyId);
+        return Box2D.b2Body_GetName(bodyId);
+    }
+
+    /**
+     * Native implement of {@code b2Body_GetMotionLocks}.
+     * @param bodyId the memory segment of the {@link b2BodyId}
+     * @return the memory segment of the resulting {@link b2MotionLocks}
+     */
+    public static MemorySegment nBodyGetMotionLocks(MemorySegment bodyId) {
+        return Box2D.b2Body_GetMotionLocks(Arena.ofAuto(), bodyId);
+    }
+
+    /**
+     * Native implement of {@code b2Body_GetSafetyFactor}.
+     * @param bodyId the memory segment of the {@link b2BodyId}
+     * @return the continuous collision safety factor, non-dimensional
+     */
+    public static float nBodyGetSafetyFactor(MemorySegment bodyId) {
+        return Box2D.b2Body_GetSafetyFactor(bodyId);
     }
 
     /**
@@ -302,7 +321,7 @@ public class nBox2D {
      * @return the memory segment of the resulting body origin {@link b2Vec2} in world space
      */
     public static MemorySegment nBodyGetPosition(MemorySegment bodyId) {
-        return Box2D_1.b2Body_GetPosition(Arena.ofAuto(), bodyId);
+        return Box2D.b2Body_GetPosition(Arena.ofAuto(), bodyId);
     }
 
     /**
@@ -311,7 +330,7 @@ public class nBox2D {
      * @return the memory segment of the resulting {@link b2Rot} in world space
      */
     public static MemorySegment nBodyGetRotation(MemorySegment bodyId) {
-        return Box2D_1.b2Body_GetRotation(Arena.ofAuto(), bodyId);
+        return Box2D.b2Body_GetRotation(Arena.ofAuto(), bodyId);
     }
 
     /**
@@ -320,7 +339,7 @@ public class nBox2D {
      * @return the memory segment of the resulting {@link b2Transform} in world space
      */
     public static MemorySegment nBodyGetTransform(MemorySegment bodyId) {
-        return Box2D_1.b2Body_GetTransform(Arena.ofAuto(), bodyId);
+        return Box2D.b2Body_GetTransform(Arena.ofAuto(), bodyId);
     }
 
     /**
@@ -329,16 +348,16 @@ public class nBox2D {
      * @return the pointer of the user data, {@link MemorySegment#NULL} if none exist
      */
     public static MemorySegment nBodyGetUserData(MemorySegment bodyId) {
-        return Box2D_1.b2Body_GetUserData(bodyId);
+        return Box2D.b2Body_GetUserData(bodyId);
     }
 
     /**
-     * Native implement of {@code b2Body_GetWorldCenterOfMass}.
+     * Native implement of {@code b2Body_GetWorldCenter}.
      * @param bodyId the memory segment of the {@link b2BodyId}
      * @return the memory segment of the resulting centre of mass {@link b2Vec2} in world coordinates
      */
-    public static MemorySegment nBodyGetWorldCenterOfMass(MemorySegment bodyId) {
-        return Box2D_1.b2Body_GetWorldCenterOfMass(Arena.ofAuto(), bodyId);
+    public static MemorySegment nBodyGetWorldCenter(MemorySegment bodyId) {
+        return Box2D.b2Body_GetWorldCenter(Arena.ofAuto(), bodyId);
     }
 
     /**
@@ -348,7 +367,7 @@ public class nBox2D {
      * @return the memory segment of the resulting {@link b2Vec2} in world coordinates
      */
     public static MemorySegment nBodyGetWorldPoint(MemorySegment bodyId, MemorySegment localPoint) {
-        return Box2D_1.b2Body_GetWorldPoint(Arena.ofAuto(), bodyId, localPoint);
+        return Box2D.b2Body_GetWorldPoint(Arena.ofAuto(), bodyId, localPoint);
     }
 
     /**
@@ -358,7 +377,7 @@ public class nBox2D {
      * @return the memory segment of the resulting linear velocity {@link b2Vec2} of the point
      */
     public static MemorySegment nBodyGetWorldPointVelocity(MemorySegment bodyId, MemorySegment worldPoint) {
-        return Box2D_1.b2Body_GetWorldPointVelocity(Arena.ofAuto(), bodyId, worldPoint);
+        return Box2D.b2Body_GetWorldPointVelocity(Arena.ofAuto(), bodyId, worldPoint);
     }
 
     /**
@@ -368,7 +387,7 @@ public class nBox2D {
      * @return the memory segment of the resulting {@link b2Vec2} in world coordinates
      */
     public static MemorySegment nBodyGetWorldVector(MemorySegment bodyId, MemorySegment localVector) {
-        return Box2D_1.b2Body_GetWorldVector(Arena.ofAuto(), bodyId, localVector);
+        return Box2D.b2Body_GetWorldVector(Arena.ofAuto(), bodyId, localVector);
     }
 
     /**
@@ -378,7 +397,7 @@ public class nBox2D {
      * @return the memory segment of the new {@link b2BodyId}, or null id if the world is locked
      */
     public static MemorySegment nCreateBody(MemorySegment worldId, MemorySegment def) {
-        return Box2D_1.b2CreateBody(Arena.ofAuto(), worldId, def);
+        return Box2D.b2CreateBody(Arena.ofAuto(), worldId, def);
     }
 
     /**
@@ -387,7 +406,7 @@ public class nBox2D {
      * @return the memory segment of the new {@link b2WorldId}
      */
     public static MemorySegment nCreateWorld(MemorySegment def) {
-        return Box2D_1.b2CreateWorld(Arena.ofAuto(), def);
+        return Box2D.b2CreateWorld(Arena.ofAuto(), def);
     }
 
     /**
@@ -395,7 +414,7 @@ public class nBox2D {
      * @return the memory segment of a {@link b2WorldDef}, initialised with Box2D's default values
      */
     public static MemorySegment nDefaultBodyDef() {
-        return Box2D_1.b2DefaultBodyDef(Arena.ofAuto());
+        return Box2D.b2DefaultBodyDef(Arena.ofAuto());
     }
 
     /**
@@ -403,7 +422,7 @@ public class nBox2D {
      * @return the memory segment of a {@link b2WorldDef}, initialised with Box2D's default values
      */
     public static MemorySegment nDefaultWorldDef() {
-        return Box2D_1.b2DefaultWorldDef(Arena.ofAuto());
+        return Box2D.b2DefaultWorldDef(Arena.ofAuto());
     }
 
     /**
@@ -412,7 +431,7 @@ public class nBox2D {
      * @return the memory segment of the resulting gravity {@link b2Vec2}
      */
     public static MemorySegment nWorldGetGravity(MemorySegment worldId) {
-        return Box2D_1.b2World_GetGravity(Arena.ofAuto(), worldId);
+        return Box2D.b2World_GetGravity(Arena.ofAuto(), worldId);
     }
 
     /**
@@ -421,7 +440,7 @@ public class nBox2D {
      * @return the pointer to the user data, {@link MemorySegment#NULL} if none exist
      */
     public static MemorySegment nWorldGetUserData(MemorySegment worldId) {
-        return Box2D_1.b2World_GetUserData(worldId);
+        return Box2D.b2World_GetUserData(worldId);
     }
 
     /**
@@ -430,7 +449,7 @@ public class nBox2D {
      * @return true if the body is awake
      */
     public static boolean nBodyIsAwake(MemorySegment bodyId) {
-        return Box2D_1.b2Body_IsAwake(bodyId);
+        return Box2D.b2Body_IsAwake(bodyId);
     }
 
     /**
@@ -439,7 +458,16 @@ public class nBox2D {
      * @return true if the body is a bullet
      */
     public static boolean nBodyIsBullet(MemorySegment bodyId) {
-        return Box2D_1.b2Body_IsBullet(bodyId);
+        return Box2D.b2Body_IsBullet(bodyId);
+    }
+
+    /**
+     * Native implement of {@code b2Body_IsContactRecyclingEnabled}.
+     * @param bodyId the memory segment of the {@link b2BodyId}
+     * @return true if contact recycling is enabled
+     */
+    public static boolean nBodyIsContactRecyclingEnabled(MemorySegment bodyId) {
+        return Box2D.b2Body_IsContactRecyclingEnabled(bodyId);
     }
 
     /**
@@ -448,25 +476,16 @@ public class nBox2D {
      * @return true if the body is enabled
      */
     public static boolean nBodyIsEnabled(MemorySegment bodyId) {
-        return Box2D_1.b2Body_IsEnabled(bodyId);
+        return Box2D.b2Body_IsEnabled(bodyId);
     }
 
     /**
-     * Native implement of {@code b2Body_IsFixedRotation}.
-     * @param bodyId the memory segment of the {@link b2BodyId}
-     * @return true if the body has fixed rotation
-     */
-    public static boolean nBodyIsFixedRotation(MemorySegment bodyId) {
-        return Box2D_1.b2Body_IsFixedRotation(bodyId);
-    }
-
-    /**
-     * Native implement of {@code b2Body_IsSleepEnabled}.
+     * Native implement of {@code b2Body_IsSleepingEnabled}.
      * @param bodyId the memory segment of the {@link b2BodyId}
      * @return true if the body is allowed to sleep
      */
-    public static boolean nBodyIsSleepEnabled(MemorySegment bodyId) {
-        return Box2D_1.b2Body_IsSleepEnabled(bodyId);
+    public static boolean nBodyIsSleepingEnabled(MemorySegment bodyId) {
+        return Box2D.b2Body_IsSleepingEnabled(bodyId);
     }
 
     /**
@@ -475,7 +494,7 @@ public class nBox2D {
      * @return true if the id refers to a live body
      */
     public static boolean nBodyIsValid(MemorySegment id) {
-        return Box2D_1.b2Body_IsValid(id);
+        return Box2D.b2Body_IsValid(id);
     }
 
     /**
@@ -484,7 +503,7 @@ public class nBox2D {
      * @return true if continuous collision is enabled
      */
     public static boolean nWorldIsContinuousEnabled(MemorySegment worldId) {
-        return Box2D_1.b2World_IsContinuousEnabled(worldId);
+        return Box2D.b2World_IsContinuousEnabled(worldId);
     }
 
     /**
@@ -493,7 +512,7 @@ public class nBox2D {
      * @return true if sleeping is enabled
      */
     public static boolean nWorldIsSleepingEnabled(MemorySegment worldId) {
-        return Box2D_1.b2World_IsSleepingEnabled(worldId);
+        return Box2D.b2World_IsSleepingEnabled(worldId);
     }
 
     /**
@@ -502,7 +521,7 @@ public class nBox2D {
      * @return true if the id refers to a live world
      */
     public static boolean nWorldIsValid(MemorySegment id) {
-        return Box2D_1.b2World_IsValid(id);
+        return Box2D.b2World_IsValid(id);
     }
 
     /**
@@ -511,7 +530,7 @@ public class nBox2D {
      * @return true if warm starting is enabled
      */
     public static boolean nWorldIsWarmStartingEnabled(MemorySegment worldId) {
-        return Box2D_1.b2World_IsWarmStartingEnabled(worldId);
+        return Box2D.b2World_IsWarmStartingEnabled(worldId);
     }
 
     /**
@@ -520,7 +539,7 @@ public class nBox2D {
      * @return the angular damping factor
      */
     public static float nBodyGetAngularDamping(MemorySegment bodyId) {
-        return Box2D_1.b2Body_GetAngularDamping(bodyId);
+        return Box2D.b2Body_GetAngularDamping(bodyId);
     }
 
     /**
@@ -529,7 +548,7 @@ public class nBox2D {
      * @return the angular velocity, in rad/s
      */
     public static float nBodyGetAngularVelocity(MemorySegment bodyId) {
-        return Box2D_1.b2Body_GetAngularVelocity(bodyId);
+        return Box2D.b2Body_GetAngularVelocity(bodyId);
     }
 
     /**
@@ -538,7 +557,7 @@ public class nBox2D {
      * @return the gravity scale factor
      */
     public static float nBodyGetGravityScale(MemorySegment bodyId) {
-        return Box2D_1.b2Body_GetGravityScale(bodyId);
+        return Box2D.b2Body_GetGravityScale(bodyId);
     }
 
     /**
@@ -547,7 +566,7 @@ public class nBox2D {
      * @return the linear damping factor
      */
     public static float nBodyGetLinearDamping(MemorySegment bodyId) {
-        return Box2D_1.b2Body_GetLinearDamping(bodyId);
+        return Box2D.b2Body_GetLinearDamping(bodyId);
     }
 
     /**
@@ -556,7 +575,7 @@ public class nBox2D {
      * @return the mass, usually in kilograms
      */
     public static float nBodyGetMass(MemorySegment bodyId) {
-        return Box2D_1.b2Body_GetMass(bodyId);
+        return Box2D.b2Body_GetMass(bodyId);
     }
 
     /**
@@ -565,7 +584,7 @@ public class nBox2D {
      * @return the rotational inertia, usually in kg*m²
      */
     public static float nBodyGetRotationalInertia(MemorySegment bodyId) {
-        return Box2D_1.b2Body_GetRotationalInertia(bodyId);
+        return Box2D.b2Body_GetRotationalInertia(bodyId);
     }
 
     /**
@@ -574,7 +593,7 @@ public class nBox2D {
      * @return the sleep threshold, usually in m/s
      */
     public static float nBodyGetSleepThreshold(MemorySegment bodyId) {
-        return Box2D_1.b2Body_GetSleepThreshold(bodyId);
+        return Box2D.b2Body_GetSleepThreshold(bodyId);
     }
 
     /**
@@ -583,16 +602,38 @@ public class nBox2D {
      * @return the hit event threshold, usually in m/s
      */
     public static float nWorldGetHitEventThreshold(MemorySegment worldId) {
-        return Box2D_1.b2World_GetHitEventThreshold(worldId);
+        return Box2D.b2World_GetHitEventThreshold(worldId);
     }
 
     /**
-     * Native implement of {@code b2World_GetMaximumLinearSpeed}.
+     * Native implement of {@code b2World_GetContactRecycleDistance}.
+     * @param worldId the memory segment of the {@link b2WorldId}
+     * @return the contact point recycling distance, usually in meters
+     */
+    public static float nWorldGetContactRecycleDistance(MemorySegment worldId) {
+        return Box2D.b2World_GetContactRecycleDistance(worldId);
+    }
+
+    /**
+     * Native implement of {@code b2World_GetContactTuning}.
+     * @param worldId the memory segment of the {@link b2WorldId}
+     * @return the contact hertz, damping ratio and push speed, in that order
+     */
+    public static float[] nWorldGetContactTuning(MemorySegment worldId) {
+        try (Arena arena = Arena.ofConfined()) {
+            MemorySegment values = arena.allocate(ValueLayout.JAVA_FLOAT, 3);
+            Box2D.b2World_GetContactTuning(worldId, values, values.asSlice(Float.BYTES), values.asSlice(2L * Float.BYTES));
+            return values.toArray(ValueLayout.JAVA_FLOAT);
+        }
+    }
+
+    /**
+     * Native implement of {@code b2World_GetMaxLinearSpeed}.
      * @param worldId the memory segment of the {@link b2WorldId}
      * @return the maximum linear speed, usually in m/s
      */
-    public static float nWorldGetMaximumLinearSpeed(MemorySegment worldId) {
-        return Box2D_1.b2World_GetMaximumLinearSpeed(worldId);
+    public static float nWorldGetMaxLinearSpeed(MemorySegment worldId) {
+        return Box2D.b2World_GetMaxLinearSpeed(worldId);
     }
 
     /**
@@ -601,7 +642,7 @@ public class nBox2D {
      * @return the restitution threshold, usually in m/s
      */
     public static float nWorldGetRestitutionThreshold(MemorySegment worldId) {
-        return Box2D_1.b2World_GetRestitutionThreshold(worldId);
+        return Box2D.b2World_GetRestitutionThreshold(worldId);
     }
 
     /**
@@ -610,7 +651,7 @@ public class nBox2D {
      * @return the number of shapes on the body
      */
     public static int nBodyGetShapeCount(MemorySegment bodyId) {
-        return Box2D_1.b2Body_GetShapeCount(bodyId);
+        return Box2D.b2Body_GetShapeCount(bodyId);
     }
 
     /**
@@ -621,7 +662,7 @@ public class nBox2D {
      * @return the number of shape ids written to the array
      */
     public static int nBodyGetShapes(MemorySegment bodyId, MemorySegment shapeArray, int capacity) {
-        return Box2D_1.b2Body_GetShapes(bodyId, shapeArray, capacity);
+        return Box2D.b2Body_GetShapes(bodyId, shapeArray, capacity);
     }
 
     /**
@@ -630,7 +671,7 @@ public class nBox2D {
      * @return the native {@code b2BodyType} value
      */
     public static int nBodyGetType(MemorySegment bodyId) {
-        return Box2D_1.b2Body_GetType(bodyId);
+        return Box2D.b2Body_GetType(bodyId);
     }
 
     /**
@@ -639,7 +680,7 @@ public class nBox2D {
      * @return the number of awake bodies
      */
     public static int nWorldGetAwakeBodyCount(MemorySegment worldId) {
-        return Box2D_1.b2World_GetAwakeBodyCount(worldId);
+        return Box2D.b2World_GetAwakeBodyCount(worldId);
     }
 
     /**
@@ -649,7 +690,7 @@ public class nBox2D {
      * @param wake true to wake up the body
      */
     public static void nBodyApplyAngularImpulse(MemorySegment bodyId, float impulse, boolean wake) {
-        Box2D_1.b2Body_ApplyAngularImpulse(bodyId, impulse, wake);
+        Box2D.b2Body_ApplyAngularImpulse(bodyId, impulse, wake);
     }
 
     /**
@@ -660,7 +701,7 @@ public class nBox2D {
      * @param wake true to wake up the body
      */
     public static void nBodyApplyForce(MemorySegment bodyId, MemorySegment force, MemorySegment point, boolean wake) {
-        Box2D_1.b2Body_ApplyForce(bodyId, force, point, wake);
+        Box2D.b2Body_ApplyForce(bodyId, force, point, wake);
     }
 
     /**
@@ -670,7 +711,7 @@ public class nBox2D {
      * @param wake true to wake up the body
      */
     public static void nBodyApplyForceToCenter(MemorySegment bodyId, MemorySegment force, boolean wake) {
-        Box2D_1.b2Body_ApplyForceToCenter(bodyId, force, wake);
+        Box2D.b2Body_ApplyForceToCenter(bodyId, force, wake);
     }
 
     /**
@@ -681,7 +722,7 @@ public class nBox2D {
      * @param wake true to wake up the body
      */
     public static void nBodyApplyLinearImpulse(MemorySegment bodyId, MemorySegment impulse, MemorySegment point, boolean wake) {
-        Box2D_1.b2Body_ApplyLinearImpulse(bodyId, impulse, point, wake);
+        Box2D.b2Body_ApplyLinearImpulse(bodyId, impulse, point, wake);
     }
 
     /**
@@ -691,15 +732,15 @@ public class nBox2D {
      * @param wake true to wake up the body
      */
     public static void nBodyApplyLinearImpulseToCenter(MemorySegment bodyId, MemorySegment impulse, boolean wake) {
-        Box2D_1.b2Body_ApplyLinearImpulseToCenter(bodyId, impulse, wake);
+        Box2D.b2Body_ApplyLinearImpulseToCenter(bodyId, impulse, wake);
     }
 
     /**
-     * Native implement of {@code b2Body_ApplyMassFromShapes}.
+     * Native implement of {@code b2Body_UpdateMassFromShapes}.
      * @param bodyId the memory segment of the {@link b2BodyId}
      */
-    public static void nBodyApplyMassFromShapes(MemorySegment bodyId) {
-        Box2D_1.b2Body_ApplyMassFromShapes(bodyId);
+    public static void nBodyUpdateMassFromShapes(MemorySegment bodyId) {
+        Box2D.b2Body_UpdateMassFromShapes(bodyId);
     }
 
     /**
@@ -709,7 +750,7 @@ public class nBox2D {
      * @param wake true to wake up the body
      */
     public static void nBodyApplyTorque(MemorySegment bodyId, float torque, boolean wake) {
-        Box2D_1.b2Body_ApplyTorque(bodyId, torque, wake);
+        Box2D.b2Body_ApplyTorque(bodyId, torque, wake);
     }
 
     /**
@@ -717,7 +758,7 @@ public class nBox2D {
      * @param bodyId the memory segment of the {@link b2BodyId}
      */
     public static void nBodyDisable(MemorySegment bodyId) {
-        Box2D_1.b2Body_Disable(bodyId);
+        Box2D.b2Body_Disable(bodyId);
     }
 
     /**
@@ -725,16 +766,25 @@ public class nBox2D {
      * @param bodyId the memory segment of the {@link b2BodyId}
      */
     public static void nBodyEnable(MemorySegment bodyId) {
-        Box2D_1.b2Body_Enable(bodyId);
+        Box2D.b2Body_Enable(bodyId);
     }
 
     /**
-     * Native implement of {@code b2Body_EnableSleep}.
+     * Native implement of {@code b2Body_EnableSleeping}.
      * @param bodyId the memory segment of the {@link b2BodyId}
      * @param enableSleep true to allow the body to sleep
      */
-    public static void nBodyEnableSleep(MemorySegment bodyId, boolean enableSleep) {
-        Box2D_1.b2Body_EnableSleep(bodyId, enableSleep);
+    public static void nBodyEnableSleeping(MemorySegment bodyId, boolean enableSleep) {
+        Box2D.b2Body_EnableSleeping(bodyId, enableSleep);
+    }
+
+    /**
+     * Native implement of {@code b2Body_EnableContactRecycling}.
+     * @param bodyId the memory segment of the {@link b2BodyId}
+     * @param flag true to enable contact recycling
+     */
+    public static void nBodyEnableContactRecycling(MemorySegment bodyId, boolean flag) {
+        Box2D.b2Body_EnableContactRecycling(bodyId, flag);
     }
 
     /**
@@ -743,7 +793,7 @@ public class nBox2D {
      * @param angularDamping the non-negative angular damping
      */
     public static void nBodySetAngularDamping(MemorySegment bodyId, float angularDamping) {
-        Box2D_1.b2Body_SetAngularDamping(bodyId, angularDamping);
+        Box2D.b2Body_SetAngularDamping(bodyId, angularDamping);
     }
 
     /**
@@ -752,7 +802,7 @@ public class nBox2D {
      * @param angularVelocity the angular velocity, in rad/s
      */
     public static void nBodySetAngularVelocity(MemorySegment bodyId, float angularVelocity) {
-        Box2D_1.b2Body_SetAngularVelocity(bodyId, angularVelocity);
+        Box2D.b2Body_SetAngularVelocity(bodyId, angularVelocity);
     }
 
     /**
@@ -761,7 +811,7 @@ public class nBox2D {
      * @param awake true to wake the body, false to put it to sleep
      */
     public static void nBodySetAwake(MemorySegment bodyId, boolean awake) {
-        Box2D_1.b2Body_SetAwake(bodyId, awake);
+        Box2D.b2Body_SetAwake(bodyId, awake);
     }
 
     /**
@@ -770,16 +820,7 @@ public class nBox2D {
      * @param flag true to make the body a bullet
      */
     public static void nBodySetBullet(MemorySegment bodyId, boolean flag) {
-        Box2D_1.b2Body_SetBullet(bodyId, flag);
-    }
-
-    /**
-     * Native implement of {@code b2Body_SetFixedRotation}.
-     * @param bodyId the memory segment of the {@link b2BodyId}
-     * @param flag true to fix (lock) the body's rotation
-     */
-    public static void nBodySetFixedRotation(MemorySegment bodyId, boolean flag) {
-        Box2D_1.b2Body_SetFixedRotation(bodyId, flag);
+        Box2D.b2Body_SetBullet(bodyId, flag);
     }
 
     /**
@@ -788,7 +829,7 @@ public class nBox2D {
      * @param gravityScale the gravity scale, non-dimensional
      */
     public static void nBodySetGravityScale(MemorySegment bodyId, float gravityScale) {
-        Box2D_1.b2Body_SetGravityScale(bodyId, gravityScale);
+        Box2D.b2Body_SetGravityScale(bodyId, gravityScale);
     }
 
     /**
@@ -797,7 +838,7 @@ public class nBox2D {
      * @param linearDamping the non-negative linear damping
      */
     public static void nBodySetLinearDamping(MemorySegment bodyId, float linearDamping) {
-        Box2D_1.b2Body_SetLinearDamping(bodyId, linearDamping);
+        Box2D.b2Body_SetLinearDamping(bodyId, linearDamping);
     }
 
     /**
@@ -806,7 +847,7 @@ public class nBox2D {
      * @param linearVelocity the memory segment of the linear velocity {@link b2Vec2}, usually in m/s
      */
     public static void nBodySetLinearVelocity(MemorySegment bodyId, MemorySegment linearVelocity) {
-        Box2D_1.b2Body_SetLinearVelocity(bodyId, linearVelocity);
+        Box2D.b2Body_SetLinearVelocity(bodyId, linearVelocity);
     }
 
     /**
@@ -815,16 +856,34 @@ public class nBox2D {
      * @param massData the memory segment of the {@link b2MassData} to apply
      */
     public static void nBodySetMassData(MemorySegment bodyId, MemorySegment massData) {
-        Box2D_1.b2Body_SetMassData(bodyId, massData);
+        Box2D.b2Body_SetMassData(bodyId, massData);
+    }
+
+    /**
+     * Native implement of {@code b2Body_SetMotionLocks}.
+     * @param bodyId the memory segment of the {@link b2BodyId}
+     * @param locks the memory segment of the {@link b2MotionLocks} to apply
+     */
+    public static void nBodySetMotionLocks(MemorySegment bodyId, MemorySegment locks) {
+        Box2D.b2Body_SetMotionLocks(bodyId, locks);
     }
 
     /**
      * Native implement of {@code b2Body_SetName}.
      * @param bodyId the memory segment of the {@link b2BodyId}
-     * @param name the memory segment of a null-terminated UTF-8 name (at least 32 bytes, Box2D copies 31 bytes), or {@link MemorySegment#NULL} to clear the name
+     * @param name the memory segment of a null-terminated UTF-8 name (at least {@code B2_NAME_LENGTH} + 1 bytes), or {@link MemorySegment#NULL} to clear the name
      */
     public static void nBodySetName(MemorySegment bodyId, MemorySegment name) {
-        Box2D_1.b2Body_SetName(bodyId, name);
+        Box2D.b2Body_SetName(bodyId, name);
+    }
+
+    /**
+     * Native implement of {@code b2Body_SetSafetyFactor}.
+     * @param bodyId the memory segment of the {@link b2BodyId}
+     * @param safetyFactor the continuous collision safety factor, non-dimensional
+     */
+    public static void nBodySetSafetyFactor(MemorySegment bodyId, float safetyFactor) {
+        Box2D.b2Body_SetSafetyFactor(bodyId, safetyFactor);
     }
 
     /**
@@ -833,17 +892,18 @@ public class nBox2D {
      * @param sleepThreshold the non-negative sleep threshold, usually in m/s
      */
     public static void nBodySetSleepThreshold(MemorySegment bodyId, float sleepThreshold) {
-        Box2D_1.b2Body_SetSleepThreshold(bodyId, sleepThreshold);
+        Box2D.b2Body_SetSleepThreshold(bodyId, sleepThreshold);
     }
 
     /**
      * Native implement of {@code b2Body_SetTargetTransform}.
      * @param bodyId the memory segment of the {@link b2BodyId}
-     * @param target the memory segment of the target {@link b2Transform}
+     * @param target the memory segment of the target {@link b2WorldTransform}
      * @param timeStep the time step over which to reach the target, in seconds
+     * @param wake true to wake the body
      */
-    public static void nBodySetTargetTransform(MemorySegment bodyId, MemorySegment target, float timeStep) {
-        Box2D_1.b2Body_SetTargetTransform(bodyId, target, timeStep);
+    public static void nBodySetTargetTransform(MemorySegment bodyId, MemorySegment target, float timeStep, boolean wake) {
+        Box2D.b2Body_SetTargetTransform(bodyId, target, timeStep, wake);
     }
 
     /**
@@ -853,7 +913,7 @@ public class nBox2D {
      * @param rotation the memory segment of the {@link b2Rot} in world space
      */
     public static void nBodySetTransform(MemorySegment bodyId, MemorySegment position, MemorySegment rotation) {
-        Box2D_1.b2Body_SetTransform(bodyId, position, rotation);
+        Box2D.b2Body_SetTransform(bodyId, position, rotation);
     }
 
     /**
@@ -862,7 +922,7 @@ public class nBox2D {
      * @param type the native {@code b2BodyType} value
      */
     public static void nBodySetType(MemorySegment bodyId, int type) {
-        Box2D_1.b2Body_SetType(bodyId, type);
+        Box2D.b2Body_SetType(bodyId, type);
     }
 
     /**
@@ -871,7 +931,7 @@ public class nBox2D {
      * @param userData the pointer to the user data, or {@link MemorySegment#NULL} for none
      */
     public static void nBodySetUserData(MemorySegment bodyId, MemorySegment userData) {
-        Box2D_1.b2Body_SetUserData(bodyId, userData);
+        Box2D.b2Body_SetUserData(bodyId, userData);
     }
 
     /**
@@ -879,7 +939,7 @@ public class nBox2D {
      * @param bodyId the memory segment of the {@link b2BodyId}
      */
     public static void nDestroyBody(MemorySegment bodyId) {
-        Box2D_1.b2DestroyBody(bodyId);
+        Box2D.b2DestroyBody(bodyId);
     }
 
     /**
@@ -887,7 +947,7 @@ public class nBox2D {
      * @param worldId the memory segment of the {@link b2WorldId}
      */
     public static void nDestroyWorld(MemorySegment worldId) {
-        Box2D_1.b2DestroyWorld(worldId);
+        Box2D.b2DestroyWorld(worldId);
     }
 
     /**
@@ -896,7 +956,7 @@ public class nBox2D {
      * @param flag true to enable continuous collision
      */
     public static void nWorldEnableContinuous(MemorySegment worldId, boolean flag) {
-        Box2D_1.b2World_EnableContinuous(worldId, flag);
+        Box2D.b2World_EnableContinuous(worldId, flag);
     }
 
     /**
@@ -905,7 +965,7 @@ public class nBox2D {
      * @param flag true to enable sleeping
      */
     public static void nWorldEnableSleeping(MemorySegment worldId, boolean flag) {
-        Box2D_1.b2World_EnableSleeping(worldId, flag);
+        Box2D.b2World_EnableSleeping(worldId, flag);
     }
 
     /**
@@ -914,7 +974,7 @@ public class nBox2D {
      * @param flag true to enable warm starting
      */
     public static void nWorldEnableWarmStarting(MemorySegment worldId, boolean flag) {
-        Box2D_1.b2World_EnableWarmStarting(worldId, flag);
+        Box2D.b2World_EnableWarmStarting(worldId, flag);
     }
 
     /**
@@ -925,7 +985,16 @@ public class nBox2D {
      * @param pushSpeed the maximum contact constraint push out speed, usually in m/s
      */
     public static void nWorldSetContactTuning(MemorySegment worldId, float hertz, float dampingRatio, float pushSpeed) {
-        Box2D_1.b2World_SetContactTuning(worldId, hertz, dampingRatio, pushSpeed);
+        Box2D.b2World_SetContactTuning(worldId, hertz, dampingRatio, pushSpeed);
+    }
+
+    /**
+     * Native implement of {@code b2World_SetContactRecycleDistance}.
+     * @param worldId the memory segment of the {@link b2WorldId}
+     * @param recycleDistance the contact point recycling distance, usually in meters, set to 0.0 disables recycling
+     */
+    public static void nWorldSetContactRecycleDistance(MemorySegment worldId, float recycleDistance) {
+        Box2D.b2World_SetContactRecycleDistance(worldId, recycleDistance);
     }
 
     /**
@@ -934,7 +1003,7 @@ public class nBox2D {
      * @param gravity the memory segment of the gravity {@link b2Vec2}, usually in m/s²
      */
     public static void nWorldSetGravity(MemorySegment worldId, MemorySegment gravity) {
-        Box2D_1.b2World_SetGravity(worldId, gravity);
+        Box2D.b2World_SetGravity(worldId, gravity);
     }
 
     /**
@@ -943,16 +1012,16 @@ public class nBox2D {
      * @param value the hit event threshold, usually in m/s
      */
     public static void nWorldSetHitEventThreshold(MemorySegment worldId, float value) {
-        Box2D_1.b2World_SetHitEventThreshold(worldId, value);
+        Box2D.b2World_SetHitEventThreshold(worldId, value);
     }
 
     /**
-     * Native implement of {@code b2World_SetMaximumLinearSpeed}.
+     * Native implement of {@code b2World_SetMaxLinearSpeed}.
      * @param worldId the memory segment of the {@link b2WorldId}
      * @param maximumLinearSpeed the maximum linear speed, usually in m/s
      */
-    public static void nWorldSetMaximumLinearSpeed(MemorySegment worldId, float maximumLinearSpeed) {
-        Box2D_1.b2World_SetMaximumLinearSpeed(worldId, maximumLinearSpeed);
+    public static void nWorldSetMaxLinearSpeed(MemorySegment worldId, float maximumLinearSpeed) {
+        Box2D.b2World_SetMaxLinearSpeed(worldId, maximumLinearSpeed);
     }
 
     /**
@@ -961,7 +1030,7 @@ public class nBox2D {
      * @param value the restitution threshold, usually in m/s
      */
     public static void nWorldSetRestitutionThreshold(MemorySegment worldId, float value) {
-        Box2D_1.b2World_SetRestitutionThreshold(worldId, value);
+        Box2D.b2World_SetRestitutionThreshold(worldId, value);
     }
 
     /**
@@ -970,7 +1039,7 @@ public class nBox2D {
      * @param userData the pointer to the user data, or {@link MemorySegment#NULL} for none
      */
     public static void nWorldSetUserData(MemorySegment worldId, MemorySegment userData) {
-        Box2D_1.b2World_SetUserData(worldId, userData);
+        Box2D.b2World_SetUserData(worldId, userData);
     }
 
     /**
@@ -980,6 +1049,6 @@ public class nBox2D {
      * @param subStepCount the number of sub-steps, increasing it can increase accuracy, usually 4
      */
     public static void nWorldStep(MemorySegment worldId, float timeStep, int subStepCount) {
-        Box2D_1.b2World_Step(worldId, timeStep, subStepCount);
+        Box2D.b2World_Step(worldId, timeStep, subStepCount);
     }
 }

@@ -8,7 +8,8 @@ import java.nio.file.StandardCopyOption;
 
 /**
  * Loader for the Box2D native library file.
- * Most wrapper classes will contain static block to check and load the native library.<br>
+ * <p>
+ * Most wrapper classes will contain static block to check and load the native library.
  */
 public final class NativeLoader {
     private enum Platform {
@@ -37,6 +38,8 @@ public final class NativeLoader {
     }
 
     private static volatile boolean loaded = false;
+
+    private NativeLoader() {}
 
     /**
      * Load the native Box2D library file by copying it from library resource to the temporary directory.

@@ -103,7 +103,7 @@ class BodyTest {
                 .linearVelocity(new Vec2(3.0f, 0.0f))
                 .angularVelocity(1.5f)
                 .bullet(true)
-                .fixedRotation(true);
+                .motionLocks(new MotionLocks(false, false, true));
         Body body = world.createBody(def);
         assertEquals(BodyType.KinematicBody, body.type(), "type expected kinematic");
         assertEquals(new Vec2(1.0f, 2.0f), body.position(), "position expected (1, 2)");
@@ -111,7 +111,7 @@ class BodyTest {
         assertEquals(3.0f, body.linearVelocity().x(), delta, "linear velocity x expected 3");
         assertEquals(1.5f, body.angularVelocity(), delta, "angular velocity expected 1.5");
         assertTrue(body.bullet(), "bullet expected on");
-        assertTrue(body.fixedRotation(), "rotation expected fixed");
+        assertEquals(new MotionLocks(false, false, true), body.motionLocks(), "rotation expected locked");
     }
 
     @Test
@@ -126,7 +126,9 @@ class BodyTest {
                 .angularDamping(0.4f)
                 .gravityScale(0.5f)
                 .sleepThreshold(0.2f)
-                .sleepEnabled(false)
+                .sleepingEnabled(false)
+                .safetyFactor(0.1f)
+                .contactRecyclingEnabled(false)
                 .bullet(true);
         assertEquals(BodyType.KinematicBody, body.type(), "type expected kinematic");
         assertEquals(new Vec2(4.0f, 5.0f), body.position(), "position expected (4, 5)");
@@ -140,11 +142,13 @@ class BodyTest {
         assertEquals(0.4f, body.angularDamping(), delta, "angular damping expected 0.4");
         assertEquals(0.5f, body.gravityScale(), delta, "gravity scale expected 0.5");
         assertEquals(0.2f, body.sleepThreshold(), delta, "sleep threshold expected 0.2");
-        assertFalse(body.sleepEnabled(), "sleep expected disabled");
+        assertFalse(body.sleepingEnabled(), "sleep expected disabled");
+        assertEquals(0.1f, body.safetyFactor(), delta, "safety factor expected 0.1");
+        assertFalse(body.contactRecyclingEnabled(), "contact recycling expected disabled");
         assertTrue(body.bullet(), "bullet expected on");
 
-        body.fixedRotation(true);
-        assertTrue(body.fixedRotation(), "rotation expected fixed");
+        body.motionLocks(new MotionLocks(true, true, false));
+        assertEquals(new MotionLocks(true, true, false), body.motionLocks(), "translation expected locked");
     }
 
     @Test
@@ -173,13 +177,13 @@ class BodyTest {
         MassData massData = body.massData();
         assertEquals(2.0f, massData.mass(), delta, "mass data mass expected 2");
         assertEquals(0.5f, massData.center().x(), delta, "mass data centre x expected 0.5");
-        assertEquals(0.5f, body.localCenterOfMass().x(), delta, "local centre of mass x expected 0.5");
-        assertEquals(0.5f, body.worldCenterOfMass().x(), delta, "world centre of mass x expected 0.5");
+        assertEquals(0.5f, body.localCenter().x(), delta, "local centre x expected 0.5");
+        assertEquals(0.5f, body.worldCenter().x(), delta, "world centre x expected 0.5");
         assertEquals(3.0f, massData.rotationalInertia(), delta, "rotational inertia expected 3");
     }
 
     @Test
-    @DisplayName("Body name round-trips and truncates to 31 UTF-8 bytes")
+    @DisplayName("Body name round-trips and truncates to 10 UTF-8 bytes")
     void testName() {
         Body body = world.createBody(new BodyDef().name("crate"));
         assertEquals("crate", body.name(), "name expected from the def");
@@ -188,16 +192,16 @@ class BodyTest {
         body.name(null);
         assertNull(body.name(), "name expected cleared");
 
-        String longName = "a".repeat(40);
+        String longName = "a".repeat(20);
         body.name(longName);
-        assertEquals("a".repeat(31), body.name(), "long name expected truncated to 31 bytes");
+        assertEquals("a".repeat(10), body.name(), "long name expected truncated to 10 bytes");
 
-        String split = "b".repeat(30) + "é";
+        String split = "b".repeat(9) + "é";
         body.name(split);
-        assertEquals("b".repeat(30), body.name(), "multi-byte character expected not to be split");
+        assertEquals("b".repeat(9), body.name(), "multi-byte character expected not to be split");
 
         Body fromDef = world.createBody(new BodyDef().name(split));
-        assertEquals("b".repeat(30), fromDef.name(), "def name expected truncated the same way");
+        assertEquals("b".repeat(9), fromDef.name(), "def name expected truncated the same way");
     }
 
     @Test

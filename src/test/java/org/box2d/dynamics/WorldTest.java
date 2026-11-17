@@ -60,15 +60,20 @@ class WorldTest {
                 .warmStartingEnabled(false)
                 .restitutionThreshold(2.0f)
                 .hitEventThreshold(3.0f)
-                .maximumLinearSpeed(50.0f)
-                .setContactTuning(20.0f, 5.0f, 2.0f);
+                .maxLinearSpeed(50.0f)
+                .setContactTuning(20.0f, 5.0f, 2.0f)
+                .contactRecycleDistance(0.0f);
         assertEquals(new Vec2(0.0f, -9.8f), world.gravity(), "gravity expected (0, -9.8)");
         assertFalse(world.sleepingEnabled(), "sleeping expected disabled");
         assertFalse(world.continuousEnabled(), "continuous expected disabled");
         assertFalse(world.warmStartingEnabled(), "warm starting expected disabled");
         assertEquals(2.0f, world.restitutionThreshold(), delta, "restitution threshold expected 2");
         assertEquals(3.0f, world.hitEventThreshold(), delta, "hit event threshold expected 3");
-        assertEquals(50.0f, world.maximumLinearSpeed(), delta, "maximum linear speed expected 50");
+        assertEquals(50.0f, world.maxLinearSpeed(), delta, "max linear speed expected 50");
+        assertEquals(20.0f, world.contactHertz(), delta, "contact hertz expected 20");
+        assertEquals(5.0f, world.contactDampingRatio(), delta, "contact damping ratio expected 5");
+        assertEquals(2.0f, world.contactSpeed(), delta, "contact speed expected 2");
+        assertEquals(0.0f, world.contactRecycleDistance(), delta, "contact recycle distance expected 0");
     }
 
     @Test

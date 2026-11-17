@@ -29,7 +29,7 @@ public final class Body {
     /**
      * The number of bytes Box2D stores for a body name, excluding the null terminator.
      */
-    private static final int MaxNameBytes = 31;
+    private static final int MaxNameBytes = 10;
 
     private final World world;
     private final MemorySegment id;
@@ -67,7 +67,7 @@ public final class Body {
     /**
      * Check if this body is valid.
      * <p>
-     * A body is invalid if it is destroyed, its world is destroyed, or when it was never created, such as requesting while the world is locked.
+     * A body is invalid if it is destroyed, its world is destroyed, or when it was never created, such as requesting while the world is locked or from an invalid definition.
      * @return true if valid
      */
     public boolean isValid() {
@@ -269,11 +269,12 @@ public final class Body {
      * The result will be close but may not be exact. This is meant for kinematic bodies.
      * The target is not applied if the velocity would be below the sleep threshold and the body is currently asleep.
      * @param target the target transform
-     * @param timeStep the time step over which to reach the target
+     * @param timeStep the time step of the next call to {@link World#step(float, int)}
+     * @param wake true to wake the body
      * @return this
      */
-    public Body setTargetTransform(Transform target, float timeStep) {
-        nBox2D.nBodySetTargetTransform(checked(), target.segment(), timeStep);
+    public Body setTargetTransform(Transform target, float timeStep, boolean wake) {
+        nBox2D.nBodySetTargetTransform(checked(), target.segment(), timeStep, wake);
         return this;
     }
 
@@ -401,16 +402,16 @@ public final class Body {
      * Get the centre of mass position of the body in local space.
      * @return a new {@link Vec2} holding the local centre of mass
      */
-    public Vec2 localCenterOfMass() {
-        return new Vec2(nBox2D.nBodyGetLocalCenterOfMass(checked()));
+    public Vec2 localCenter() {
+        return new Vec2(nBox2D.nBodyGetLocalCenter(checked()));
     }
 
     /**
      * Get the centre of mass position of the body in world space.
      * @return a new {@link Vec2} holding the world centre of mass
      */
-    public Vec2 worldCenterOfMass() {
-        return new Vec2(nBox2D.nBodyGetWorldCenterOfMass(checked()));
+    public Vec2 worldCenter() {
+        return new Vec2(nBox2D.nBodyGetWorldCenter(checked()));
     }
 
     /**
@@ -443,11 +444,10 @@ public final class Body {
      * @return this
      * @apiNote This should be called regardless of body type. Note that sensor shapes may have mass.
      */
-    public Body applyMassFromShapes() {
-        nBox2D.nBodyApplyMassFromShapes(checked());
+    public Body updateMassFromShapes() {
+        nBox2D.nBodyUpdateMassFromShapes(checked());
         return this;
     }
-
 
     /**
      * Get the current linear damping.
@@ -528,8 +528,8 @@ public final class Body {
      * Check if this body is allowed to sleep.
      * @return true if sleeping is enabled
      */
-    public boolean sleepEnabled() {
-        return nBox2D.nBodyIsSleepEnabled(checked());
+    public boolean sleepingEnabled() {
+        return nBox2D.nBodyIsSleepingEnabled(checked());
     }
 
     /**
@@ -539,8 +539,8 @@ public final class Body {
      * @param flag true to allow sleeping
      * @return this
      */
-    public Body sleepEnabled(boolean flag) {
-        nBox2D.nBodyEnableSleep(checked(), flag);
+    public Body sleepingEnabled(boolean flag) {
+        nBox2D.nBodyEnableSleeping(checked(), flag);
         return this;
     }
 
@@ -553,12 +553,32 @@ public final class Body {
     }
 
     /**
-     * Set the sleep threshold, usually in me/s.
+     * Set the sleep threshold, usually in m/s.
      * @param sleepThreshold the non-negative sleep threshold
      * @return this
      */
     public Body sleepThreshold(float sleepThreshold) {
         nBox2D.nBodySetSleepThreshold(checked(), sleepThreshold);
+        return this;
+    }
+
+    /**
+     * Get the continuous collision safety factor, non-dimensional.
+     * @return the safety factor
+     */
+    public float safetyFactor() {
+        return nBox2D.nBodyGetSafetyFactor(checked());
+    }
+
+    /**
+     * Set the continuous collision safety factor, non-dimensional.
+     * <p>
+     * Smaller is safer but can lead to hitching. Recommended range [0.01, 0.5].
+     * @param safetyFactor the safety factor
+     * @return this
+     */
+    public Body safetyFactor(float safetyFactor) {
+        nBox2D.nBodySetSafetyFactor(checked(), safetyFactor);
         return this;
     }
 
@@ -589,22 +609,45 @@ public final class Body {
     }
 
     /**
-     * Check if this body has fixed rotation.
-     * @return true if rotation is fixed
+     * Get the motion locks of this body.
+     * @return a new {@link MotionLocks} holding the locks
      */
-    public boolean fixedRotation() {
-        return nBox2D.nBodyIsFixedRotation(checked());
+    public MotionLocks motionLocks() {
+        return new MotionLocks(nBox2D.nBodyGetMotionLocks(checked()));
     }
 
     /**
-     * Set this body to have fixed rotation.
+     * Set the motion locks of this body.
      * <p>
-     * This causes the mass to be reset in all cases.
-     * @param flag true to fix rotation
+     * Locking only the rotation keeps the body's orientation fixed, useful for characters.
+     * This causes the mass properties to be recomputed, because fixed rotation sets the rotational inertia to zero.
+     * @param locks the motion locks to apply
      * @return this
      */
-    public Body fixedRotation(boolean flag) {
-        nBox2D.nBodySetFixedRotation(checked(), flag);
+    public Body motionLocks(MotionLocks locks) {
+        nBox2D.nBodySetMotionLocks(checked(), locks.segment());
+        return this;
+    }
+
+    /**
+     * Check if contact recycling is enabled for this body.
+     * @return true if enabled
+     */
+    public boolean contactRecyclingEnabled() {
+        return nBox2D.nBodyIsContactRecyclingEnabled(checked());
+    }
+
+    /**
+     * Enable or disable contact recycling for this body.
+     * <p>
+     * Contact recycling is a performance optimisation that reuses contact manifolds when bodies move slightly.
+     * Disabling it can avoid ghost collisions on characters at the cost of higher per-step work.
+     * @param flag true to enable contact recycling
+     * @return this
+     * @apiNote Existing contacts retain their prior setting. Only contacts created after this call see the new value.
+     */
+    public Body contactRecyclingEnabled(boolean flag) {
+        nBox2D.nBodyEnableContactRecycling(checked(), flag);
         return this;
     }
 
@@ -655,8 +698,8 @@ public final class Body {
     /**
      * Encode a body name.
      * <p>
-     * Box2D stores up to 31 bytes of the name encoded in UTF-8, truncated without splitting a character when longer.
-     * This is stored in a zero-filled 32 byte segment (Box2D always copies 31 bytes from the given pointer).
+     * Box2D stores up to 10 bytes of the name encoded in UTF-8, truncated without splitting a character when longer.
+     * This is stored in a zero-filled 11 byte segment (Box2D may read up to 10 bytes from the given pointer).
      * @param arena the arena to allocate in
      * @param name the name, can be null
      * @return the name segment, or {@link MemorySegment#NULL} for a null name

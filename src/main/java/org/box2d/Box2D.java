@@ -22,7 +22,7 @@ public final class Box2D {
      */
     public static boolean isValidRotation(Rot rotation) {
         if (rotation == null) return false;
-        return nBox2D.nIsValidRotation(rotation.segment());
+        return nBox2D.nIsValidRot(rotation.segment());
     }
 
     /**

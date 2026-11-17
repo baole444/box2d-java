@@ -163,8 +163,8 @@ public final class Segment {
      * @param transform the transform to place this segment with
      * @return a new {@link AABB} containing this segment
      */
-    public AABB computeAABB(Transform transform) {
-        return new AABB(nBox2D.nComputeSegmentAABB(segment, transform.segment()));
+    public AABB computeBounds(Transform transform) {
+        return new AABB(nBox2D.nComputeSegmentBounds(segment, transform.segment()));
     }
 
     /**

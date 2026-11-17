@@ -56,9 +56,9 @@ class CircleTest {
 
     @Test
     @DisplayName("Circle compute AABB")
-    void testComputeAABB() {
+    void testComputeBounds() {
         Circle circle = new Circle(2.0f);
-        AABB box = circle.computeAABB(new Transform());
+        AABB box = circle.computeBounds(new Transform());
         assertEquals(-2.0f, box.lowerBound().x(), delta, "lower x expected -2.0");
         assertEquals(-2.0f, box.lowerBound().y(), delta, "lower y expected -2.0");
         assertEquals(2.0f, box.upperBound().x(), delta, "upper x expected 2.0");

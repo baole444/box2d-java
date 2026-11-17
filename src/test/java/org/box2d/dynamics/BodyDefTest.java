@@ -28,9 +28,11 @@ class BodyDefTest {
         assertEquals(0.05f, def.sleepThreshold(), delta, "default sleep threshold expected 0.05");
         assertNull(def.name(), "default name expected null");
         assertNull(def.userData(), "default user data expected null");
-        assertTrue(def.sleepEnabled(), "sleep expected enabled by default");
+        assertTrue(def.sleepingEnabled(), "sleep expected enabled by default");
         assertTrue(def.awake(), "body expected awake by default");
-        assertFalse(def.fixedRotation(), "rotation expected free by default");
+        assertEquals(new MotionLocks(), def.motionLocks(), "motion locks expected all released by default");
+        assertEquals(0.5f, def.safetyFactor(), delta, "default safety factor expected 0.5");
+        assertTrue(def.contactRecyclingEnabled(), "contact recycling expected enabled by default");
         assertFalse(def.bullet(), "bullet expected off by default");
         assertTrue(def.enabled(), "body expected enabled by default");
         assertFalse(def.allowFastRotation(), "fast rotation expected off by default");
@@ -52,9 +54,11 @@ class BodyDefTest {
                 .sleepThreshold(0.1f)
                 .name("crate")
                 .userData(data)
-                .sleepEnabled(false)
+                .sleepingEnabled(false)
                 .awake(false)
-                .fixedRotation(true)
+                .motionLocks(new MotionLocks(false, false, true))
+                .safetyFactor(0.25f)
+                .contactRecyclingEnabled(false)
                 .bullet(true)
                 .enabled(false)
                 .allowFastRotation(true);
@@ -70,9 +74,13 @@ class BodyDefTest {
         assertEquals(0.1f, def.sleepThreshold(), delta, "sleep threshold expected 0.1");
         assertEquals("crate", def.name(), "name expected crate");
         assertSame(data, def.userData(), "user data expected the same object");
-        assertFalse(def.sleepEnabled(), "sleep expected disabled");
+        assertFalse(def.sleepingEnabled(), "sleep expected disabled");
         assertFalse(def.awake(), "body expected asleep");
-        assertTrue(def.fixedRotation(), "rotation expected fixed");
+        assertEquals(new MotionLocks(false, false, true), def.motionLocks(), "rotation expected locked");
+        assertEquals(0.25f, def.safetyFactor(), delta, "safety factor expected 0.25");
+        assertFalse(def.contactRecyclingEnabled(), "contact recycling expected disabled");
+        def.motionLocks().linearX(true);
+        assertTrue(def.motionLocks().linearX(), "motion locks expected a view that writes through to the def");
         assertTrue(def.bullet(), "bullet expected on");
         assertFalse(def.enabled(), "body expected disabled");
         assertTrue(def.allowFastRotation(), "fast rotation expected allowed");

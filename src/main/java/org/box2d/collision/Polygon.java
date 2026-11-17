@@ -144,12 +144,12 @@ public final class Polygon {
      * @return true if the point is inside this polygon
      */
     public boolean pointInPolygon(Vec2 point) {
-        return nBox2D.nPointInPolygon(point.segment(), segment);
+        return nBox2D.nPointInPolygon(segment, point.segment());
     }
 
     /**
      * Compute the mass properties of this polygon for the given density.
-     * @param density the area density in kg/m^2
+     * @param density the area density in kg/m²
      * @return a new {@link MassData} for this polygon
      */
     public MassData computeMass(float density) {
@@ -161,8 +161,8 @@ public final class Polygon {
      * @param transform the transform to place this polygon with
      * @return a new {@link AABB} containing this polygon
      */
-    public AABB computeAABB(Transform transform) {
-        return new AABB(nBox2D.nComputePolygonAABB(segment, transform.segment()));
+    public AABB computeBounds(Transform transform) {
+        return new AABB(nBox2D.nComputePolygonBounds(segment, transform.segment()));
     }
 
     /**

@@ -30,7 +30,7 @@ public final class MassData {
      * Create a new {@link MassData} and initialise its values.
      * @param mass the total mass
      * @param center the local centre of mass
-     * @param rotationalInertia the rotational inertia about the local origin
+     * @param rotationalInertia the rotational inertia about the centre of mass
      */
     public MassData(float mass, Vec2 center, float rotationalInertia) {
         segment = Arena.ofAuto().allocate(b2MassData.layout());
@@ -44,7 +44,7 @@ public final class MassData {
      * @param mass the total mass
      * @param centerX the local centre of mass x coordinate
      * @param centerY the local centre of mass y coordinate
-     * @param rotationalInertia the rotational inertia about the local origin
+     * @param rotationalInertia the rotational inertia about the centre of mass
      */
     public MassData(float mass, float centerX, float centerY, float rotationalInertia) {
         segment = Arena.ofAuto().allocate(b2MassData.layout());
@@ -75,7 +75,7 @@ public final class MassData {
      * @param arena the arena to allocate in
      * @param mass the total mass
      * @param center the local centre of mass
-     * @param rotationalInertia the rotational inertia about the local origin
+     * @param rotationalInertia the rotational inertia about the centre of mass
      */
     public MassData(Arena arena, float mass, Vec2 center, float rotationalInertia) {
         segment = arena.allocate(b2MassData.layout());
@@ -84,6 +84,10 @@ public final class MassData {
         rotationalInertia(rotationalInertia);
     }
 
+    /**
+     * Create a new {@link MassData} with its values initialised to this mass data's values.
+     * @return a new {@link MassData}
+     */
     public MassData copy() {
         return new MassData(mass(), center(), rotationalInertia());
     }
@@ -137,7 +141,7 @@ public final class MassData {
     }
 
     /**
-     * Get the rotational inertia about the local origin.
+     * Get the rotational inertia about the centre of mass.
      * @return the rotational inertia value
      */
     public float rotationalInertia() {
@@ -145,7 +149,7 @@ public final class MassData {
     }
 
     /**
-     * Set the rotational inertia about the local origin.
+     * Set the rotational inertia about the centre of mass.
      * @param rotationalInertia the rotational inertia
      * @return this
      */

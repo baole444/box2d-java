@@ -278,17 +278,15 @@ public final class Vec2 {
     }
 
     /**
-     * Normalize this vector to unit length (unit vector).
+     * Normalise this vector to unit length (unit vector).
+     * <p>
+     * A vector too short to normalise safely (squared length at most {@code 1000 * Float.MIN_NORMAL}) becomes the zero vector.
      * @return this
      */
     public Vec2 normalize() {
-        float length = length();
-        if (length > 0.0f) {
-            float invertedLength = 1.0f / length;
-            mul(invertedLength);
-        }
-
-        return this;
+        float lengthSquared = lengthSquared();
+        if (lengthSquared <= 1000.0f * Float.MIN_NORMAL) return set(0.0f, 0.0f);
+        return mul(1.0f / (float) Math.sqrt(lengthSquared));
     }
 
     /**
@@ -368,7 +366,7 @@ public final class Vec2 {
      * Check if this vector's components equal to the given values, using arithmetic {@code ==} comparison.
      * @param x the x value to compare against
      * @param y the y value to compare against
-     * @return true if both components are arithmetically rqual to the give values
+     * @return true if both components are arithmetically equal to the give values
      */
     public boolean equals(float x, float y) {
         return x() == x && y() == y;

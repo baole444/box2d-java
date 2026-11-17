@@ -214,7 +214,7 @@ public final class Rot {
      * @return true if valid
      */
     public boolean isValid() {
-        return nBox2D.nIsValidRotation(segment);
+        return nBox2D.nIsValidRot(segment);
     }
 
     /**

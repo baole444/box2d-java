@@ -242,7 +242,7 @@ public final class BodyDef {
     /**
      * Set the optional body name for debugging.
      * <p>
-     * The created body stores up to 31 bytes of the name encoded in UTF-8, truncated without splitting a character when longer.
+     * The created body stores up to 10 bytes of the name encoded in UTF-8, truncated without splitting a character when longer.
      * @param name the name, or null for none
      * @return this
      */
@@ -275,7 +275,7 @@ public final class BodyDef {
      * Check if this body is allowed to fall asleep.
      * @return true if enabled
      */
-    public boolean sleepEnabled() {
+    public boolean sleepingEnabled() {
         return b2BodyDef.enableSleep(segment);
     }
 
@@ -284,7 +284,7 @@ public final class BodyDef {
      * @param flag true to allow sleeping
      * @return this
      */
-    public BodyDef sleepEnabled(boolean flag) {
+    public BodyDef sleepingEnabled(boolean flag) {
         b2BodyDef.enableSleep(segment, flag);
         return this;
     }
@@ -308,20 +308,68 @@ public final class BodyDef {
     }
 
     /**
-     * Check if this body is prevented from rotating.
-     * @return true if rotation is fixed
+     * Get the motion locks that restrict linear and angular movement.
+     * This returns a wrapper, not a new copy.
+     * @return a {@link MotionLocks} that wraps the motion locks
      */
-    public boolean fixedRotation() {
-        return b2BodyDef.fixedRotation(segment);
+    public MotionLocks motionLocks() {
+        return new MotionLocks(b2BodyDef.motionLocks(segment));
     }
 
     /**
-     * Set whether this body should be prevented from rotating, useful for characters.
-     * @param flag true to fix rotation
+     * Set the motion locks that restrict linear and angular movement.
+     * <p>
+     * Locking only the rotation keeps the body's orientation fixed, useful for characters.
+     * Locks may lead to softer constraints along the locked direction.
+     * @param locks the motion locks
      * @return this
      */
-    public BodyDef fixedRotation(boolean flag) {
-        b2BodyDef.fixedRotation(segment, flag);
+    public BodyDef motionLocks(MotionLocks locks) {
+        b2BodyDef.motionLocks(segment, locks.segment());
+        return this;
+    }
+
+    /**
+     * Get the continuous collision safety factor, non-dimensional.
+     * @return the safety factor
+     */
+    public float safetyFactor() {
+        return b2BodyDef.safetyFactor(segment);
+    }
+
+    /**
+     * Set the continuous collision safety factor, non-dimensional.
+     * <p>
+     * This improves performance and prevents movement hitches. Recommended range [0.01, 0.5]. Default is 0.5 for high performance with low tunnelling risk.
+     * @param safetyFactor the safety factor
+     * @return this
+     * @apiNote
+     * The solver only uses continuous collision if there is a risk of tunnelling. If the body is moving fast enough to risk tunnelling then it is considered a "fast body".
+     * <p>
+     * If a body moving N meters risks tunnelling, then the body will be considered fast if it moves more than a {@code safetyFactor * N meters} over one full time step.
+     */
+    public BodyDef safetyFactor(float safetyFactor) {
+        b2BodyDef.safetyFactor(segment, safetyFactor);
+        return this;
+    }
+
+    /**
+     * Check if contact recycling is enabled for this body.
+     * @return true if enabled
+     */
+    public boolean contactRecyclingEnabled() {
+        return b2BodyDef.enableContactRecycling(segment);
+    }
+
+    /**
+     * Enable or disable contact recycling for this body. Enabled by default.
+     * <p>
+     * Leaving this enabled improves performance but may lead to ghost collisions that should be avoided on characters.
+     * @param flag true to enable contact recycling
+     * @return this
+     */
+    public BodyDef contactRecyclingEnabled(boolean flag) {
+        b2BodyDef.enableContactRecycling(segment, flag);
         return this;
     }
 
@@ -342,7 +390,7 @@ public final class BodyDef {
      * Bullets should be used sparingly. They are not a solution for general dynamic-vs-dynamic continuous collisions.
      * <p>
      * They do not guarantee accurate collision if both bodies are fast moving because the bullet does a continuous check after all non-bullet bodies have moved.
-     * It can be very unlucky when the bullet body end a time step very close to a non-bullet body and the non-bullet body then moves over the bullet body.
+     * It can be very unlucky when the bullet body ends a time step very close to a non-bullet body and the non-bullet body then moves over the bullet body.
      * <p>
      * In continuous collision, initial overlap is ignored to avoid freezing bodies in place.
      * It is not recommended to use them for game projectiles if precise collision timing is needed.

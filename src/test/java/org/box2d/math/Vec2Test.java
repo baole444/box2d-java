@@ -197,6 +197,16 @@ class Vec2Test {
     }
 
     @Test
+    @DisplayName("Vec2 normalize zeroes a vector too short to normalize, like b2Normalize")
+    void testTinyNormalize() {
+        Vec2 tiny = new Vec2(1.0e-20f, 0.0f).normalize();
+        assertEquals(0.0f, tiny.x(), "x expected 0.0 below the cut-off");
+        assertEquals(0.0f, tiny.y(), "y expected 0.0 below the cut-off");
+        Vec2 small = new Vec2(1.0e-15f, 0.0f).normalize();
+        assertEquals(1.0f, small.x(), delta, "x expected 1.0 above the cut-off");
+    }
+
+    @Test
     @DisplayName("Vec2 normalize to desired length")
     void testNormalizeLength() {
         Vec2 v = new Vec2(2.0f, 1.0f);

@@ -19,8 +19,8 @@ class WorldDefTest {
         assertEquals(1.0f, def.hitEventThreshold(), delta, "default hit event threshold expected 1");
         assertEquals(30.0f, def.contactHertz(), delta, "default contact hertz expected 30");
         assertEquals(10.0f, def.contactDampingRatio(), delta, "default contact damping ratio expected 10");
-        assertEquals(3.0f, def.maxContactPushSpeed(), delta, "default max contact push speed expected 3");
-        assertEquals(400.0f, def.maximumLinearSpeed(), delta, "default maximum linear speed expected 400");
+        assertEquals(3.0f, def.contactSpeed(), delta, "default contact speed expected 3");
+        assertEquals(400.0f, def.maxLinearSpeed(), delta, "default max linear speed expected 400");
         assertTrue(def.sleepingEnabled(), "sleeping expected enabled by default");
         assertTrue(def.continuousEnabled(), "continuous expected enabled by default");
         assertNull(def.userData(), "user data expected null by default");
@@ -36,8 +36,8 @@ class WorldDefTest {
                 .hitEventThreshold(4.0f)
                 .contactHertz(5.0f)
                 .contactDampingRatio(6.0f)
-                .maxContactPushSpeed(7.0f)
-                .maximumLinearSpeed(8.0f)
+                .contactSpeed(7.0f)
+                .maxLinearSpeed(8.0f)
                 .sleepingEnabled(false)
                 .continuousEnabled(false)
                 .userData(data);
@@ -46,8 +46,8 @@ class WorldDefTest {
         assertEquals(4.0f, def.hitEventThreshold(), delta, "hit event threshold expected 4");
         assertEquals(5.0f, def.contactHertz(), delta, "contact hertz expected 5");
         assertEquals(6.0f, def.contactDampingRatio(), delta, "contact damping ratio expected 6");
-        assertEquals(7.0f, def.maxContactPushSpeed(), delta, "max contact push speed expected 7");
-        assertEquals(8.0f, def.maximumLinearSpeed(), delta, "maximum linear speed expected 8");
+        assertEquals(7.0f, def.contactSpeed(), delta, "contact speed expected 7");
+        assertEquals(8.0f, def.maxLinearSpeed(), delta, "max linear speed expected 8");
         assertFalse(def.sleepingEnabled(), "sleeping expected disabled");
         assertFalse(def.continuousEnabled(), "continuous expected disabled");
         assertSame(data, def.userData(), "user data expected the same object");
