@@ -13,6 +13,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class BodyTest {
     private static final float delta = 0.0001f;
+    // Angles go through Box2D's deterministic cosine/sine, accurate to about 0.002
+    private static final float angleDelta = 0.002f;
     private World world;
 
     @BeforeEach
@@ -107,7 +109,7 @@ class BodyTest {
         Body body = world.createBody(def);
         assertEquals(BodyType.KinematicBody, body.type(), "type expected kinematic");
         assertEquals(new Vec2(1.0f, 2.0f), body.position(), "position expected (1, 2)");
-        assertEquals((float) Math.PI / 2.0f, body.rotation().angle(), delta, "rotation expected 90 degrees");
+        assertEquals((float) Math.PI / 2.0f, body.rotation().angle(), angleDelta, "rotation expected 90 degrees");
         assertEquals(3.0f, body.linearVelocity().x(), delta, "linear velocity x expected 3");
         assertEquals(1.5f, body.angularVelocity(), delta, "angular velocity expected 1.5");
         assertTrue(body.bullet(), "bullet expected on");

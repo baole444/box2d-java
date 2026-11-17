@@ -1,5 +1,6 @@
 package org.box2d.math;
 
+import org.box2d.Box2D;
 import org.box2d.NativeLoader;
 import org.box2d.internal.b2Rot;
 import org.box2d.internal.nBox2D;
@@ -156,22 +157,26 @@ public final class Rot {
     }
 
     /**
-     * Get the angle of this rotation in Radians.
+     * Get the angle of this rotation in Radians, in the range [-pi, pi].
+     * <p>
+     * Computed with Box2D's deterministic arctangent, see {@link Box2D#atan2(float, float)}.
      * @return the rotation angle value
      */
     public float angle() {
-        return (float) Math.atan2(s(), c());
+        return Box2D.atan2(s(), c());
     }
 
     /**
      * Set the components of this rotation using the given angle value in Radians.
+     * <p>
+     * Computed with Box2D's deterministic cosine and sine, see {@link Box2D#computeCosSin(float)}:
+     * the result is normalised and each component is accurate to about 0.002.
      * @param angle the angle to set this rotation's components
      * @return this
      */
     public Rot angle(float angle) {
-        float c = (float) Math.cos(angle);
-        float s = (float) Math.sin(angle);
-        return set(c, s);
+        CosSin cs = Box2D.computeCosSin(angle);
+        return set(cs.cosine(), cs.sine());
     }
 
     /**

@@ -7,6 +7,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class RotTest {
     private static final float delta = 0.0001f;
+    // Angles go through Box2D's deterministic cosine/sine, accurate to about 0.002
+    private static final float angleDelta = 0.002f;
 
     @Test
     @DisplayName("Rot default constructor create identity rotation")
@@ -53,10 +55,10 @@ class RotTest {
 
         float angle = (float) Math.PI / 3.0f;
         r.angle(angle);
-        assertEquals(angle, r.angle(), delta, "angle expected matching value");
+        assertEquals(angle, r.angle(), angleDelta, "angle expected matching value");
         angle = (float) - Math.PI / 2.0f;
         r.angle(angle);
-        assertEquals(angle, r.angle(), delta, "angle expected matching value");
+        assertEquals(angle, r.angle(), angleDelta, "angle expected matching value");
     }
 
     @Test
@@ -117,11 +119,11 @@ class RotTest {
         assertEquals(0.0f, r1.c(), delta, "c expected 0.0");
         assertEquals(1.0f, r1.s(), delta, "s expected 1.0");
         r1 = Rot.fromDegrees(45.0f);
-        assertEquals((float) Math.toRadians(45.0f), r1.angle(), delta, "angle expected PI/4");
+        assertEquals((float) Math.toRadians(45.0f), r1.angle(), angleDelta, "angle expected PI/4");
 
         float rad = (float) Math.PI / 6.0f;
         Rot r2 = Rot.fromRadians(rad);
-        assertEquals(rad, r2.angle(), delta, "angle expected matching value");
+        assertEquals(rad, r2.angle(), angleDelta, "angle expected matching value");
     }
 
     @Test

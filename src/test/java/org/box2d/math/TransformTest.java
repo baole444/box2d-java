@@ -7,6 +7,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class TransformTest {
     private static final float delta = 0.0001f;
+    // Angles go through Box2D's deterministic cosine/sine, accurate to about 0.002
+    private static final float angleDelta = 0.002f;
 
     @Test
     @DisplayName("Transform default constructor creates identity transform")
@@ -30,12 +32,12 @@ class TransformTest {
         t = new Transform(pos, angle);
         assertEquals(2.0f, t.x(), delta, "x expected 2.0");
         assertEquals(3.0f, t.y(), delta, "y expected 3.0");
-        assertEquals(angle, t.angle(), delta, "angle expected PI/4");
+        assertEquals(angle, t.angle(), angleDelta, "angle expected PI/4");
 
         t = new Transform(1.5f, 2.5f, angle);
         assertEquals(1.5f, t.x(), delta, "x expected 1.5");
         assertEquals(2.5f, t.y(), delta, "y expected 2.5");
-        assertEquals(angle, t.angle(), delta, "angle expected PI/4");
+        assertEquals(angle, t.angle(), angleDelta, "angle expected PI/4");
     }
 
     @Test
@@ -70,10 +72,10 @@ class TransformTest {
     void testRotation() {
         Transform t = new Transform(0.0f, 0.0f, (float) Math.PI / 4.0f);
         Rot rot = t.rotation();
-        assertEquals((float) Math.PI / 4.0f, rot.angle(), delta, "angle expected PI/4");
+        assertEquals((float) Math.PI / 4.0f, rot.angle(), angleDelta, "angle expected PI/4");
 
         rot.angle((float) Math.PI / 2.0f);
-        assertEquals((float) Math.PI / 2.0f, t.angle(), delta, "angle expected updated to PI/2");
+        assertEquals((float) Math.PI / 2.0f, t.angle(), angleDelta, "angle expected updated to PI/2");
     }
 
     @Test
@@ -101,7 +103,7 @@ class TransformTest {
 
         assertEquals(5.0f, t.x(), delta, "x expected 5.0");
         assertEquals(2.0f, t.y(), delta, "y expected 2.0");
-        assertEquals((float) Math.PI / 6.0f, t.angle(), delta, "angle expected PI/6");
+        assertEquals((float) Math.PI / 6.0f, t.angle(), angleDelta, "angle expected PI/6");
     }
 
     @Test

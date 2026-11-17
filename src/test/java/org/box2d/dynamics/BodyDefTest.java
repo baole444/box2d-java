@@ -9,6 +9,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class BodyDefTest {
     private static final float delta = 0.0001f;
+    // Angles go through Box2D's deterministic cosine/sine, accurate to about 0.002
+    private static final float angleDelta = 0.002f;
 
     @Test
     @DisplayName("BodyDef default seeds the Box2D defaults")
@@ -86,7 +88,7 @@ class BodyDefTest {
         assertTrue(def.allowFastRotation(), "fast rotation expected allowed");
 
         def.rotation((float) Math.PI / 3.0f);
-        assertEquals((float) Math.PI / 3.0f, def.rotation().angle(), delta, "rotation expected from the angle");
+        assertEquals((float) Math.PI / 3.0f, def.rotation().angle(), angleDelta, "rotation expected from the angle");
     }
 
     @Test
