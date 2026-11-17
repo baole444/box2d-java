@@ -1,0 +1,139 @@
+/*
+Box2D binding generation (jextract)
+
+Regenerates the FFM bindings under src/main/java/org/box2d/internal using the jextract on PATH, then syncs them into the source tree.
+Run manually: ./gradlew generateBindings
+Hand written files in the package (e.g. nBox2D.java) are preserved.
+
+The output is host independent, any OS and any jextract build give the same files.
+- jextract runs in jextract/, which reads jextract/compile_flags.txt and passes each line to clang. Those flags pin one target (x86_64 Windows, LLP64, so uint64_t is long long rather than long), C23,
+  -ffreestanding and -nostdinc: no host C runtime is parsed. jextract/include supplies the one libc header Box2D's public headers include (<math.h>). Remaining are clang built-ins.
+- A first pass (--dump-includes) lists every symbol. Only symbols declared under box2dInclude are kept, and the second pass generates from that list.
+- jextract's runtime-helper preamble still depends on the host OS (C_LONG, C_LONG_DOUBLE). Box2D's API uses neither, so both lines are removed, and the build fails if any generated file uses them.
+- Line endings are normalised to LF.
+
+Options (override with -P):
+  -PbindingPackage=org.box2d.internal   target package for generated code
+  -Pbox2dInclude=<path>/include         Box2D headers root
+                                        (default: box2d-<binding_version>/include)
+  -PjextractCmd=jextract                jextract executable name/path
+*/
+def bindingPackage = (findProperty("bindingPackage") ?: "org.box2d.internal").toString()
+def box2dInclude = file(findProperty("box2dInclude") ?: "box2d-${project.binding_version}/include")
+def isWindows = System.getProperty("os.name").toLowerCase().contains("win")
+def jextractCmd = (findProperty("jextractCmd") ?: (isWindows ? "jextract.bat" : "jextract")).toString()
+def bindingHeaderClass = "Box2D"
+def box2dHeader = new File(box2dInclude, "box2d/box2d.h")
+def jextractConfigDir = file("jextract")
+def jextractOutDir = layout.buildDirectory.dir("generated/jextract")
+def jextractIncludesDir = layout.buildDirectory.dir("generated/jextract-includes")
+def jextractIncludeArgs = ["-I", box2dInclude.absolutePath, "-I", new File(jextractConfigDir, "include").absolutePath]
+
+def checkBox2dHeader = {
+    if (!box2dHeader.exists()) {
+        throw new GradleException("Box2D header not found: ${box2dHeader}\n" + "The Box2D source is gitignored; set -Pbox2dInclude=<box2d>/include.")
+    }
+}
+
+tasks.register("dumpJextractIncludes", Exec) {
+    group = "binding generation"
+    description = "List every symbol jextract sees in box2d.h, then keep only those declared in the Box2D headers."
+    def allFile = jextractIncludesDir.map { it.file("all.txt") }
+    def box2dFile = jextractIncludesDir.map { it.file("box2d.txt") }
+    inputs.dir(box2dInclude).withPropertyName("box2dInclude")
+    inputs.dir(jextractConfigDir).withPropertyName("jextractConfig")
+    outputs.dir(jextractIncludesDir)
+    workingDir jextractConfigDir
+    executable jextractCmd
+    args = jextractIncludeArgs + ["--dump-includes", allFile.get().asFile.absolutePath, box2dHeader.absolutePath]
+    doFirst {
+        checkBox2dHeader()
+        delete jextractIncludesDir
+        jextractIncludesDir.get().asFile.mkdirs()
+    }
+    doLast {
+        // Each symbol line ends with "# header: <absolute path>"; keep the ones under box2dInclude.
+        def normalise = { String p -> isWindows ? p.replace('\\', '/').toLowerCase() : p }
+        def root = normalise(box2dInclude.canonicalPath) + "/"
+        def kept = allFile.get().asFile.readLines().findAll { line ->
+            def at = line.indexOf("# header: ")
+            at >= 0 && normalise(new File(line.substring(at + 10).trim()).canonicalPath).startsWith(root)
+        }
+        if (kept.isEmpty()) throw new GradleException("No Box2D symbols found in ${allFile.get().asFile}")
+        box2dFile.get().asFile.text = kept.join("\n") + "\n"
+        logger.lifecycle("Kept ${kept.size()} Box2D symbols for jextract")
+    }
+}
+
+tasks.register("runJextract", Exec) {
+    group = "binding generation"
+    description = "Generate Box2D FFM bindings with jextract into the build directory."
+    dependsOn "dumpJextractIncludes"
+    def box2dFile = jextractIncludesDir.map { it.file("box2d.txt") }
+    inputs.file(box2dFile).withPropertyName("box2dSymbols")
+    inputs.dir(box2dInclude).withPropertyName("box2dInclude")
+    inputs.dir(jextractConfigDir).withPropertyName("jextractConfig")
+    inputs.property("bindingPackage", bindingPackage)
+    outputs.dir(jextractOutDir)
+    workingDir jextractConfigDir
+    executable jextractCmd
+    // jextract 23 generates source by default (no --source flag) and uses --output.
+    args = [
+            "-t", bindingPackage,
+            "--header-class-name", bindingHeaderClass
+    ] + jextractIncludeArgs + [
+            "--output", jextractOutDir.get().asFile.absolutePath,
+            "@" + box2dFile.get().asFile.absolutePath,
+            box2dHeader.absolutePath
+    ]
+    doFirst {
+        checkBox2dHeader()
+        delete jextractOutDir
+    }
+    doLast {
+        def generatedDir = jextractOutDir.get().dir(bindingPackage.replace('.', '/')).asFile
+        def sharedName = "${bindingHeaderClass}\$shared.java"
+        def hostLayout = ~/(?m)^[ \t]*public static final ValueLayout\.\w+ C_LONG(_DOUBLE)? =.*\n/
+        def hostLayoutUse = ~/\bC_LONG(_DOUBLE)?\b/
+        def users = []
+        generatedDir.listFiles({ File f -> f.name.endsWith(".java") } as FileFilter).each { f ->
+            def text = f.getText("UTF-8").replace("\r\n", "\n")
+            if (f.name == sharedName) {
+                text = text.replaceAll(hostLayout, "")
+                if (text =~ hostLayoutUse) throw new GradleException("Unexpected C_LONG declaration left in ${f}")
+            } else if (text =~ hostLayoutUse) {
+                users << f.name
+            }
+            f.setText(text, "UTF-8")
+        }
+        if (users) {
+            throw new GradleException("Bad platform dependent: Generated code uses C_LONG or C_LONG_DOUBLE, whose size depends on the platform: ${users}.\n A Box2D declaration now uses 'long' or 'long double'")
+        }
+    }
+}
+
+tasks.register("generateBindings") {
+    group = "binding generation"
+    description = "Regenerate jextract bindings and sync into ${bindingPackage} (preserves hand-written files)."
+    dependsOn "runJextract"
+
+    doLast {
+        def pkgPath = bindingPackage.replace('.', '/')
+        def targetDir = file("src/main/java/${pkgPath}")
+        def generatedDir = jextractOutDir.get().dir(pkgPath).asFile
+
+        // Remove only previously-generated files (those carrying the jextract marker),
+        // so hand-written sources such as nBox2D.java are kept.
+        def existing = targetDir.listFiles({ File f -> f.name.endsWith(".java") } as FileFilter)
+        existing?.each { f ->
+            if (f.text.startsWith("// Generated by jextract")) f.delete()
+        }
+
+        copy {
+            from generatedDir
+            into targetDir
+            include "*.java"
+        }
+        logger.lifecycle("Synced jextract bindings from ${generatedDir} into ${targetDir}")
+    }
+}

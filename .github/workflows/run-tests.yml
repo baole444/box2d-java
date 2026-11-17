@@ -3,6 +3,13 @@ name: Test
 on:
   workflow_dispatch:
   push:
+    # Skip pushes that only touch files the test run never reads. Everything else will still trigger.
+    paths-ignore:
+      - '**.md'
+      - .gitignore
+      - jextract/**
+      - .github/workflows/build-natives.yml
+      - .github/workflows/check-bindings.yml
 
 jobs:
   test:

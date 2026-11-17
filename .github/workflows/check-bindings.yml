@@ -14,17 +14,23 @@ on:
         required: false
   push:
     paths:
-      - build.gradle
+      - gradle/jextract_generate_binding.gradle
       - gradle.properties
       - jextract/**
       - src/main/java/org/box2d/internal/**
+      # Handwritten wrappers in the package, changing them does not affect generation
+      - '!src/main/java/org/box2d/internal/nBox2D.java'
+      - '!src/main/java/org/box2d/internal/LogBridge.java'
       - .github/workflows/check-bindings.yml
   pull_request:
     paths:
-      - build.gradle
+      - gradle/jextract_generate_binding.gradle
       - gradle.properties
       - jextract/**
       - src/main/java/org/box2d/internal/**
+      # Handwritten wrappers in the package, changing them does not affect generation
+      - '!src/main/java/org/box2d/internal/nBox2D.java'
+      - '!src/main/java/org/box2d/internal/LogBridge.java'
       - .github/workflows/check-bindings.yml
 
 permissions:
