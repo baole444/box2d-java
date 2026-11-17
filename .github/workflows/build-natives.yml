@@ -10,7 +10,7 @@ on:
     inputs:
       box2d_ref:
         description: "Box2D git tag to build (upstream erincatto/box2d)"
-        default: "v3.1.1"
+        default: "v3.2.0"
         required: true
 
 permissions:

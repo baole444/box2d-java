@@ -2,7 +2,8 @@ name: Test
 
 on:
   workflow_dispatch:
-  push:
+  # Temporary disable for native version update
+  # push:
 
 jobs:
   test:
