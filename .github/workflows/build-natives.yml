@@ -24,7 +24,7 @@ permissions:
 
 jobs:
   build:
-    name: Build & test ${{ matrix.name }}
+    name: ${{ inputs.run_tests && 'Build & test' || 'Build' }} ${{ matrix.name }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -55,12 +55,14 @@ jobs:
           path: box2d-src
 
       - name: Setup JDK 25
+        if: inputs.run_tests
         uses: actions/setup-java@v6
         with:
           distribution: 'temurin'
           java-version: '25'
 
       - name: Setup Gradle
+        if: inputs.run_tests
         uses: gradle/actions/setup-gradle@v6
 
       - name: Configure CMake
@@ -86,14 +88,15 @@ jobs:
           "src/main/resources/natives/${{ matrix.name }}/${{ matrix.lib }}"
 
       - name: Make gradlew executable
-        if: runner.os != 'Windows'
+        if: inputs.run_tests && runner.os != 'Windows'
         run: chmod +x gradlew
 
       - name: Run tests against freshly-built library
+        if: inputs.run_tests
         shell: bash
         run: ./gradlew test --no-daemon
 
-      - name: Upload validated library
+      - name: Upload library
         uses: actions/upload-artifact@v7
         with:
           name: native-${{ matrix.name }}
@@ -108,7 +111,7 @@ jobs:
       - name: Checkout this repository
         uses: actions/checkout@v7
 
-      - name: Download validated libraries
+      - name: Download libraries
         uses: actions/download-artifact@v8
         with:
           path: artifacts
@@ -127,6 +130,6 @@ jobs:
           if git diff --staged --quiet; then
             echo "Native libraries are unchanged; nothing to commit."
           else
-            git commit -m "Rebuild Box2D ${{ inputs.box2d_ref }} native libraries"
+            git commit -m "Rebuild Box2D ${{ inputs.box2d_ref }} native libraries${{ !inputs.run_tests && ' (tests skipped)' || '' }}"
             git push
           fi
