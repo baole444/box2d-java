@@ -48,7 +48,7 @@ class TransformTest {
         assertEquals(og.y(), copy.y(), delta, "y expected matching values");
         assertEquals(og.angle(), copy.angle(), delta, "angle expected matching values");
 
-        copy.setX(10.0f);
+        copy.x(10.0f);
         assertEquals(5.0f, og.x(), delta, "original x expected unchanged value");
     }
 
@@ -72,7 +72,7 @@ class TransformTest {
         Rot rot = t.rotation();
         assertEquals((float) Math.PI / 4.0f, rot.angle(), delta, "angle expected PI/4");
 
-        rot.setAngle((float) Math.PI / 2.0f);
+        rot.angle((float) Math.PI / 2.0f);
         assertEquals((float) Math.PI / 2.0f, t.angle(), delta, "angle expected updated to PI/2");
     }
 
@@ -86,7 +86,7 @@ class TransformTest {
         assertEquals(og.y(), copy.y(), delta, "y expected matching values");
         assertEquals(og.angle(), copy.angle(), delta, "angle expected matching values");
 
-        copy.setPosition(10.0f, 10.0f);
+        copy.position(10.0f, 10.0f);
         assertEquals(3.0f, og.x(), delta, "original x expected unchanged value");
         assertEquals(4.0f, og.y(), delta, "original y expected unchanged value");
     }
@@ -95,9 +95,9 @@ class TransformTest {
     @DisplayName("Transform builder pattern")
     void testBuilder() {
         Transform t = new Transform()
-                .setPosition(1.0f, 2.0f)
-                .setRotation((float) Math.PI / 6.0f)
-                .setX(5.0f);
+                .position(1.0f, 2.0f)
+                .rotation((float) Math.PI / 6.0f)
+                .x(5.0f);
 
         assertEquals(5.0f, t.x(), delta, "x expected 5.0");
         assertEquals(2.0f, t.y(), delta, "y expected 2.0");

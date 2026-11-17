@@ -17,7 +17,7 @@ import java.lang.foreign.MemorySegment;
  * <p>
  * The vertices, normals and centroid are derived by Box2D when the polygon is built, so they are exposed as read only.
  * To construct a polygon, use one of the provided static factory methods.
- * </p>
+ * <p>
  * Wrapper for native {@link b2Polygon}.
  */
 public final class Polygon {

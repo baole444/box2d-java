@@ -12,7 +12,7 @@ import java.lang.foreign.MemorySegment;
  * Two shapes collided when the category bits of each are present in the mask bits of each other.
  * In case where both are on the same none zero group index, a positive group always collides,
  * while negative group never, as this overridden the category and mask test.
- * </p>
+ * <p>
  * Wrapper for native {@link b2Filter}
  */
 public final class Filter {
@@ -125,7 +125,7 @@ public final class Filter {
     }
 
     /**
-     * Set the category/mask bits, and group index of this filter to the given values.
+     * Set the category/mask bits and the group index of this filter to the given values.
      * @param categoryBits the category bits
      * @param maskBits the mask bits
      * @param groupIndex the group index

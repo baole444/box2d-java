@@ -34,7 +34,7 @@ public final class Rot {
      */
     public Rot(float angle) {
         segment = Arena.ofAuto().allocate(b2Rot.layout());
-        setAngle(angle);
+        angle(angle);
     }
 
     /**
@@ -44,8 +44,8 @@ public final class Rot {
      */
     public Rot(float cosine, float sine) {
         segment = Arena.ofAuto().allocate(b2Rot.layout());
-        setC(cosine);
-        setS(sine);
+        c(cosine);
+        s(sine);
     }
 
     /**
@@ -73,7 +73,7 @@ public final class Rot {
      */
     public Rot(Arena arena, float angle) {
         segment = arena.allocate(b2Rot.layout());
-        setAngle(angle);
+        angle(angle);
     }
 
     /**
@@ -85,8 +85,8 @@ public final class Rot {
      */
     public Rot(Arena arena, float cosine, float sine) {
         segment = arena.allocate(b2Rot.layout());
-        setC(cosine);
-        setS(sine);
+        c(cosine);
+        s(sine);
     }
 
     /**
@@ -110,7 +110,7 @@ public final class Rot {
      * @param cosine the cosine component
      * @return this
      */
-    public Rot setC(float cosine) {
+    public Rot c(float cosine) {
         b2Rot.c(segment, cosine);
         return this;
     }
@@ -128,7 +128,7 @@ public final class Rot {
      * @param sine the sine component
      * @return this
      */
-    public Rot setS(float sine) {
+    public Rot s(float sine) {
         b2Rot.s(segment, sine);
         return this;
     }
@@ -150,8 +150,8 @@ public final class Rot {
      * @return this
      */
     public Rot set(float cosine, float sine) {
-        setC(cosine);
-        setS(sine);
+        c(cosine);
+        s(sine);
         return this;
     }
 
@@ -168,7 +168,7 @@ public final class Rot {
      * @param angle the angle to set this rotation's components
      * @return this
      */
-    public Rot setAngle(float angle) {
+    public Rot angle(float angle) {
         float c = (float) Math.cos(angle);
         float s = (float) Math.sin(angle);
         return set(c, s);

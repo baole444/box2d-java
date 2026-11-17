@@ -51,8 +51,8 @@ public final class Transform {
      */
     public Transform(Vec2 position, Rot rotation) {
         segment = Arena.ofAuto().allocate(b2Transform.layout());
-        setPosition(position);
-        setRotation(rotation);
+        position(position);
+        rotation(rotation);
     }
 
     /**
@@ -63,8 +63,8 @@ public final class Transform {
      */
     public Transform(float x, float y, float angle) {
         segment = Arena.ofAuto().allocate(b2Transform.layout());
-        setPosition(x, y);
-        setRotation(angle);
+        position(x, y);
+        rotation(angle);
     }
 
     /**
@@ -93,8 +93,8 @@ public final class Transform {
      */
     public Transform(Arena arena, Vec2 position, Rot rotation) {
         segment = arena.allocate(b2Transform.layout());
-        setPosition(position);
-        setRotation(rotation);
+        position(position);
+        rotation(rotation);
     }
 
     /**
@@ -118,8 +118,8 @@ public final class Transform {
      * @param x the position's x coordinate
      * @return this
      */
-    public Transform setX(float x) {
-        position().setX(x);
+    public Transform x(float x) {
+        position().x(x);
         return this;
     }
 
@@ -136,8 +136,8 @@ public final class Transform {
      * @param y the position's y coordinate
      * @return this
      */
-    public Transform setY(float y) {
-        position().setY(y);
+    public Transform y(float y) {
+        position().y(y);
         return this;
     }
 
@@ -155,7 +155,7 @@ public final class Transform {
      * @param position the position component
      * @return this
      */
-    public Transform setPosition(Vec2 position) {
+    public Transform position(Vec2 position) {
         b2Transform.p(segment, position.segment());
         return this;
     }
@@ -166,7 +166,7 @@ public final class Transform {
      * @param y the position's y coordinate
      * @return this
      */
-    public Transform setPosition(float x, float y) {
+    public Transform position(float x, float y) {
         Vec2 pos = position();
         pos.set(x, y);
         return this;
@@ -194,7 +194,7 @@ public final class Transform {
      * @param rotation the rotation component
      * @return this
      */
-    public Transform setRotation(Rot rotation) {
+    public Transform rotation(Rot rotation) {
         b2Transform.q(segment, rotation.segment());
         return this;
     }
@@ -204,9 +204,9 @@ public final class Transform {
      * @param angle the angle value in Radian to set the rotation components
      * @return this
      */
-    public Transform setRotation(float angle) {
+    public Transform rotation(float angle) {
         Rot rot = rotation();
-        rot.setAngle(angle);
+        rot.angle(angle);
         return this;
     }
 
@@ -217,8 +217,8 @@ public final class Transform {
      * @return this
      */
     public Transform set(Vec2 position, Rot rotation) {
-        setPosition(position);
-        setRotation(rotation);
+        position(position);
+        rotation(rotation);
         return this;
     }
 
@@ -230,8 +230,8 @@ public final class Transform {
      * @return this
      */
     public Transform set(float x, float y, float angle) {
-        setPosition(x, y);
-        setRotation(angle);
+        position(x, y);
+        rotation(angle);
         return this;
     }
 
@@ -241,8 +241,8 @@ public final class Transform {
      * @return this
      */
     public Transform toIdentity() {
-        setPosition(0.0f, 0.0f);
-        setRotation(0.0f);
+        position(0.0f, 0.0f);
+        rotation(0.0f);
         return this;
     }
 

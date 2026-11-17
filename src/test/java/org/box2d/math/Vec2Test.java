@@ -37,7 +37,7 @@ class Vec2Test {
         assertEquals(og.x(), copy.x(), "x expected matching values");
         assertEquals(og.y(), copy.y(), "y expected matching values");
 
-        copy.setX(6.2f);
+        copy.x(6.2f);
         assertEquals(5.4f, og.x(), "original x expected unchanged value");
     }
 
@@ -229,7 +229,7 @@ class Vec2Test {
         assertEquals(og.x(), copy.x(), "x expected matching values");
         assertEquals(og.y(), copy.y(), "y expected matching values");
 
-        copy.setX(7.0f);
+        copy.x(7.0f);
         assertEquals(1.0f, og.x(), "original x expected unchanged value");
     }
 

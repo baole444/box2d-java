@@ -41,8 +41,8 @@ public final class Vec2 {
      */
     public Vec2(float x, float y) {
         segment = Arena.ofAuto().allocate(b2Vec2.layout());
-        setX(x);
-        setY(y);
+        x(x);
+        y(y);
     }
 
     /**
@@ -71,8 +71,8 @@ public final class Vec2 {
      */
     public Vec2(Arena arena, float x, float y) {
         this.segment = arena.allocate(b2Vec2.layout());
-        setX(x);
-        setY(y);
+        x(x);
+        y(y);
     }
 
     /**
@@ -96,7 +96,7 @@ public final class Vec2 {
      * @param x the x component
      * @return this
      */
-    public Vec2 setX(float x) {
+    public Vec2 x(float x) {
         b2Vec2.x(segment, x);
         return this;
     }
@@ -114,7 +114,7 @@ public final class Vec2 {
      * @param y the y component
      * @return this
      */
-    public Vec2 setY(float y) {
+    public Vec2 y(float y) {
         b2Vec2.y(segment, y);
         return this;
     }
@@ -136,8 +136,8 @@ public final class Vec2 {
      * @return this
      */
     public Vec2 set(float x, float y) {
-        setX(x);
-        setY(y);
+        x(x);
+        y(y);
         return this;
     }
 

@@ -93,7 +93,7 @@ public final class Capsule {
      * <p>
      * The {@code width} is the capsule's diameter, while {@code height} is the full length from 2 tips.
      * The 2 centres sit at {@code (0, -(h - w) / 2)} and {@code (0, (h - w) / 2)}.
-     * </p>
+     * <p>
      * When {@code width} and {@code height} are equal, the returning capsule will be shaped like a circle,
      * with radius at {@code width / 2}.
      * @param width the capsule width, diameter in world units
@@ -112,7 +112,7 @@ public final class Capsule {
      * <p>
      * The {@code height} is the capsule's diameter, while {@code width} is the full length from 2 tips.
      * The 2 centres sit at {@code (-(w - h) / 2, 0)} and {@code ((w - h) / 2, 0)}.
-     * </p>
+     * <p>
      * When {@code width} and {@code height} are equal, the returning capsule will be shaped like a circle,
      * with radius at {@code height / 2}.
      * @param width the capsule width, full length in world units

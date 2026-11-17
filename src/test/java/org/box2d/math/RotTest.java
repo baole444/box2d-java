@@ -39,7 +39,7 @@ class RotTest {
         assertEquals(og.c(), copy.c(), delta, "c expected matching values");
         assertEquals(og.s(), copy.s(), delta, "s expected matching values");
 
-        copy.setC(1.0f);
+        copy.c(1.0f);
         assertEquals(ogC, og.c(), delta, "original c expected unchanged value");
     }
 
@@ -47,15 +47,15 @@ class RotTest {
     @DisplayName("Rot angle")
     void testAngle() {
         Rot r = new Rot();
-        r.setAngle((float) Math.PI);
+        r.angle((float) Math.PI);
         assertEquals(-1.0f, r.c(), delta, "c expected -1.0");
         assertEquals(0.0f, r.s(), delta, "s expected 0.0");
 
         float angle = (float) Math.PI / 3.0f;
-        r.setAngle(angle);
+        r.angle(angle);
         assertEquals(angle, r.angle(), delta, "angle expected matching value");
         angle = (float) - Math.PI / 2.0f;
-        r.setAngle(angle);
+        r.angle(angle);
         assertEquals(angle, r.angle(), delta, "angle expected matching value");
     }
 
@@ -96,7 +96,7 @@ class RotTest {
         assertEquals(og.c(), copy.c(), delta, "c expected matching values");
         assertEquals(og.s(), copy.s(), delta, "s expected matching values");
 
-        copy.setAngle((float) Math.PI / 2.0f);
+        copy.angle((float) Math.PI / 2.0f);
         assertNotEquals(og.c(), copy.c(), delta, "original c expected unchanged value");
     }
 
@@ -128,7 +128,7 @@ class RotTest {
     @DisplayName("Rot builder pattern")
     void testBuilder() {
         Rot r = new Rot()
-                .setAngle((float) Math.PI / 2.0f)
+                .angle((float) Math.PI / 2.0f)
                 .set(0.0f, 1.0f);
 
         assertEquals(0.0f, r.c(), delta, "c expected 0.0");

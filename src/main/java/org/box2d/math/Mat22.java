@@ -11,7 +11,7 @@ import java.lang.foreign.MemorySegment;
  * <p>
  * Components are named {@code mIJ} where {@code I} is the column and {@code J} is the row: {@code m00 = cx.x}, {@code m01 = cx.y}, {@code m10 = cy.x},
  * {@code m11 = cy.y}. The {@code get}/{@code set} index accessors take {@code (row, column)}.
- * </p>
+ * <p>
  * Wrapper for native {@link b2Mat22}.
  */
 public final class Mat22 {
@@ -123,7 +123,7 @@ public final class Mat22 {
      * @return this
      */
     public Mat22 m00(float m00) {
-        cx().setX(m00);
+        cx().x(m00);
         return this;
     }
 
@@ -141,7 +141,7 @@ public final class Mat22 {
      * @return this
      */
     public Mat22 m01(float m01) {
-        cx().setY(m01);
+        cx().y(m01);
         return this;
     }
 
@@ -159,7 +159,7 @@ public final class Mat22 {
      * @return this
      */
     public Mat22 m10(float m10) {
-        cy().setX(m10);
+        cy().x(m10);
         return this;
     }
 
@@ -177,7 +177,7 @@ public final class Mat22 {
      * @return this
      */
     public Mat22 m11(float m11) {
-        cy().setY(m11);
+        cy().y(m11);
         return this;
     }
 
@@ -306,10 +306,10 @@ public final class Mat22 {
         checkIndices(row, column);
         Vec2 c = column == 0 ? cx() : cy();
         if (row == 0) {
-            c.setX(value);
+            c.x(value);
             return this;
         }
-        c.setY(value);
+        c.y(value);
         return this;
     }
 
