@@ -19,7 +19,7 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
  *     b2Vec2 point;
  *     float fraction;
  *     int iterations;
- *     _Bool hit;
+ *     bool hit;
  * }
  * }
  */
@@ -226,7 +226,7 @@ public class b2CastOutput {
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * _Bool hit
+     * bool hit
      * }
      */
     public static final OfBoolean hit$layout() {
@@ -238,7 +238,7 @@ public class b2CastOutput {
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * _Bool hit
+     * bool hit
      * }
      */
     public static final long hit$offset() {
@@ -248,7 +248,7 @@ public class b2CastOutput {
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * _Bool hit
+     * bool hit
      * }
      */
     public static boolean hit(MemorySegment struct) {
@@ -258,7 +258,7 @@ public class b2CastOutput {
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * _Bool hit
+     * bool hit
      * }
      */
     public static void hit(MemorySegment struct, boolean fieldValue) {

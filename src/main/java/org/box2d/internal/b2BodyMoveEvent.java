@@ -15,10 +15,10 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
 /**
  * {@snippet lang=c :
  * struct b2BodyMoveEvent {
- *     b2Transform transform;
- *     b2BodyId bodyId;
  *     void *userData;
- *     _Bool fellAsleep;
+ *     b2WorldTransform transform;
+ *     b2BodyId bodyId;
+ *     bool fellAsleep;
  * }
  * }
  */
@@ -29,9 +29,9 @@ public class b2BodyMoveEvent {
     }
 
     private static final GroupLayout $LAYOUT = MemoryLayout.structLayout(
+        Box2D.C_POINTER.withName("userData"),
         b2Transform.layout().withName("transform"),
         b2BodyId.layout().withName("bodyId"),
-        Box2D.C_POINTER.withName("userData"),
         Box2D.C_BOOL.withName("fellAsleep"),
         MemoryLayout.paddingLayout(7)
     ).withName("b2BodyMoveEvent");
@@ -43,12 +43,56 @@ public class b2BodyMoveEvent {
         return $LAYOUT;
     }
 
+    private static final AddressLayout userData$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("userData"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * void *userData
+     * }
+     */
+    public static final AddressLayout userData$layout() {
+        return userData$LAYOUT;
+    }
+
+    private static final long userData$OFFSET = $LAYOUT.byteOffset(groupElement("userData"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * void *userData
+     * }
+     */
+    public static final long userData$offset() {
+        return userData$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * void *userData
+     * }
+     */
+    public static MemorySegment userData(MemorySegment struct) {
+        return struct.get(userData$LAYOUT, userData$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * void *userData
+     * }
+     */
+    public static void userData(MemorySegment struct, MemorySegment fieldValue) {
+        struct.set(userData$LAYOUT, userData$OFFSET, fieldValue);
+    }
+
     private static final GroupLayout transform$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("transform"));
 
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * b2Transform transform
+     * b2WorldTransform transform
      * }
      */
     public static final GroupLayout transform$layout() {
@@ -60,7 +104,7 @@ public class b2BodyMoveEvent {
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * b2Transform transform
+     * b2WorldTransform transform
      * }
      */
     public static final long transform$offset() {
@@ -70,7 +114,7 @@ public class b2BodyMoveEvent {
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * b2Transform transform
+     * b2WorldTransform transform
      * }
      */
     public static MemorySegment transform(MemorySegment struct) {
@@ -80,7 +124,7 @@ public class b2BodyMoveEvent {
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * b2Transform transform
+     * b2WorldTransform transform
      * }
      */
     public static void transform(MemorySegment struct, MemorySegment fieldValue) {
@@ -131,56 +175,12 @@ public class b2BodyMoveEvent {
         MemorySegment.copy(fieldValue, 0L, struct, bodyId$OFFSET, bodyId$LAYOUT.byteSize());
     }
 
-    private static final AddressLayout userData$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("userData"));
-
-    /**
-     * Layout for field:
-     * {@snippet lang=c :
-     * void *userData
-     * }
-     */
-    public static final AddressLayout userData$layout() {
-        return userData$LAYOUT;
-    }
-
-    private static final long userData$OFFSET = $LAYOUT.byteOffset(groupElement("userData"));
-
-    /**
-     * Offset for field:
-     * {@snippet lang=c :
-     * void *userData
-     * }
-     */
-    public static final long userData$offset() {
-        return userData$OFFSET;
-    }
-
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * void *userData
-     * }
-     */
-    public static MemorySegment userData(MemorySegment struct) {
-        return struct.get(userData$LAYOUT, userData$OFFSET);
-    }
-
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * void *userData
-     * }
-     */
-    public static void userData(MemorySegment struct, MemorySegment fieldValue) {
-        struct.set(userData$LAYOUT, userData$OFFSET, fieldValue);
-    }
-
     private static final OfBoolean fellAsleep$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("fellAsleep"));
 
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * _Bool fellAsleep
+     * bool fellAsleep
      * }
      */
     public static final OfBoolean fellAsleep$layout() {
@@ -192,7 +192,7 @@ public class b2BodyMoveEvent {
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * _Bool fellAsleep
+     * bool fellAsleep
      * }
      */
     public static final long fellAsleep$offset() {
@@ -202,7 +202,7 @@ public class b2BodyMoveEvent {
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * _Bool fellAsleep
+     * bool fellAsleep
      * }
      */
     public static boolean fellAsleep(MemorySegment struct) {
@@ -212,7 +212,7 @@ public class b2BodyMoveEvent {
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * _Bool fellAsleep
+     * bool fellAsleep
      * }
      */
     public static void fellAsleep(MemorySegment struct, boolean fieldValue) {

@@ -16,12 +16,12 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
  * {@snippet lang=c :
  * struct b2RayResult {
  *     b2ShapeId shapeId;
- *     b2Vec2 point;
+ *     b2Pos point;
  *     b2Vec2 normal;
  *     float fraction;
  *     int nodeVisits;
  *     int leafVisits;
- *     _Bool hit;
+ *     bool hit;
  * }
  * }
  */
@@ -98,7 +98,7 @@ public class b2RayResult {
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * b2Vec2 point
+     * b2Pos point
      * }
      */
     public static final GroupLayout point$layout() {
@@ -110,7 +110,7 @@ public class b2RayResult {
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * b2Vec2 point
+     * b2Pos point
      * }
      */
     public static final long point$offset() {
@@ -120,7 +120,7 @@ public class b2RayResult {
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * b2Vec2 point
+     * b2Pos point
      * }
      */
     public static MemorySegment point(MemorySegment struct) {
@@ -130,7 +130,7 @@ public class b2RayResult {
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * b2Vec2 point
+     * b2Pos point
      * }
      */
     public static void point(MemorySegment struct, MemorySegment fieldValue) {
@@ -318,7 +318,7 @@ public class b2RayResult {
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * _Bool hit
+     * bool hit
      * }
      */
     public static final OfBoolean hit$layout() {
@@ -330,7 +330,7 @@ public class b2RayResult {
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * _Bool hit
+     * bool hit
      * }
      */
     public static final long hit$offset() {
@@ -340,7 +340,7 @@ public class b2RayResult {
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * _Bool hit
+     * bool hit
      * }
      */
     public static boolean hit(MemorySegment struct) {
@@ -350,7 +350,7 @@ public class b2RayResult {
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * _Bool hit
+     * bool hit
      * }
      */
     public static void hit(MemorySegment struct, boolean fieldValue) {

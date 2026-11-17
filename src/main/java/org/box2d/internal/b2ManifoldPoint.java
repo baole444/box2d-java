@@ -15,7 +15,6 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
 /**
  * {@snippet lang=c :
  * struct b2ManifoldPoint {
- *     b2Vec2 point;
  *     b2Vec2 anchorA;
  *     b2Vec2 anchorB;
  *     float separation;
@@ -23,8 +22,9 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
  *     float tangentImpulse;
  *     float totalNormalImpulse;
  *     float normalVelocity;
+ *     float baseSeparation;
  *     uint16_t id;
- *     _Bool persisted;
+ *     bool persisted;
  * }
  * }
  */
@@ -35,7 +35,6 @@ public class b2ManifoldPoint {
     }
 
     private static final GroupLayout $LAYOUT = MemoryLayout.structLayout(
-        b2Vec2.layout().withName("point"),
         b2Vec2.layout().withName("anchorA"),
         b2Vec2.layout().withName("anchorB"),
         Box2D.C_FLOAT.withName("separation"),
@@ -43,6 +42,7 @@ public class b2ManifoldPoint {
         Box2D.C_FLOAT.withName("tangentImpulse"),
         Box2D.C_FLOAT.withName("totalNormalImpulse"),
         Box2D.C_FLOAT.withName("normalVelocity"),
+        Box2D.C_FLOAT.withName("baseSeparation"),
         Box2D.C_SHORT.withName("id"),
         Box2D.C_BOOL.withName("persisted"),
         MemoryLayout.paddingLayout(1)
@@ -53,50 +53,6 @@ public class b2ManifoldPoint {
      */
     public static final GroupLayout layout() {
         return $LAYOUT;
-    }
-
-    private static final GroupLayout point$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("point"));
-
-    /**
-     * Layout for field:
-     * {@snippet lang=c :
-     * b2Vec2 point
-     * }
-     */
-    public static final GroupLayout point$layout() {
-        return point$LAYOUT;
-    }
-
-    private static final long point$OFFSET = $LAYOUT.byteOffset(groupElement("point"));
-
-    /**
-     * Offset for field:
-     * {@snippet lang=c :
-     * b2Vec2 point
-     * }
-     */
-    public static final long point$offset() {
-        return point$OFFSET;
-    }
-
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * b2Vec2 point
-     * }
-     */
-    public static MemorySegment point(MemorySegment struct) {
-        return struct.asSlice(point$OFFSET, point$LAYOUT.byteSize());
-    }
-
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * b2Vec2 point
-     * }
-     */
-    public static void point(MemorySegment struct, MemorySegment fieldValue) {
-        MemorySegment.copy(fieldValue, 0L, struct, point$OFFSET, point$LAYOUT.byteSize());
     }
 
     private static final GroupLayout anchorA$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("anchorA"));
@@ -407,6 +363,50 @@ public class b2ManifoldPoint {
         struct.set(normalVelocity$LAYOUT, normalVelocity$OFFSET, fieldValue);
     }
 
+    private static final OfFloat baseSeparation$LAYOUT = (OfFloat)$LAYOUT.select(groupElement("baseSeparation"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * float baseSeparation
+     * }
+     */
+    public static final OfFloat baseSeparation$layout() {
+        return baseSeparation$LAYOUT;
+    }
+
+    private static final long baseSeparation$OFFSET = $LAYOUT.byteOffset(groupElement("baseSeparation"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * float baseSeparation
+     * }
+     */
+    public static final long baseSeparation$offset() {
+        return baseSeparation$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * float baseSeparation
+     * }
+     */
+    public static float baseSeparation(MemorySegment struct) {
+        return struct.get(baseSeparation$LAYOUT, baseSeparation$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * float baseSeparation
+     * }
+     */
+    public static void baseSeparation(MemorySegment struct, float fieldValue) {
+        struct.set(baseSeparation$LAYOUT, baseSeparation$OFFSET, fieldValue);
+    }
+
     private static final OfShort id$LAYOUT = (OfShort)$LAYOUT.select(groupElement("id"));
 
     /**
@@ -456,7 +456,7 @@ public class b2ManifoldPoint {
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * _Bool persisted
+     * bool persisted
      * }
      */
     public static final OfBoolean persisted$layout() {
@@ -468,7 +468,7 @@ public class b2ManifoldPoint {
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * _Bool persisted
+     * bool persisted
      * }
      */
     public static final long persisted$offset() {
@@ -478,7 +478,7 @@ public class b2ManifoldPoint {
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * _Bool persisted
+     * bool persisted
      * }
      */
     public static boolean persisted(MemorySegment struct) {
@@ -488,7 +488,7 @@ public class b2ManifoldPoint {
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * _Bool persisted
+     * bool persisted
      * }
      */
     public static void persisted(MemorySegment struct, boolean fieldValue) {

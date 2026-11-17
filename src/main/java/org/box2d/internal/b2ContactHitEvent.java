@@ -17,7 +17,8 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
  * struct b2ContactHitEvent {
  *     b2ShapeId shapeIdA;
  *     b2ShapeId shapeIdB;
- *     b2Vec2 point;
+ *     b2ContactId contactId;
+ *     b2Pos point;
  *     b2Vec2 normal;
  *     float approachSpeed;
  * }
@@ -32,6 +33,7 @@ public class b2ContactHitEvent {
     private static final GroupLayout $LAYOUT = MemoryLayout.structLayout(
         b2ShapeId.layout().withName("shapeIdA"),
         b2ShapeId.layout().withName("shapeIdB"),
+        b2ContactId.layout().withName("contactId"),
         b2Vec2.layout().withName("point"),
         b2Vec2.layout().withName("normal"),
         Box2D.C_FLOAT.withName("approachSpeed")
@@ -132,12 +134,56 @@ public class b2ContactHitEvent {
         MemorySegment.copy(fieldValue, 0L, struct, shapeIdB$OFFSET, shapeIdB$LAYOUT.byteSize());
     }
 
+    private static final GroupLayout contactId$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("contactId"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * b2ContactId contactId
+     * }
+     */
+    public static final GroupLayout contactId$layout() {
+        return contactId$LAYOUT;
+    }
+
+    private static final long contactId$OFFSET = $LAYOUT.byteOffset(groupElement("contactId"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * b2ContactId contactId
+     * }
+     */
+    public static final long contactId$offset() {
+        return contactId$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * b2ContactId contactId
+     * }
+     */
+    public static MemorySegment contactId(MemorySegment struct) {
+        return struct.asSlice(contactId$OFFSET, contactId$LAYOUT.byteSize());
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * b2ContactId contactId
+     * }
+     */
+    public static void contactId(MemorySegment struct, MemorySegment fieldValue) {
+        MemorySegment.copy(fieldValue, 0L, struct, contactId$OFFSET, contactId$LAYOUT.byteSize());
+    }
+
     private static final GroupLayout point$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("point"));
 
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * b2Vec2 point
+     * b2Pos point
      * }
      */
     public static final GroupLayout point$layout() {
@@ -149,7 +195,7 @@ public class b2ContactHitEvent {
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * b2Vec2 point
+     * b2Pos point
      * }
      */
     public static final long point$offset() {
@@ -159,7 +205,7 @@ public class b2ContactHitEvent {
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * b2Vec2 point
+     * b2Pos point
      * }
      */
     public static MemorySegment point(MemorySegment struct) {
@@ -169,7 +215,7 @@ public class b2ContactHitEvent {
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * b2Vec2 point
+     * b2Pos point
      * }
      */
     public static void point(MemorySegment struct, MemorySegment fieldValue) {

@@ -15,9 +15,7 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
 /**
  * {@snippet lang=c :
  * struct b2FilterJointDef {
- *     b2BodyId bodyIdA;
- *     b2BodyId bodyIdB;
- *     void *userData;
+ *     b2JointDef base;
  *     int internalValue;
  * }
  * }
@@ -29,9 +27,7 @@ public class b2FilterJointDef {
     }
 
     private static final GroupLayout $LAYOUT = MemoryLayout.structLayout(
-        b2BodyId.layout().withName("bodyIdA"),
-        b2BodyId.layout().withName("bodyIdB"),
-        Box2D.C_POINTER.withName("userData"),
+        b2JointDef.layout().withName("base"),
         Box2D.C_INT.withName("internalValue"),
         MemoryLayout.paddingLayout(4)
     ).withName("b2FilterJointDef");
@@ -43,136 +39,48 @@ public class b2FilterJointDef {
         return $LAYOUT;
     }
 
-    private static final GroupLayout bodyIdA$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("bodyIdA"));
+    private static final GroupLayout base$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("base"));
 
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * b2BodyId bodyIdA
+     * b2JointDef base
      * }
      */
-    public static final GroupLayout bodyIdA$layout() {
-        return bodyIdA$LAYOUT;
+    public static final GroupLayout base$layout() {
+        return base$LAYOUT;
     }
 
-    private static final long bodyIdA$OFFSET = $LAYOUT.byteOffset(groupElement("bodyIdA"));
+    private static final long base$OFFSET = $LAYOUT.byteOffset(groupElement("base"));
 
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * b2BodyId bodyIdA
+     * b2JointDef base
      * }
      */
-    public static final long bodyIdA$offset() {
-        return bodyIdA$OFFSET;
+    public static final long base$offset() {
+        return base$OFFSET;
     }
 
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * b2BodyId bodyIdA
+     * b2JointDef base
      * }
      */
-    public static MemorySegment bodyIdA(MemorySegment struct) {
-        return struct.asSlice(bodyIdA$OFFSET, bodyIdA$LAYOUT.byteSize());
+    public static MemorySegment base(MemorySegment struct) {
+        return struct.asSlice(base$OFFSET, base$LAYOUT.byteSize());
     }
 
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * b2BodyId bodyIdA
+     * b2JointDef base
      * }
      */
-    public static void bodyIdA(MemorySegment struct, MemorySegment fieldValue) {
-        MemorySegment.copy(fieldValue, 0L, struct, bodyIdA$OFFSET, bodyIdA$LAYOUT.byteSize());
-    }
-
-    private static final GroupLayout bodyIdB$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("bodyIdB"));
-
-    /**
-     * Layout for field:
-     * {@snippet lang=c :
-     * b2BodyId bodyIdB
-     * }
-     */
-    public static final GroupLayout bodyIdB$layout() {
-        return bodyIdB$LAYOUT;
-    }
-
-    private static final long bodyIdB$OFFSET = $LAYOUT.byteOffset(groupElement("bodyIdB"));
-
-    /**
-     * Offset for field:
-     * {@snippet lang=c :
-     * b2BodyId bodyIdB
-     * }
-     */
-    public static final long bodyIdB$offset() {
-        return bodyIdB$OFFSET;
-    }
-
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * b2BodyId bodyIdB
-     * }
-     */
-    public static MemorySegment bodyIdB(MemorySegment struct) {
-        return struct.asSlice(bodyIdB$OFFSET, bodyIdB$LAYOUT.byteSize());
-    }
-
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * b2BodyId bodyIdB
-     * }
-     */
-    public static void bodyIdB(MemorySegment struct, MemorySegment fieldValue) {
-        MemorySegment.copy(fieldValue, 0L, struct, bodyIdB$OFFSET, bodyIdB$LAYOUT.byteSize());
-    }
-
-    private static final AddressLayout userData$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("userData"));
-
-    /**
-     * Layout for field:
-     * {@snippet lang=c :
-     * void *userData
-     * }
-     */
-    public static final AddressLayout userData$layout() {
-        return userData$LAYOUT;
-    }
-
-    private static final long userData$OFFSET = $LAYOUT.byteOffset(groupElement("userData"));
-
-    /**
-     * Offset for field:
-     * {@snippet lang=c :
-     * void *userData
-     * }
-     */
-    public static final long userData$offset() {
-        return userData$OFFSET;
-    }
-
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * void *userData
-     * }
-     */
-    public static MemorySegment userData(MemorySegment struct) {
-        return struct.get(userData$LAYOUT, userData$OFFSET);
-    }
-
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * void *userData
-     * }
-     */
-    public static void userData(MemorySegment struct, MemorySegment fieldValue) {
-        struct.set(userData$LAYOUT, userData$OFFSET, fieldValue);
+    public static void base(MemorySegment struct, MemorySegment fieldValue) {
+        MemorySegment.copy(fieldValue, 0L, struct, base$OFFSET, base$LAYOUT.byteSize());
     }
 
     private static final OfInt internalValue$LAYOUT = (OfInt)$LAYOUT.select(groupElement("internalValue"));

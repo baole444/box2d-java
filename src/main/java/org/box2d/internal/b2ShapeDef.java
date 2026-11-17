@@ -19,13 +19,14 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
  *     b2SurfaceMaterial material;
  *     float density;
  *     b2Filter filter;
- *     _Bool isSensor;
- *     _Bool enableSensorEvents;
- *     _Bool enableContactEvents;
- *     _Bool enableHitEvents;
- *     _Bool enablePreSolveEvents;
- *     _Bool invokeContactCreation;
- *     _Bool updateBodyMass;
+ *     bool enableCustomFiltering;
+ *     bool isSensor;
+ *     bool enableSensorEvents;
+ *     bool enableContactEvents;
+ *     bool enableHitEvents;
+ *     bool enablePreSolveEvents;
+ *     bool invokeContactCreation;
+ *     bool updateBodyMass;
  *     int internalValue;
  * }
  * }
@@ -42,6 +43,7 @@ public class b2ShapeDef {
         Box2D.C_FLOAT.withName("density"),
         MemoryLayout.paddingLayout(4),
         b2Filter.layout().withName("filter"),
+        Box2D.C_BOOL.withName("enableCustomFiltering"),
         Box2D.C_BOOL.withName("isSensor"),
         Box2D.C_BOOL.withName("enableSensorEvents"),
         Box2D.C_BOOL.withName("enableContactEvents"),
@@ -49,7 +51,6 @@ public class b2ShapeDef {
         Box2D.C_BOOL.withName("enablePreSolveEvents"),
         Box2D.C_BOOL.withName("invokeContactCreation"),
         Box2D.C_BOOL.withName("updateBodyMass"),
-        MemoryLayout.paddingLayout(1),
         Box2D.C_INT.withName("internalValue"),
         MemoryLayout.paddingLayout(4)
     ).withName("b2ShapeDef");
@@ -237,12 +238,56 @@ public class b2ShapeDef {
         MemorySegment.copy(fieldValue, 0L, struct, filter$OFFSET, filter$LAYOUT.byteSize());
     }
 
+    private static final OfBoolean enableCustomFiltering$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("enableCustomFiltering"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * bool enableCustomFiltering
+     * }
+     */
+    public static final OfBoolean enableCustomFiltering$layout() {
+        return enableCustomFiltering$LAYOUT;
+    }
+
+    private static final long enableCustomFiltering$OFFSET = $LAYOUT.byteOffset(groupElement("enableCustomFiltering"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * bool enableCustomFiltering
+     * }
+     */
+    public static final long enableCustomFiltering$offset() {
+        return enableCustomFiltering$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * bool enableCustomFiltering
+     * }
+     */
+    public static boolean enableCustomFiltering(MemorySegment struct) {
+        return struct.get(enableCustomFiltering$LAYOUT, enableCustomFiltering$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * bool enableCustomFiltering
+     * }
+     */
+    public static void enableCustomFiltering(MemorySegment struct, boolean fieldValue) {
+        struct.set(enableCustomFiltering$LAYOUT, enableCustomFiltering$OFFSET, fieldValue);
+    }
+
     private static final OfBoolean isSensor$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("isSensor"));
 
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * _Bool isSensor
+     * bool isSensor
      * }
      */
     public static final OfBoolean isSensor$layout() {
@@ -254,7 +299,7 @@ public class b2ShapeDef {
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * _Bool isSensor
+     * bool isSensor
      * }
      */
     public static final long isSensor$offset() {
@@ -264,7 +309,7 @@ public class b2ShapeDef {
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * _Bool isSensor
+     * bool isSensor
      * }
      */
     public static boolean isSensor(MemorySegment struct) {
@@ -274,7 +319,7 @@ public class b2ShapeDef {
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * _Bool isSensor
+     * bool isSensor
      * }
      */
     public static void isSensor(MemorySegment struct, boolean fieldValue) {
@@ -286,7 +331,7 @@ public class b2ShapeDef {
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * _Bool enableSensorEvents
+     * bool enableSensorEvents
      * }
      */
     public static final OfBoolean enableSensorEvents$layout() {
@@ -298,7 +343,7 @@ public class b2ShapeDef {
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * _Bool enableSensorEvents
+     * bool enableSensorEvents
      * }
      */
     public static final long enableSensorEvents$offset() {
@@ -308,7 +353,7 @@ public class b2ShapeDef {
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * _Bool enableSensorEvents
+     * bool enableSensorEvents
      * }
      */
     public static boolean enableSensorEvents(MemorySegment struct) {
@@ -318,7 +363,7 @@ public class b2ShapeDef {
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * _Bool enableSensorEvents
+     * bool enableSensorEvents
      * }
      */
     public static void enableSensorEvents(MemorySegment struct, boolean fieldValue) {
@@ -330,7 +375,7 @@ public class b2ShapeDef {
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * _Bool enableContactEvents
+     * bool enableContactEvents
      * }
      */
     public static final OfBoolean enableContactEvents$layout() {
@@ -342,7 +387,7 @@ public class b2ShapeDef {
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * _Bool enableContactEvents
+     * bool enableContactEvents
      * }
      */
     public static final long enableContactEvents$offset() {
@@ -352,7 +397,7 @@ public class b2ShapeDef {
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * _Bool enableContactEvents
+     * bool enableContactEvents
      * }
      */
     public static boolean enableContactEvents(MemorySegment struct) {
@@ -362,7 +407,7 @@ public class b2ShapeDef {
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * _Bool enableContactEvents
+     * bool enableContactEvents
      * }
      */
     public static void enableContactEvents(MemorySegment struct, boolean fieldValue) {
@@ -374,7 +419,7 @@ public class b2ShapeDef {
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * _Bool enableHitEvents
+     * bool enableHitEvents
      * }
      */
     public static final OfBoolean enableHitEvents$layout() {
@@ -386,7 +431,7 @@ public class b2ShapeDef {
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * _Bool enableHitEvents
+     * bool enableHitEvents
      * }
      */
     public static final long enableHitEvents$offset() {
@@ -396,7 +441,7 @@ public class b2ShapeDef {
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * _Bool enableHitEvents
+     * bool enableHitEvents
      * }
      */
     public static boolean enableHitEvents(MemorySegment struct) {
@@ -406,7 +451,7 @@ public class b2ShapeDef {
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * _Bool enableHitEvents
+     * bool enableHitEvents
      * }
      */
     public static void enableHitEvents(MemorySegment struct, boolean fieldValue) {
@@ -418,7 +463,7 @@ public class b2ShapeDef {
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * _Bool enablePreSolveEvents
+     * bool enablePreSolveEvents
      * }
      */
     public static final OfBoolean enablePreSolveEvents$layout() {
@@ -430,7 +475,7 @@ public class b2ShapeDef {
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * _Bool enablePreSolveEvents
+     * bool enablePreSolveEvents
      * }
      */
     public static final long enablePreSolveEvents$offset() {
@@ -440,7 +485,7 @@ public class b2ShapeDef {
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * _Bool enablePreSolveEvents
+     * bool enablePreSolveEvents
      * }
      */
     public static boolean enablePreSolveEvents(MemorySegment struct) {
@@ -450,7 +495,7 @@ public class b2ShapeDef {
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * _Bool enablePreSolveEvents
+     * bool enablePreSolveEvents
      * }
      */
     public static void enablePreSolveEvents(MemorySegment struct, boolean fieldValue) {
@@ -462,7 +507,7 @@ public class b2ShapeDef {
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * _Bool invokeContactCreation
+     * bool invokeContactCreation
      * }
      */
     public static final OfBoolean invokeContactCreation$layout() {
@@ -474,7 +519,7 @@ public class b2ShapeDef {
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * _Bool invokeContactCreation
+     * bool invokeContactCreation
      * }
      */
     public static final long invokeContactCreation$offset() {
@@ -484,7 +529,7 @@ public class b2ShapeDef {
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * _Bool invokeContactCreation
+     * bool invokeContactCreation
      * }
      */
     public static boolean invokeContactCreation(MemorySegment struct) {
@@ -494,7 +539,7 @@ public class b2ShapeDef {
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * _Bool invokeContactCreation
+     * bool invokeContactCreation
      * }
      */
     public static void invokeContactCreation(MemorySegment struct, boolean fieldValue) {
@@ -506,7 +551,7 @@ public class b2ShapeDef {
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * _Bool updateBodyMass
+     * bool updateBodyMass
      * }
      */
     public static final OfBoolean updateBodyMass$layout() {
@@ -518,7 +563,7 @@ public class b2ShapeDef {
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * _Bool updateBodyMass
+     * bool updateBodyMass
      * }
      */
     public static final long updateBodyMass$offset() {
@@ -528,7 +573,7 @@ public class b2ShapeDef {
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * _Bool updateBodyMass
+     * bool updateBodyMass
      * }
      */
     public static boolean updateBodyMass(MemorySegment struct) {
@@ -538,7 +583,7 @@ public class b2ShapeDef {
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * _Bool updateBodyMass
+     * bool updateBodyMass
      * }
      */
     public static void updateBodyMass(MemorySegment struct, boolean fieldValue) {

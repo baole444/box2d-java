@@ -17,9 +17,8 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
  * struct b2DistanceInput {
  *     b2ShapeProxy proxyA;
  *     b2ShapeProxy proxyB;
- *     b2Transform transformA;
- *     b2Transform transformB;
- *     _Bool useRadii;
+ *     b2Transform transform;
+ *     bool useRadii;
  * }
  * }
  */
@@ -32,8 +31,7 @@ public class b2DistanceInput {
     private static final GroupLayout $LAYOUT = MemoryLayout.structLayout(
         b2ShapeProxy.layout().withName("proxyA"),
         b2ShapeProxy.layout().withName("proxyB"),
-        b2Transform.layout().withName("transformA"),
-        b2Transform.layout().withName("transformB"),
+        b2Transform.layout().withName("transform"),
         Box2D.C_BOOL.withName("useRadii"),
         MemoryLayout.paddingLayout(3)
     ).withName("b2DistanceInput");
@@ -133,92 +131,48 @@ public class b2DistanceInput {
         MemorySegment.copy(fieldValue, 0L, struct, proxyB$OFFSET, proxyB$LAYOUT.byteSize());
     }
 
-    private static final GroupLayout transformA$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("transformA"));
+    private static final GroupLayout transform$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("transform"));
 
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * b2Transform transformA
+     * b2Transform transform
      * }
      */
-    public static final GroupLayout transformA$layout() {
-        return transformA$LAYOUT;
+    public static final GroupLayout transform$layout() {
+        return transform$LAYOUT;
     }
 
-    private static final long transformA$OFFSET = $LAYOUT.byteOffset(groupElement("transformA"));
+    private static final long transform$OFFSET = $LAYOUT.byteOffset(groupElement("transform"));
 
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * b2Transform transformA
+     * b2Transform transform
      * }
      */
-    public static final long transformA$offset() {
-        return transformA$OFFSET;
+    public static final long transform$offset() {
+        return transform$OFFSET;
     }
 
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * b2Transform transformA
+     * b2Transform transform
      * }
      */
-    public static MemorySegment transformA(MemorySegment struct) {
-        return struct.asSlice(transformA$OFFSET, transformA$LAYOUT.byteSize());
+    public static MemorySegment transform(MemorySegment struct) {
+        return struct.asSlice(transform$OFFSET, transform$LAYOUT.byteSize());
     }
 
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * b2Transform transformA
+     * b2Transform transform
      * }
      */
-    public static void transformA(MemorySegment struct, MemorySegment fieldValue) {
-        MemorySegment.copy(fieldValue, 0L, struct, transformA$OFFSET, transformA$LAYOUT.byteSize());
-    }
-
-    private static final GroupLayout transformB$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("transformB"));
-
-    /**
-     * Layout for field:
-     * {@snippet lang=c :
-     * b2Transform transformB
-     * }
-     */
-    public static final GroupLayout transformB$layout() {
-        return transformB$LAYOUT;
-    }
-
-    private static final long transformB$OFFSET = $LAYOUT.byteOffset(groupElement("transformB"));
-
-    /**
-     * Offset for field:
-     * {@snippet lang=c :
-     * b2Transform transformB
-     * }
-     */
-    public static final long transformB$offset() {
-        return transformB$OFFSET;
-    }
-
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * b2Transform transformB
-     * }
-     */
-    public static MemorySegment transformB(MemorySegment struct) {
-        return struct.asSlice(transformB$OFFSET, transformB$LAYOUT.byteSize());
-    }
-
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * b2Transform transformB
-     * }
-     */
-    public static void transformB(MemorySegment struct, MemorySegment fieldValue) {
-        MemorySegment.copy(fieldValue, 0L, struct, transformB$OFFSET, transformB$LAYOUT.byteSize());
+    public static void transform(MemorySegment struct, MemorySegment fieldValue) {
+        MemorySegment.copy(fieldValue, 0L, struct, transform$OFFSET, transform$LAYOUT.byteSize());
     }
 
     private static final OfBoolean useRadii$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("useRadii"));
@@ -226,7 +180,7 @@ public class b2DistanceInput {
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * _Bool useRadii
+     * bool useRadii
      * }
      */
     public static final OfBoolean useRadii$layout() {
@@ -238,7 +192,7 @@ public class b2DistanceInput {
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * _Bool useRadii
+     * bool useRadii
      * }
      */
     public static final long useRadii$offset() {
@@ -248,7 +202,7 @@ public class b2DistanceInput {
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * _Bool useRadii
+     * bool useRadii
      * }
      */
     public static boolean useRadii(MemorySegment struct) {
@@ -258,7 +212,7 @@ public class b2DistanceInput {
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * _Bool useRadii
+     * bool useRadii
      * }
      */
     public static void useRadii(MemorySegment struct, boolean fieldValue) {

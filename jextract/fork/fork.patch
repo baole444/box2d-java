@@ -1,0 +1,246 @@
+box2d-java jextract fork: source changes
+========================================
+
+Text changes on top of openjdk/jextract commit 3be13db493b35bca7b714393b89b1a2e1b2d7e13.
+The Gradle wrapper (9.6.1) is not in this patch: its files are in overlay/ and are copied over
+the checkout. .github/workflows/check-bindings.yml applies both, so CI builds the same jextract
+as the local fork. Recreate (in the jextract checkout), keeping this header:
+
+  git diff HEAD -- build.gradle src > <box2d-java>/jextract/fork/fork.patch
+
+- build.gradle: property checks moved out of configuration closures (task-model warm-up fix)
+- HeaderFileBuilder: C_LONG = ValueLayout.JAVA_INT on Windows (not needed for box2d-java any
+  more, since generateBindings strips that line, but kept so the patch is the fork as is)
+
+diff --git a/build.gradle b/build.gradle
+index 03c70e4..0e04ac1 100644
+--- a/build.gradle
++++ b/build.gradle
+@@ -70,14 +70,14 @@ jar {
+     archiveVersion = project.version
+ }
+ 
+-task copyLibClang(type: Sync) {
++tasks.register('copyLibClang', Sync) {
+     into("$buildDir/jmod_inputs")
+ 
+     // make sure we only pick up the "real" shared library file from LLVM installation
+     // (e.g. exclude symlinks on Linux)
+     def isAix = Os.isName("AIX") || Os.isName("aix")
+-    def isUnixNotMac  = Os.isFamily(Os.FAMILY_UNIX) && !Os.isFamily(Os.FAMILY_MAC)
+-    def clang_path_include = isAix  ? "libclang.a" : isUnixNotMac ? "libclang.so.${clang_version}" : "*clang*"
++    def isUnixNotMac = Os.isFamily(Os.FAMILY_UNIX) && !Os.isFamily(Os.FAMILY_MAC)
++    def clang_path_include = isAix ? "libclang.a" : isUnixNotMac ? "libclang.so.${clang_version}" : "*clang*"
+     from("${libclang_dir}") {
+         include(clang_path_include)
+         include("libLLVM.*")
+@@ -92,7 +92,7 @@ task copyLibClang(type: Sync) {
+     }
+ }
+ 
+-task createJextractJmod(type: Exec) {
++tasks.register('createJextractJmod', Exec) {
+     dependsOn jar, copyLibClang
+ 
+     // if these inputs or outputs change, gradle will rerun the task
+@@ -106,25 +106,25 @@ task createJextractJmod(type: Exec) {
+ 
+     executable = "${jdk_home}/bin/jmod"
+     args = [
+-          "create",
+-          "--module-version=$jextract_version",
+-          "--class-path=" + jar.archiveFile.get(),
+-          "--libs=$jextract_jmod_inputs/libs",
+-          "--conf=$jextract_jmod_inputs/conf",
+-          "${jextract_jmod_file}"
++            "create",
++            "--module-version=$jextract_version",
++            "--class-path=" + jar.archiveFile.get(),
++            "--libs=$jextract_jmod_inputs/libs",
++            "--conf=$jextract_jmod_inputs/conf",
++            "${jextract_jmod_file}"
+     ]
+ }
+ 
+-task createJextractImage(type: Exec) {
++tasks.register('createJextractImage', Exec) {
+     dependsOn createJextractJmod
+ 
+     // if these inputs or outputs change, gradle will rerun the task
+     inputs.file("$jextract_jmod_file")
+     outputs.dir(jextract_app_dir)
+ 
+-    def quote_jlink_opts = Os.isFamily(Os.FAMILY_WINDOWS)?
+-        '\\"--enable-native-access=org.openjdk.jextract\\"' :
+-        '"--enable-native-access=org.openjdk.jextract"'
++    def quote_jlink_opts = Os.isFamily(Os.FAMILY_WINDOWS) ?
++            '\\"--enable-native-access=org.openjdk.jextract\\"' :
++            '"--enable-native-access=org.openjdk.jextract"'
+ 
+     doFirst {
+         delete(jextract_app_dir)
+@@ -133,12 +133,12 @@ task createJextractImage(type: Exec) {
+ 
+     executable = "${jdk_home}/bin/jlink"
+     args = [
+-         "--module-path=$jmods_dir",
+-         "--add-modules=org.openjdk.jextract",
+-         "--output=${jextract_runtime_dir}",
+-         "--strip-debug", "--no-man-pages", "--no-header-files",
+-         "--add-options",
+-         "${quote_jlink_opts}"
++            "--module-path=$jmods_dir",
++            "--add-modules=org.openjdk.jextract",
++            "--output=${jextract_runtime_dir}",
++            "--strip-debug", "--no-man-pages", "--no-header-files",
++            "--add-options",
++            "${quote_jlink_opts}"
+     ]
+ 
+     doLast {
+@@ -162,15 +162,15 @@ task createJextractImage(type: Exec) {
+ assemble.dependsOn(createJextractImage)
+ 
+ // very simple integration test for generated jextract
+-task verify(type: Exec) {
++tasks.register('verify', Exec) {
+     dependsOn createJextractImage
+ 
+     executable = "${jextract_bin_dir}/jextract${os_script_extension}"
+-    args = [ "test.h", "--output", "$buildDir/integration_test" ]
++    args = ["test.h", "--output", "$buildDir/integration_test"]
+ }
+ 
+ // jlink a JDK image with org.openjdk.jextract for testing
+-task createRuntimeImageForTest(type: Exec) {
++tasks.register('createRuntimeImageForTest', Exec) {
+     dependsOn createJextractJmod
+ 
+     def out_dir = "$buildDir/jextract-jdk-test-image"
+@@ -185,31 +185,31 @@ task createRuntimeImageForTest(type: Exec) {
+ 
+     executable = "${jdk_home}/bin/jlink"
+     args = [
+-         "--module-path=$jmods_dir" + File.pathSeparator + "$jdk_home/jmods",
+-         "--add-modules=ALL-MODULE-PATH",
+-         "--output=$out_dir",
++            "--module-path=$jmods_dir" + File.pathSeparator + "$jdk_home/jmods",
++            "--add-modules=ALL-MODULE-PATH",
++            "--output=$out_dir",
+     ]
+ }
+ 
+-task cmakeConfigure(type: Exec) {
++tasks.register('cmakeConfigure', Exec) {
+     executable = "cmake"
+     args = [
+-        "-B", "$buildDir/testlib-build",
+-        "-S", "$projectDir/test/test-support",
+-        "-DTEST_SOURCE_ROOT:FILEPATH=$projectDir/test",
+-        "-DCMAKE_BUILD_TYPE:STRING=Release",
+-        "-DCMAKE_INSTALL_PREFIX:FILEPATH=$buildDir/testlib-install"
++            "-B", "$buildDir/testlib-build",
++            "-S", "$projectDir/test/test-support",
++            "-DTEST_SOURCE_ROOT:FILEPATH=$projectDir/test",
++            "-DCMAKE_BUILD_TYPE:STRING=Release",
++            "-DCMAKE_INSTALL_PREFIX:FILEPATH=$buildDir/testlib-install"
+     ]
+ }
+ 
+-task cmakeBuild(type: Exec) {
++tasks.register('cmakeBuild', Exec) {
+     dependsOn cmakeConfigure
+ 
+     executable = "cmake"
+     args = [
+-        "--build", "$buildDir/testlib-build",
+-        "--config", "Release",
+-        "--target", "install"
++            "--build", "$buildDir/testlib-build",
++            "--config", "Release",
++            "--target", "install"
+     ]
+ }
+ 
+@@ -222,13 +222,21 @@ void createJtregTask(String name, String jacocoAgent, String os_lib_dir) {
+     tasks.register(name, JavaExec) {
+         dependsOn testDeps
+ 
+-        if (findProperty("jtreg_home") == null) {
+-            throw new GradleException("jtreg_home is not defined")
+-        }
+-
+         workingDir = "$buildDir"
+ 
+-        classpath = files(findProperty("jtreg_home") + "/lib/jtreg.jar")
++        // jtreg_home is only needed when this task actually runs. Validating it inside
++        // the configuration closure breaks Gradle's task-model warm-up (IDE sync,
++        // `gradle tasks`) for everyone not running jtreg, because the lazily-registered
++        // closure is realized during warm-up. Defer the check to execution via doFirst,
++        // and keep the classpath null-safe (a GString renders null as "null", no NPE).
++        def jtregHome = findProperty("jtreg_home")
++        classpath = files("${jtregHome}/lib/jtreg.jar")
++
++        doFirst {
++            if (jtregHome == null) {
++                throw new GradleException("jtreg_home is not defined")
++            }
++        }
+ 
+         args = [
+                 "-jdk", "$buildDir/jextract-jdk-test-image",
+@@ -258,14 +266,15 @@ if (jacocoAgent != null) {
+ }
+ 
+ tasks.register("coverage", JavaExec) {
+-    dependsOn jtregWithCoverage
++    // String form: jtregWithCoverage only exists when -Pjacoco_agent is set, so a bare
++    // task reference would fail task-model warm-up. String deps resolve lazily at graph
++    // build time, i.e. only when 'coverage' is actually run.
++    dependsOn "jtregWithCoverage"
+ 
+     // e.g.: <jacoco repo>/org.jacoco.cli/target/org.jacoco.cli-0.8.12-SNAPSHOT-nodeps.jar
+-    if (findProperty("jacoco_cli") == null) {
+-        throw new GradleException("jacoco_cli is not defined")
+-    }
+-
+-    classpath = files(findProperty("jacoco_cli"))
++    // Deferred to execution time, same reason as the jtreg task above.
++    def jacocoCli = findProperty("jacoco_cli")
++    classpath = files(jacocoCli ?: [])
+ 
+     args = [
+             "report",
+@@ -274,6 +283,12 @@ tasks.register("coverage", JavaExec) {
+             "--sourcefiles", "$projectDir/src/main/java",
+             "--html", "$buildDir/jacoco-report"
+     ]
++
++    doFirst {
++        if (jacocoCli == null) {
++            throw new GradleException("jacoco_cli is not defined")
++        }
++    }
+ }
+ //------------------------------------------------------------
+ // Task to generate version file into jmod inputs
+diff --git a/src/main/java/org/openjdk/jextract/impl/HeaderFileBuilder.java b/src/main/java/org/openjdk/jextract/impl/HeaderFileBuilder.java
+index 1615909..47cfa91 100644
+--- a/src/main/java/org/openjdk/jextract/impl/HeaderFileBuilder.java
++++ b/src/main/java/org/openjdk/jextract/impl/HeaderFileBuilder.java
+@@ -410,7 +410,14 @@ class HeaderFileBuilder extends ClassSourceBuilder {
+                     .withTargetLayout(MemoryLayout.sequenceLayout(java.lang.Long.MAX_VALUE, C_CHAR));
+             """);
+         if (TypeImpl.IS_WINDOWS) {
+-            appendIndentedLines("public static final ValueLayout.OfInt C_LONG = (ValueLayout.OfInt) Linker.nativeLinker().canonicalLayouts().get(\"long\");");
++            // LOCAL PATCH (box2d-java fork): emit a fixed 4-byte int rather than
++            // (ValueLayout.OfInt) canonicalLayouts().get("long"). The stock cast is only
++            // valid on LLP64; when these Windows-generated bindings are loaded on LP64
++            // (Linux/macOS) "long" resolves to OfLong and the cast throws
++            // ClassCastException at class init. JAVA_INT keeps the OfInt type (downstream
++            // generated code still compiles) and equals Windows' 4-byte long, so one
++            // generated binding set loads on every 64-bit target. Re-apply after upgrades.
++            appendIndentedLines("public static final ValueLayout.OfInt C_LONG = ValueLayout.JAVA_INT;");
+             appendIndentedLines("public static final ValueLayout.OfDouble C_LONG_DOUBLE = (ValueLayout.OfDouble) Linker.nativeLinker().canonicalLayouts().get(\"double\");");
+         } else {
+             appendIndentedLines("public static final ValueLayout.OfLong C_LONG = (ValueLayout.OfLong) Linker.nativeLinker().canonicalLayouts().get(\"long\");");

@@ -15,7 +15,7 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
 /**
  * {@snippet lang=c :
  * struct b2PlaneSolverResult {
- *     b2Vec2 translation;
+ *     b2Vec2 delta;
  *     int iterationCount;
  * }
  * }
@@ -27,7 +27,7 @@ public class b2PlaneSolverResult {
     }
 
     private static final GroupLayout $LAYOUT = MemoryLayout.structLayout(
-        b2Vec2.layout().withName("translation"),
+        b2Vec2.layout().withName("delta"),
         Box2D.C_INT.withName("iterationCount")
     ).withName("b2PlaneSolverResult");
 
@@ -38,48 +38,48 @@ public class b2PlaneSolverResult {
         return $LAYOUT;
     }
 
-    private static final GroupLayout translation$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("translation"));
+    private static final GroupLayout delta$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("delta"));
 
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * b2Vec2 translation
+     * b2Vec2 delta
      * }
      */
-    public static final GroupLayout translation$layout() {
-        return translation$LAYOUT;
+    public static final GroupLayout delta$layout() {
+        return delta$LAYOUT;
     }
 
-    private static final long translation$OFFSET = $LAYOUT.byteOffset(groupElement("translation"));
+    private static final long delta$OFFSET = $LAYOUT.byteOffset(groupElement("delta"));
 
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * b2Vec2 translation
+     * b2Vec2 delta
      * }
      */
-    public static final long translation$offset() {
-        return translation$OFFSET;
+    public static final long delta$offset() {
+        return delta$OFFSET;
     }
 
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * b2Vec2 translation
+     * b2Vec2 delta
      * }
      */
-    public static MemorySegment translation(MemorySegment struct) {
-        return struct.asSlice(translation$OFFSET, translation$LAYOUT.byteSize());
+    public static MemorySegment delta(MemorySegment struct) {
+        return struct.asSlice(delta$OFFSET, delta$LAYOUT.byteSize());
     }
 
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * b2Vec2 translation
+     * b2Vec2 delta
      * }
      */
-    public static void translation(MemorySegment struct, MemorySegment fieldValue) {
-        MemorySegment.copy(fieldValue, 0L, struct, translation$OFFSET, translation$LAYOUT.byteSize());
+    public static void delta(MemorySegment struct, MemorySegment fieldValue) {
+        MemorySegment.copy(fieldValue, 0L, struct, delta$OFFSET, delta$LAYOUT.byteSize());
     }
 
     private static final OfInt iterationCount$LAYOUT = (OfInt)$LAYOUT.select(groupElement("iterationCount"));

@@ -15,24 +15,17 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
 /**
  * {@snippet lang=c :
  * struct b2PrismaticJointDef {
- *     b2BodyId bodyIdA;
- *     b2BodyId bodyIdB;
- *     b2Vec2 localAnchorA;
- *     b2Vec2 localAnchorB;
- *     b2Vec2 localAxisA;
- *     float referenceAngle;
- *     float targetTranslation;
- *     _Bool enableSpring;
+ *     b2JointDef base;
+ *     bool enableSpring;
  *     float hertz;
  *     float dampingRatio;
- *     _Bool enableLimit;
+ *     float targetTranslation;
+ *     bool enableLimit;
  *     float lowerTranslation;
  *     float upperTranslation;
- *     _Bool enableMotor;
+ *     bool enableMotor;
  *     float maxMotorForce;
  *     float motorSpeed;
- *     _Bool collideConnected;
- *     void *userData;
  *     int internalValue;
  * }
  * }
@@ -44,17 +37,12 @@ public class b2PrismaticJointDef {
     }
 
     private static final GroupLayout $LAYOUT = MemoryLayout.structLayout(
-        b2BodyId.layout().withName("bodyIdA"),
-        b2BodyId.layout().withName("bodyIdB"),
-        b2Vec2.layout().withName("localAnchorA"),
-        b2Vec2.layout().withName("localAnchorB"),
-        b2Vec2.layout().withName("localAxisA"),
-        Box2D.C_FLOAT.withName("referenceAngle"),
-        Box2D.C_FLOAT.withName("targetTranslation"),
+        b2JointDef.layout().withName("base"),
         Box2D.C_BOOL.withName("enableSpring"),
         MemoryLayout.paddingLayout(3),
         Box2D.C_FLOAT.withName("hertz"),
         Box2D.C_FLOAT.withName("dampingRatio"),
+        Box2D.C_FLOAT.withName("targetTranslation"),
         Box2D.C_BOOL.withName("enableLimit"),
         MemoryLayout.paddingLayout(3),
         Box2D.C_FLOAT.withName("lowerTranslation"),
@@ -63,9 +51,6 @@ public class b2PrismaticJointDef {
         MemoryLayout.paddingLayout(3),
         Box2D.C_FLOAT.withName("maxMotorForce"),
         Box2D.C_FLOAT.withName("motorSpeed"),
-        Box2D.C_BOOL.withName("collideConnected"),
-        MemoryLayout.paddingLayout(3),
-        Box2D.C_POINTER.withName("userData"),
         Box2D.C_INT.withName("internalValue"),
         MemoryLayout.paddingLayout(4)
     ).withName("b2PrismaticJointDef");
@@ -77,312 +62,48 @@ public class b2PrismaticJointDef {
         return $LAYOUT;
     }
 
-    private static final GroupLayout bodyIdA$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("bodyIdA"));
+    private static final GroupLayout base$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("base"));
 
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * b2BodyId bodyIdA
+     * b2JointDef base
      * }
      */
-    public static final GroupLayout bodyIdA$layout() {
-        return bodyIdA$LAYOUT;
+    public static final GroupLayout base$layout() {
+        return base$LAYOUT;
     }
 
-    private static final long bodyIdA$OFFSET = $LAYOUT.byteOffset(groupElement("bodyIdA"));
+    private static final long base$OFFSET = $LAYOUT.byteOffset(groupElement("base"));
 
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * b2BodyId bodyIdA
+     * b2JointDef base
      * }
      */
-    public static final long bodyIdA$offset() {
-        return bodyIdA$OFFSET;
+    public static final long base$offset() {
+        return base$OFFSET;
     }
 
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * b2BodyId bodyIdA
+     * b2JointDef base
      * }
      */
-    public static MemorySegment bodyIdA(MemorySegment struct) {
-        return struct.asSlice(bodyIdA$OFFSET, bodyIdA$LAYOUT.byteSize());
+    public static MemorySegment base(MemorySegment struct) {
+        return struct.asSlice(base$OFFSET, base$LAYOUT.byteSize());
     }
 
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * b2BodyId bodyIdA
+     * b2JointDef base
      * }
      */
-    public static void bodyIdA(MemorySegment struct, MemorySegment fieldValue) {
-        MemorySegment.copy(fieldValue, 0L, struct, bodyIdA$OFFSET, bodyIdA$LAYOUT.byteSize());
-    }
-
-    private static final GroupLayout bodyIdB$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("bodyIdB"));
-
-    /**
-     * Layout for field:
-     * {@snippet lang=c :
-     * b2BodyId bodyIdB
-     * }
-     */
-    public static final GroupLayout bodyIdB$layout() {
-        return bodyIdB$LAYOUT;
-    }
-
-    private static final long bodyIdB$OFFSET = $LAYOUT.byteOffset(groupElement("bodyIdB"));
-
-    /**
-     * Offset for field:
-     * {@snippet lang=c :
-     * b2BodyId bodyIdB
-     * }
-     */
-    public static final long bodyIdB$offset() {
-        return bodyIdB$OFFSET;
-    }
-
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * b2BodyId bodyIdB
-     * }
-     */
-    public static MemorySegment bodyIdB(MemorySegment struct) {
-        return struct.asSlice(bodyIdB$OFFSET, bodyIdB$LAYOUT.byteSize());
-    }
-
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * b2BodyId bodyIdB
-     * }
-     */
-    public static void bodyIdB(MemorySegment struct, MemorySegment fieldValue) {
-        MemorySegment.copy(fieldValue, 0L, struct, bodyIdB$OFFSET, bodyIdB$LAYOUT.byteSize());
-    }
-
-    private static final GroupLayout localAnchorA$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("localAnchorA"));
-
-    /**
-     * Layout for field:
-     * {@snippet lang=c :
-     * b2Vec2 localAnchorA
-     * }
-     */
-    public static final GroupLayout localAnchorA$layout() {
-        return localAnchorA$LAYOUT;
-    }
-
-    private static final long localAnchorA$OFFSET = $LAYOUT.byteOffset(groupElement("localAnchorA"));
-
-    /**
-     * Offset for field:
-     * {@snippet lang=c :
-     * b2Vec2 localAnchorA
-     * }
-     */
-    public static final long localAnchorA$offset() {
-        return localAnchorA$OFFSET;
-    }
-
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * b2Vec2 localAnchorA
-     * }
-     */
-    public static MemorySegment localAnchorA(MemorySegment struct) {
-        return struct.asSlice(localAnchorA$OFFSET, localAnchorA$LAYOUT.byteSize());
-    }
-
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * b2Vec2 localAnchorA
-     * }
-     */
-    public static void localAnchorA(MemorySegment struct, MemorySegment fieldValue) {
-        MemorySegment.copy(fieldValue, 0L, struct, localAnchorA$OFFSET, localAnchorA$LAYOUT.byteSize());
-    }
-
-    private static final GroupLayout localAnchorB$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("localAnchorB"));
-
-    /**
-     * Layout for field:
-     * {@snippet lang=c :
-     * b2Vec2 localAnchorB
-     * }
-     */
-    public static final GroupLayout localAnchorB$layout() {
-        return localAnchorB$LAYOUT;
-    }
-
-    private static final long localAnchorB$OFFSET = $LAYOUT.byteOffset(groupElement("localAnchorB"));
-
-    /**
-     * Offset for field:
-     * {@snippet lang=c :
-     * b2Vec2 localAnchorB
-     * }
-     */
-    public static final long localAnchorB$offset() {
-        return localAnchorB$OFFSET;
-    }
-
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * b2Vec2 localAnchorB
-     * }
-     */
-    public static MemorySegment localAnchorB(MemorySegment struct) {
-        return struct.asSlice(localAnchorB$OFFSET, localAnchorB$LAYOUT.byteSize());
-    }
-
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * b2Vec2 localAnchorB
-     * }
-     */
-    public static void localAnchorB(MemorySegment struct, MemorySegment fieldValue) {
-        MemorySegment.copy(fieldValue, 0L, struct, localAnchorB$OFFSET, localAnchorB$LAYOUT.byteSize());
-    }
-
-    private static final GroupLayout localAxisA$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("localAxisA"));
-
-    /**
-     * Layout for field:
-     * {@snippet lang=c :
-     * b2Vec2 localAxisA
-     * }
-     */
-    public static final GroupLayout localAxisA$layout() {
-        return localAxisA$LAYOUT;
-    }
-
-    private static final long localAxisA$OFFSET = $LAYOUT.byteOffset(groupElement("localAxisA"));
-
-    /**
-     * Offset for field:
-     * {@snippet lang=c :
-     * b2Vec2 localAxisA
-     * }
-     */
-    public static final long localAxisA$offset() {
-        return localAxisA$OFFSET;
-    }
-
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * b2Vec2 localAxisA
-     * }
-     */
-    public static MemorySegment localAxisA(MemorySegment struct) {
-        return struct.asSlice(localAxisA$OFFSET, localAxisA$LAYOUT.byteSize());
-    }
-
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * b2Vec2 localAxisA
-     * }
-     */
-    public static void localAxisA(MemorySegment struct, MemorySegment fieldValue) {
-        MemorySegment.copy(fieldValue, 0L, struct, localAxisA$OFFSET, localAxisA$LAYOUT.byteSize());
-    }
-
-    private static final OfFloat referenceAngle$LAYOUT = (OfFloat)$LAYOUT.select(groupElement("referenceAngle"));
-
-    /**
-     * Layout for field:
-     * {@snippet lang=c :
-     * float referenceAngle
-     * }
-     */
-    public static final OfFloat referenceAngle$layout() {
-        return referenceAngle$LAYOUT;
-    }
-
-    private static final long referenceAngle$OFFSET = $LAYOUT.byteOffset(groupElement("referenceAngle"));
-
-    /**
-     * Offset for field:
-     * {@snippet lang=c :
-     * float referenceAngle
-     * }
-     */
-    public static final long referenceAngle$offset() {
-        return referenceAngle$OFFSET;
-    }
-
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * float referenceAngle
-     * }
-     */
-    public static float referenceAngle(MemorySegment struct) {
-        return struct.get(referenceAngle$LAYOUT, referenceAngle$OFFSET);
-    }
-
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * float referenceAngle
-     * }
-     */
-    public static void referenceAngle(MemorySegment struct, float fieldValue) {
-        struct.set(referenceAngle$LAYOUT, referenceAngle$OFFSET, fieldValue);
-    }
-
-    private static final OfFloat targetTranslation$LAYOUT = (OfFloat)$LAYOUT.select(groupElement("targetTranslation"));
-
-    /**
-     * Layout for field:
-     * {@snippet lang=c :
-     * float targetTranslation
-     * }
-     */
-    public static final OfFloat targetTranslation$layout() {
-        return targetTranslation$LAYOUT;
-    }
-
-    private static final long targetTranslation$OFFSET = $LAYOUT.byteOffset(groupElement("targetTranslation"));
-
-    /**
-     * Offset for field:
-     * {@snippet lang=c :
-     * float targetTranslation
-     * }
-     */
-    public static final long targetTranslation$offset() {
-        return targetTranslation$OFFSET;
-    }
-
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * float targetTranslation
-     * }
-     */
-    public static float targetTranslation(MemorySegment struct) {
-        return struct.get(targetTranslation$LAYOUT, targetTranslation$OFFSET);
-    }
-
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * float targetTranslation
-     * }
-     */
-    public static void targetTranslation(MemorySegment struct, float fieldValue) {
-        struct.set(targetTranslation$LAYOUT, targetTranslation$OFFSET, fieldValue);
+    public static void base(MemorySegment struct, MemorySegment fieldValue) {
+        MemorySegment.copy(fieldValue, 0L, struct, base$OFFSET, base$LAYOUT.byteSize());
     }
 
     private static final OfBoolean enableSpring$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("enableSpring"));
@@ -390,7 +111,7 @@ public class b2PrismaticJointDef {
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * _Bool enableSpring
+     * bool enableSpring
      * }
      */
     public static final OfBoolean enableSpring$layout() {
@@ -402,7 +123,7 @@ public class b2PrismaticJointDef {
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * _Bool enableSpring
+     * bool enableSpring
      * }
      */
     public static final long enableSpring$offset() {
@@ -412,7 +133,7 @@ public class b2PrismaticJointDef {
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * _Bool enableSpring
+     * bool enableSpring
      * }
      */
     public static boolean enableSpring(MemorySegment struct) {
@@ -422,7 +143,7 @@ public class b2PrismaticJointDef {
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * _Bool enableSpring
+     * bool enableSpring
      * }
      */
     public static void enableSpring(MemorySegment struct, boolean fieldValue) {
@@ -517,12 +238,56 @@ public class b2PrismaticJointDef {
         struct.set(dampingRatio$LAYOUT, dampingRatio$OFFSET, fieldValue);
     }
 
+    private static final OfFloat targetTranslation$LAYOUT = (OfFloat)$LAYOUT.select(groupElement("targetTranslation"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * float targetTranslation
+     * }
+     */
+    public static final OfFloat targetTranslation$layout() {
+        return targetTranslation$LAYOUT;
+    }
+
+    private static final long targetTranslation$OFFSET = $LAYOUT.byteOffset(groupElement("targetTranslation"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * float targetTranslation
+     * }
+     */
+    public static final long targetTranslation$offset() {
+        return targetTranslation$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * float targetTranslation
+     * }
+     */
+    public static float targetTranslation(MemorySegment struct) {
+        return struct.get(targetTranslation$LAYOUT, targetTranslation$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * float targetTranslation
+     * }
+     */
+    public static void targetTranslation(MemorySegment struct, float fieldValue) {
+        struct.set(targetTranslation$LAYOUT, targetTranslation$OFFSET, fieldValue);
+    }
+
     private static final OfBoolean enableLimit$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("enableLimit"));
 
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * _Bool enableLimit
+     * bool enableLimit
      * }
      */
     public static final OfBoolean enableLimit$layout() {
@@ -534,7 +299,7 @@ public class b2PrismaticJointDef {
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * _Bool enableLimit
+     * bool enableLimit
      * }
      */
     public static final long enableLimit$offset() {
@@ -544,7 +309,7 @@ public class b2PrismaticJointDef {
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * _Bool enableLimit
+     * bool enableLimit
      * }
      */
     public static boolean enableLimit(MemorySegment struct) {
@@ -554,7 +319,7 @@ public class b2PrismaticJointDef {
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * _Bool enableLimit
+     * bool enableLimit
      * }
      */
     public static void enableLimit(MemorySegment struct, boolean fieldValue) {
@@ -654,7 +419,7 @@ public class b2PrismaticJointDef {
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * _Bool enableMotor
+     * bool enableMotor
      * }
      */
     public static final OfBoolean enableMotor$layout() {
@@ -666,7 +431,7 @@ public class b2PrismaticJointDef {
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * _Bool enableMotor
+     * bool enableMotor
      * }
      */
     public static final long enableMotor$offset() {
@@ -676,7 +441,7 @@ public class b2PrismaticJointDef {
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * _Bool enableMotor
+     * bool enableMotor
      * }
      */
     public static boolean enableMotor(MemorySegment struct) {
@@ -686,7 +451,7 @@ public class b2PrismaticJointDef {
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * _Bool enableMotor
+     * bool enableMotor
      * }
      */
     public static void enableMotor(MemorySegment struct, boolean fieldValue) {
@@ -779,94 +544,6 @@ public class b2PrismaticJointDef {
      */
     public static void motorSpeed(MemorySegment struct, float fieldValue) {
         struct.set(motorSpeed$LAYOUT, motorSpeed$OFFSET, fieldValue);
-    }
-
-    private static final OfBoolean collideConnected$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("collideConnected"));
-
-    /**
-     * Layout for field:
-     * {@snippet lang=c :
-     * _Bool collideConnected
-     * }
-     */
-    public static final OfBoolean collideConnected$layout() {
-        return collideConnected$LAYOUT;
-    }
-
-    private static final long collideConnected$OFFSET = $LAYOUT.byteOffset(groupElement("collideConnected"));
-
-    /**
-     * Offset for field:
-     * {@snippet lang=c :
-     * _Bool collideConnected
-     * }
-     */
-    public static final long collideConnected$offset() {
-        return collideConnected$OFFSET;
-    }
-
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * _Bool collideConnected
-     * }
-     */
-    public static boolean collideConnected(MemorySegment struct) {
-        return struct.get(collideConnected$LAYOUT, collideConnected$OFFSET);
-    }
-
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * _Bool collideConnected
-     * }
-     */
-    public static void collideConnected(MemorySegment struct, boolean fieldValue) {
-        struct.set(collideConnected$LAYOUT, collideConnected$OFFSET, fieldValue);
-    }
-
-    private static final AddressLayout userData$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("userData"));
-
-    /**
-     * Layout for field:
-     * {@snippet lang=c :
-     * void *userData
-     * }
-     */
-    public static final AddressLayout userData$layout() {
-        return userData$LAYOUT;
-    }
-
-    private static final long userData$OFFSET = $LAYOUT.byteOffset(groupElement("userData"));
-
-    /**
-     * Offset for field:
-     * {@snippet lang=c :
-     * void *userData
-     * }
-     */
-    public static final long userData$offset() {
-        return userData$OFFSET;
-    }
-
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * void *userData
-     * }
-     */
-    public static MemorySegment userData(MemorySegment struct) {
-        return struct.get(userData$LAYOUT, userData$OFFSET);
-    }
-
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * void *userData
-     * }
-     */
-    public static void userData(MemorySegment struct, MemorySegment fieldValue) {
-        struct.set(userData$LAYOUT, userData$OFFSET, fieldValue);
     }
 
     private static final OfInt internalValue$LAYOUT = (OfInt)$LAYOUT.select(groupElement("internalValue"));

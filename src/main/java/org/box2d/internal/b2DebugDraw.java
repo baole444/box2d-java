@@ -15,30 +15,34 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
 /**
  * {@snippet lang=c :
  * struct b2DebugDraw {
- *     void (*DrawPolygonFcn)(const b2Vec2 *, int, b2HexColor, void *);
- *     void (*DrawSolidPolygonFcn)(b2Transform, const b2Vec2 *, int, float, b2HexColor, void *);
- *     void (*DrawCircleFcn)(b2Vec2, float, b2HexColor, void *);
- *     void (*DrawSolidCircleFcn)(b2Transform, float, b2HexColor, void *);
- *     void (*DrawSolidCapsuleFcn)(b2Vec2, b2Vec2, float, b2HexColor, void *);
- *     void (*DrawSegmentFcn)(b2Vec2, b2Vec2, b2HexColor, void *);
- *     void (*DrawTransformFcn)(b2Transform, void *);
- *     void (*DrawPointFcn)(b2Vec2, float, b2HexColor, void *);
- *     void (*DrawStringFcn)(b2Vec2, const char *, b2HexColor, void *);
+ *     void (*DrawPolygonFcn)(b2WorldTransform, const b2Vec2 *, int, b2HexColor, void *);
+ *     void (*DrawSolidPolygonFcn)(b2WorldTransform, const b2Vec2 *, int, float, b2HexColor, void *);
+ *     void (*DrawCircleFcn)(b2Pos, float, b2HexColor, void *);
+ *     void (*DrawSolidCircleFcn)(b2WorldTransform, b2Vec2, float, b2HexColor, void *);
+ *     void (*DrawSolidCapsuleFcn)(b2Pos, b2Pos, float, b2HexColor, void *);
+ *     void (*DrawLineFcn)(b2Pos, b2Pos, b2HexColor, void *);
+ *     void (*DrawTransformFcn)(b2WorldTransform, void *);
+ *     void (*DrawPointFcn)(b2Pos, float, b2HexColor, void *);
+ *     void (*DrawStringFcn)(b2Pos, const char *, b2HexColor, void *);
+ *     void (*DrawBoundsFcn)(b2AABB, b2HexColor, void *);
  *     b2AABB drawingBounds;
- *     _Bool useDrawingBounds;
- *     _Bool drawShapes;
- *     _Bool drawJoints;
- *     _Bool drawJointExtras;
- *     _Bool drawBounds;
- *     _Bool drawMass;
- *     _Bool drawBodyNames;
- *     _Bool drawContacts;
- *     _Bool drawGraphColors;
- *     _Bool drawContactNormals;
- *     _Bool drawContactImpulses;
- *     _Bool drawContactFeatures;
- *     _Bool drawFrictionImpulses;
- *     _Bool drawIslands;
+ *     float forceScale;
+ *     float jointScale;
+ *     bool drawContacts;
+ *     bool drawAnchorA;
+ *     bool drawShapes;
+ *     bool drawChainNormals;
+ *     bool drawJoints;
+ *     bool drawJointExtras;
+ *     bool drawBounds;
+ *     bool drawMass;
+ *     bool drawBodyNames;
+ *     bool drawGraphColors;
+ *     bool drawContactFeatures;
+ *     bool drawContactNormals;
+ *     bool drawContactForces;
+ *     bool drawFrictionForces;
+ *     bool drawIslands;
  *     void *context;
  * }
  * }
@@ -55,26 +59,30 @@ public class b2DebugDraw {
         Box2D.C_POINTER.withName("DrawCircleFcn"),
         Box2D.C_POINTER.withName("DrawSolidCircleFcn"),
         Box2D.C_POINTER.withName("DrawSolidCapsuleFcn"),
-        Box2D.C_POINTER.withName("DrawSegmentFcn"),
+        Box2D.C_POINTER.withName("DrawLineFcn"),
         Box2D.C_POINTER.withName("DrawTransformFcn"),
         Box2D.C_POINTER.withName("DrawPointFcn"),
         Box2D.C_POINTER.withName("DrawStringFcn"),
+        Box2D.C_POINTER.withName("DrawBoundsFcn"),
         b2AABB.layout().withName("drawingBounds"),
-        Box2D.C_BOOL.withName("useDrawingBounds"),
+        Box2D.C_FLOAT.withName("forceScale"),
+        Box2D.C_FLOAT.withName("jointScale"),
+        Box2D.C_BOOL.withName("drawContacts"),
+        Box2D.C_BOOL.withName("drawAnchorA"),
         Box2D.C_BOOL.withName("drawShapes"),
+        Box2D.C_BOOL.withName("drawChainNormals"),
         Box2D.C_BOOL.withName("drawJoints"),
         Box2D.C_BOOL.withName("drawJointExtras"),
         Box2D.C_BOOL.withName("drawBounds"),
         Box2D.C_BOOL.withName("drawMass"),
         Box2D.C_BOOL.withName("drawBodyNames"),
-        Box2D.C_BOOL.withName("drawContacts"),
         Box2D.C_BOOL.withName("drawGraphColors"),
-        Box2D.C_BOOL.withName("drawContactNormals"),
-        Box2D.C_BOOL.withName("drawContactImpulses"),
         Box2D.C_BOOL.withName("drawContactFeatures"),
-        Box2D.C_BOOL.withName("drawFrictionImpulses"),
+        Box2D.C_BOOL.withName("drawContactNormals"),
+        Box2D.C_BOOL.withName("drawContactForces"),
+        Box2D.C_BOOL.withName("drawFrictionForces"),
         Box2D.C_BOOL.withName("drawIslands"),
-        MemoryLayout.paddingLayout(2),
+        MemoryLayout.paddingLayout(1),
         Box2D.C_POINTER.withName("context")
     ).withName("b2DebugDraw");
 
@@ -87,7 +95,7 @@ public class b2DebugDraw {
 
     /**
      * {@snippet lang=c :
-     * void (*DrawPolygonFcn)(const b2Vec2 *, int, b2HexColor, void *)
+     * void (*DrawPolygonFcn)(b2WorldTransform, const b2Vec2 *, int, b2HexColor, void *)
      * }
      */
     public final static class DrawPolygonFcn {
@@ -100,10 +108,11 @@ public class b2DebugDraw {
          * The function pointer signature, expressed as a functional interface
          */
         public interface Function {
-            void apply(MemorySegment _x0, int _x1, int _x2, MemorySegment _x3);
+            void apply(MemorySegment _x0, MemorySegment _x1, int _x2, int _x3, MemorySegment _x4);
         }
 
         private static final FunctionDescriptor $DESC = FunctionDescriptor.ofVoid(
+            b2Transform.layout(),
             Box2D.C_POINTER,
             Box2D.C_INT,
             Box2D.C_INT,
@@ -132,9 +141,9 @@ public class b2DebugDraw {
         /**
          * Invoke the upcall stub {@code funcPtr}, with given parameters
          */
-        public static void invoke(MemorySegment funcPtr, MemorySegment _x0, int _x1, int _x2, MemorySegment _x3) {
+        public static void invoke(MemorySegment funcPtr, MemorySegment _x0, MemorySegment _x1, int _x2, int _x3, MemorySegment _x4) {
             try {
-                 DOWN$MH.invokeExact(funcPtr, _x0, _x1, _x2, _x3);
+                 DOWN$MH.invokeExact(funcPtr, _x0, _x1, _x2, _x3, _x4);
             } catch (Error | RuntimeException ex) {
                 throw ex;
             } catch (Throwable ex$) {
@@ -148,7 +157,7 @@ public class b2DebugDraw {
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * void (*DrawPolygonFcn)(const b2Vec2 *, int, b2HexColor, void *)
+     * void (*DrawPolygonFcn)(b2WorldTransform, const b2Vec2 *, int, b2HexColor, void *)
      * }
      */
     public static final AddressLayout DrawPolygonFcn$layout() {
@@ -160,7 +169,7 @@ public class b2DebugDraw {
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * void (*DrawPolygonFcn)(const b2Vec2 *, int, b2HexColor, void *)
+     * void (*DrawPolygonFcn)(b2WorldTransform, const b2Vec2 *, int, b2HexColor, void *)
      * }
      */
     public static final long DrawPolygonFcn$offset() {
@@ -170,7 +179,7 @@ public class b2DebugDraw {
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * void (*DrawPolygonFcn)(const b2Vec2 *, int, b2HexColor, void *)
+     * void (*DrawPolygonFcn)(b2WorldTransform, const b2Vec2 *, int, b2HexColor, void *)
      * }
      */
     public static MemorySegment DrawPolygonFcn(MemorySegment struct) {
@@ -180,7 +189,7 @@ public class b2DebugDraw {
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * void (*DrawPolygonFcn)(const b2Vec2 *, int, b2HexColor, void *)
+     * void (*DrawPolygonFcn)(b2WorldTransform, const b2Vec2 *, int, b2HexColor, void *)
      * }
      */
     public static void DrawPolygonFcn(MemorySegment struct, MemorySegment fieldValue) {
@@ -189,7 +198,7 @@ public class b2DebugDraw {
 
     /**
      * {@snippet lang=c :
-     * void (*DrawSolidPolygonFcn)(b2Transform, const b2Vec2 *, int, float, b2HexColor, void *)
+     * void (*DrawSolidPolygonFcn)(b2WorldTransform, const b2Vec2 *, int, float, b2HexColor, void *)
      * }
      */
     public final static class DrawSolidPolygonFcn {
@@ -252,7 +261,7 @@ public class b2DebugDraw {
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * void (*DrawSolidPolygonFcn)(b2Transform, const b2Vec2 *, int, float, b2HexColor, void *)
+     * void (*DrawSolidPolygonFcn)(b2WorldTransform, const b2Vec2 *, int, float, b2HexColor, void *)
      * }
      */
     public static final AddressLayout DrawSolidPolygonFcn$layout() {
@@ -264,7 +273,7 @@ public class b2DebugDraw {
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * void (*DrawSolidPolygonFcn)(b2Transform, const b2Vec2 *, int, float, b2HexColor, void *)
+     * void (*DrawSolidPolygonFcn)(b2WorldTransform, const b2Vec2 *, int, float, b2HexColor, void *)
      * }
      */
     public static final long DrawSolidPolygonFcn$offset() {
@@ -274,7 +283,7 @@ public class b2DebugDraw {
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * void (*DrawSolidPolygonFcn)(b2Transform, const b2Vec2 *, int, float, b2HexColor, void *)
+     * void (*DrawSolidPolygonFcn)(b2WorldTransform, const b2Vec2 *, int, float, b2HexColor, void *)
      * }
      */
     public static MemorySegment DrawSolidPolygonFcn(MemorySegment struct) {
@@ -284,7 +293,7 @@ public class b2DebugDraw {
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * void (*DrawSolidPolygonFcn)(b2Transform, const b2Vec2 *, int, float, b2HexColor, void *)
+     * void (*DrawSolidPolygonFcn)(b2WorldTransform, const b2Vec2 *, int, float, b2HexColor, void *)
      * }
      */
     public static void DrawSolidPolygonFcn(MemorySegment struct, MemorySegment fieldValue) {
@@ -293,7 +302,7 @@ public class b2DebugDraw {
 
     /**
      * {@snippet lang=c :
-     * void (*DrawCircleFcn)(b2Vec2, float, b2HexColor, void *)
+     * void (*DrawCircleFcn)(b2Pos, float, b2HexColor, void *)
      * }
      */
     public final static class DrawCircleFcn {
@@ -354,7 +363,7 @@ public class b2DebugDraw {
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * void (*DrawCircleFcn)(b2Vec2, float, b2HexColor, void *)
+     * void (*DrawCircleFcn)(b2Pos, float, b2HexColor, void *)
      * }
      */
     public static final AddressLayout DrawCircleFcn$layout() {
@@ -366,7 +375,7 @@ public class b2DebugDraw {
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * void (*DrawCircleFcn)(b2Vec2, float, b2HexColor, void *)
+     * void (*DrawCircleFcn)(b2Pos, float, b2HexColor, void *)
      * }
      */
     public static final long DrawCircleFcn$offset() {
@@ -376,7 +385,7 @@ public class b2DebugDraw {
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * void (*DrawCircleFcn)(b2Vec2, float, b2HexColor, void *)
+     * void (*DrawCircleFcn)(b2Pos, float, b2HexColor, void *)
      * }
      */
     public static MemorySegment DrawCircleFcn(MemorySegment struct) {
@@ -386,7 +395,7 @@ public class b2DebugDraw {
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * void (*DrawCircleFcn)(b2Vec2, float, b2HexColor, void *)
+     * void (*DrawCircleFcn)(b2Pos, float, b2HexColor, void *)
      * }
      */
     public static void DrawCircleFcn(MemorySegment struct, MemorySegment fieldValue) {
@@ -395,7 +404,7 @@ public class b2DebugDraw {
 
     /**
      * {@snippet lang=c :
-     * void (*DrawSolidCircleFcn)(b2Transform, float, b2HexColor, void *)
+     * void (*DrawSolidCircleFcn)(b2WorldTransform, b2Vec2, float, b2HexColor, void *)
      * }
      */
     public final static class DrawSolidCircleFcn {
@@ -408,11 +417,12 @@ public class b2DebugDraw {
          * The function pointer signature, expressed as a functional interface
          */
         public interface Function {
-            void apply(MemorySegment _x0, float _x1, int _x2, MemorySegment _x3);
+            void apply(MemorySegment _x0, MemorySegment _x1, float _x2, int _x3, MemorySegment _x4);
         }
 
         private static final FunctionDescriptor $DESC = FunctionDescriptor.ofVoid(
             b2Transform.layout(),
+            b2Vec2.layout(),
             Box2D.C_FLOAT,
             Box2D.C_INT,
             Box2D.C_POINTER
@@ -440,9 +450,9 @@ public class b2DebugDraw {
         /**
          * Invoke the upcall stub {@code funcPtr}, with given parameters
          */
-        public static void invoke(MemorySegment funcPtr, MemorySegment _x0, float _x1, int _x2, MemorySegment _x3) {
+        public static void invoke(MemorySegment funcPtr, MemorySegment _x0, MemorySegment _x1, float _x2, int _x3, MemorySegment _x4) {
             try {
-                 DOWN$MH.invokeExact(funcPtr, _x0, _x1, _x2, _x3);
+                 DOWN$MH.invokeExact(funcPtr, _x0, _x1, _x2, _x3, _x4);
             } catch (Error | RuntimeException ex) {
                 throw ex;
             } catch (Throwable ex$) {
@@ -456,7 +466,7 @@ public class b2DebugDraw {
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * void (*DrawSolidCircleFcn)(b2Transform, float, b2HexColor, void *)
+     * void (*DrawSolidCircleFcn)(b2WorldTransform, b2Vec2, float, b2HexColor, void *)
      * }
      */
     public static final AddressLayout DrawSolidCircleFcn$layout() {
@@ -468,7 +478,7 @@ public class b2DebugDraw {
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * void (*DrawSolidCircleFcn)(b2Transform, float, b2HexColor, void *)
+     * void (*DrawSolidCircleFcn)(b2WorldTransform, b2Vec2, float, b2HexColor, void *)
      * }
      */
     public static final long DrawSolidCircleFcn$offset() {
@@ -478,7 +488,7 @@ public class b2DebugDraw {
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * void (*DrawSolidCircleFcn)(b2Transform, float, b2HexColor, void *)
+     * void (*DrawSolidCircleFcn)(b2WorldTransform, b2Vec2, float, b2HexColor, void *)
      * }
      */
     public static MemorySegment DrawSolidCircleFcn(MemorySegment struct) {
@@ -488,7 +498,7 @@ public class b2DebugDraw {
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * void (*DrawSolidCircleFcn)(b2Transform, float, b2HexColor, void *)
+     * void (*DrawSolidCircleFcn)(b2WorldTransform, b2Vec2, float, b2HexColor, void *)
      * }
      */
     public static void DrawSolidCircleFcn(MemorySegment struct, MemorySegment fieldValue) {
@@ -497,7 +507,7 @@ public class b2DebugDraw {
 
     /**
      * {@snippet lang=c :
-     * void (*DrawSolidCapsuleFcn)(b2Vec2, b2Vec2, float, b2HexColor, void *)
+     * void (*DrawSolidCapsuleFcn)(b2Pos, b2Pos, float, b2HexColor, void *)
      * }
      */
     public final static class DrawSolidCapsuleFcn {
@@ -559,7 +569,7 @@ public class b2DebugDraw {
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * void (*DrawSolidCapsuleFcn)(b2Vec2, b2Vec2, float, b2HexColor, void *)
+     * void (*DrawSolidCapsuleFcn)(b2Pos, b2Pos, float, b2HexColor, void *)
      * }
      */
     public static final AddressLayout DrawSolidCapsuleFcn$layout() {
@@ -571,7 +581,7 @@ public class b2DebugDraw {
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * void (*DrawSolidCapsuleFcn)(b2Vec2, b2Vec2, float, b2HexColor, void *)
+     * void (*DrawSolidCapsuleFcn)(b2Pos, b2Pos, float, b2HexColor, void *)
      * }
      */
     public static final long DrawSolidCapsuleFcn$offset() {
@@ -581,7 +591,7 @@ public class b2DebugDraw {
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * void (*DrawSolidCapsuleFcn)(b2Vec2, b2Vec2, float, b2HexColor, void *)
+     * void (*DrawSolidCapsuleFcn)(b2Pos, b2Pos, float, b2HexColor, void *)
      * }
      */
     public static MemorySegment DrawSolidCapsuleFcn(MemorySegment struct) {
@@ -591,7 +601,7 @@ public class b2DebugDraw {
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * void (*DrawSolidCapsuleFcn)(b2Vec2, b2Vec2, float, b2HexColor, void *)
+     * void (*DrawSolidCapsuleFcn)(b2Pos, b2Pos, float, b2HexColor, void *)
      * }
      */
     public static void DrawSolidCapsuleFcn(MemorySegment struct, MemorySegment fieldValue) {
@@ -600,12 +610,12 @@ public class b2DebugDraw {
 
     /**
      * {@snippet lang=c :
-     * void (*DrawSegmentFcn)(b2Vec2, b2Vec2, b2HexColor, void *)
+     * void (*DrawLineFcn)(b2Pos, b2Pos, b2HexColor, void *)
      * }
      */
-    public final static class DrawSegmentFcn {
+    public final static class DrawLineFcn {
 
-        private DrawSegmentFcn() {
+        private DrawLineFcn() {
             // Should not be called directly
         }
 
@@ -630,13 +640,13 @@ public class b2DebugDraw {
             return $DESC;
         }
 
-        private static final MethodHandle UP$MH = Box2D.upcallHandle(DrawSegmentFcn.Function.class, "apply", $DESC);
+        private static final MethodHandle UP$MH = Box2D.upcallHandle(DrawLineFcn.Function.class, "apply", $DESC);
 
         /**
          * Allocates a new upcall stub, whose implementation is defined by {@code fi}.
          * The lifetime of the returned segment is managed by {@code arena}
          */
-        public static MemorySegment allocate(DrawSegmentFcn.Function fi, Arena arena) {
+        public static MemorySegment allocate(DrawLineFcn.Function fi, Arena arena) {
             return Linker.nativeLinker().upcallStub(UP$MH.bindTo(fi), $DESC, arena);
         }
 
@@ -656,53 +666,53 @@ public class b2DebugDraw {
         }
     }
 
-    private static final AddressLayout DrawSegmentFcn$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("DrawSegmentFcn"));
+    private static final AddressLayout DrawLineFcn$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("DrawLineFcn"));
 
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * void (*DrawSegmentFcn)(b2Vec2, b2Vec2, b2HexColor, void *)
+     * void (*DrawLineFcn)(b2Pos, b2Pos, b2HexColor, void *)
      * }
      */
-    public static final AddressLayout DrawSegmentFcn$layout() {
-        return DrawSegmentFcn$LAYOUT;
+    public static final AddressLayout DrawLineFcn$layout() {
+        return DrawLineFcn$LAYOUT;
     }
 
-    private static final long DrawSegmentFcn$OFFSET = $LAYOUT.byteOffset(groupElement("DrawSegmentFcn"));
+    private static final long DrawLineFcn$OFFSET = $LAYOUT.byteOffset(groupElement("DrawLineFcn"));
 
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * void (*DrawSegmentFcn)(b2Vec2, b2Vec2, b2HexColor, void *)
+     * void (*DrawLineFcn)(b2Pos, b2Pos, b2HexColor, void *)
      * }
      */
-    public static final long DrawSegmentFcn$offset() {
-        return DrawSegmentFcn$OFFSET;
+    public static final long DrawLineFcn$offset() {
+        return DrawLineFcn$OFFSET;
     }
 
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * void (*DrawSegmentFcn)(b2Vec2, b2Vec2, b2HexColor, void *)
+     * void (*DrawLineFcn)(b2Pos, b2Pos, b2HexColor, void *)
      * }
      */
-    public static MemorySegment DrawSegmentFcn(MemorySegment struct) {
-        return struct.get(DrawSegmentFcn$LAYOUT, DrawSegmentFcn$OFFSET);
+    public static MemorySegment DrawLineFcn(MemorySegment struct) {
+        return struct.get(DrawLineFcn$LAYOUT, DrawLineFcn$OFFSET);
     }
 
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * void (*DrawSegmentFcn)(b2Vec2, b2Vec2, b2HexColor, void *)
+     * void (*DrawLineFcn)(b2Pos, b2Pos, b2HexColor, void *)
      * }
      */
-    public static void DrawSegmentFcn(MemorySegment struct, MemorySegment fieldValue) {
-        struct.set(DrawSegmentFcn$LAYOUT, DrawSegmentFcn$OFFSET, fieldValue);
+    public static void DrawLineFcn(MemorySegment struct, MemorySegment fieldValue) {
+        struct.set(DrawLineFcn$LAYOUT, DrawLineFcn$OFFSET, fieldValue);
     }
 
     /**
      * {@snippet lang=c :
-     * void (*DrawTransformFcn)(b2Transform, void *)
+     * void (*DrawTransformFcn)(b2WorldTransform, void *)
      * }
      */
     public final static class DrawTransformFcn {
@@ -761,7 +771,7 @@ public class b2DebugDraw {
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * void (*DrawTransformFcn)(b2Transform, void *)
+     * void (*DrawTransformFcn)(b2WorldTransform, void *)
      * }
      */
     public static final AddressLayout DrawTransformFcn$layout() {
@@ -773,7 +783,7 @@ public class b2DebugDraw {
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * void (*DrawTransformFcn)(b2Transform, void *)
+     * void (*DrawTransformFcn)(b2WorldTransform, void *)
      * }
      */
     public static final long DrawTransformFcn$offset() {
@@ -783,7 +793,7 @@ public class b2DebugDraw {
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * void (*DrawTransformFcn)(b2Transform, void *)
+     * void (*DrawTransformFcn)(b2WorldTransform, void *)
      * }
      */
     public static MemorySegment DrawTransformFcn(MemorySegment struct) {
@@ -793,7 +803,7 @@ public class b2DebugDraw {
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * void (*DrawTransformFcn)(b2Transform, void *)
+     * void (*DrawTransformFcn)(b2WorldTransform, void *)
      * }
      */
     public static void DrawTransformFcn(MemorySegment struct, MemorySegment fieldValue) {
@@ -802,7 +812,7 @@ public class b2DebugDraw {
 
     /**
      * {@snippet lang=c :
-     * void (*DrawPointFcn)(b2Vec2, float, b2HexColor, void *)
+     * void (*DrawPointFcn)(b2Pos, float, b2HexColor, void *)
      * }
      */
     public final static class DrawPointFcn {
@@ -863,7 +873,7 @@ public class b2DebugDraw {
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * void (*DrawPointFcn)(b2Vec2, float, b2HexColor, void *)
+     * void (*DrawPointFcn)(b2Pos, float, b2HexColor, void *)
      * }
      */
     public static final AddressLayout DrawPointFcn$layout() {
@@ -875,7 +885,7 @@ public class b2DebugDraw {
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * void (*DrawPointFcn)(b2Vec2, float, b2HexColor, void *)
+     * void (*DrawPointFcn)(b2Pos, float, b2HexColor, void *)
      * }
      */
     public static final long DrawPointFcn$offset() {
@@ -885,7 +895,7 @@ public class b2DebugDraw {
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * void (*DrawPointFcn)(b2Vec2, float, b2HexColor, void *)
+     * void (*DrawPointFcn)(b2Pos, float, b2HexColor, void *)
      * }
      */
     public static MemorySegment DrawPointFcn(MemorySegment struct) {
@@ -895,7 +905,7 @@ public class b2DebugDraw {
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * void (*DrawPointFcn)(b2Vec2, float, b2HexColor, void *)
+     * void (*DrawPointFcn)(b2Pos, float, b2HexColor, void *)
      * }
      */
     public static void DrawPointFcn(MemorySegment struct, MemorySegment fieldValue) {
@@ -904,7 +914,7 @@ public class b2DebugDraw {
 
     /**
      * {@snippet lang=c :
-     * void (*DrawStringFcn)(b2Vec2, const char *, b2HexColor, void *)
+     * void (*DrawStringFcn)(b2Pos, const char *, b2HexColor, void *)
      * }
      */
     public final static class DrawStringFcn {
@@ -965,7 +975,7 @@ public class b2DebugDraw {
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * void (*DrawStringFcn)(b2Vec2, const char *, b2HexColor, void *)
+     * void (*DrawStringFcn)(b2Pos, const char *, b2HexColor, void *)
      * }
      */
     public static final AddressLayout DrawStringFcn$layout() {
@@ -977,7 +987,7 @@ public class b2DebugDraw {
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * void (*DrawStringFcn)(b2Vec2, const char *, b2HexColor, void *)
+     * void (*DrawStringFcn)(b2Pos, const char *, b2HexColor, void *)
      * }
      */
     public static final long DrawStringFcn$offset() {
@@ -987,7 +997,7 @@ public class b2DebugDraw {
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * void (*DrawStringFcn)(b2Vec2, const char *, b2HexColor, void *)
+     * void (*DrawStringFcn)(b2Pos, const char *, b2HexColor, void *)
      * }
      */
     public static MemorySegment DrawStringFcn(MemorySegment struct) {
@@ -997,11 +1007,112 @@ public class b2DebugDraw {
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * void (*DrawStringFcn)(b2Vec2, const char *, b2HexColor, void *)
+     * void (*DrawStringFcn)(b2Pos, const char *, b2HexColor, void *)
      * }
      */
     public static void DrawStringFcn(MemorySegment struct, MemorySegment fieldValue) {
         struct.set(DrawStringFcn$LAYOUT, DrawStringFcn$OFFSET, fieldValue);
+    }
+
+    /**
+     * {@snippet lang=c :
+     * void (*DrawBoundsFcn)(b2AABB, b2HexColor, void *)
+     * }
+     */
+    public final static class DrawBoundsFcn {
+
+        private DrawBoundsFcn() {
+            // Should not be called directly
+        }
+
+        /**
+         * The function pointer signature, expressed as a functional interface
+         */
+        public interface Function {
+            void apply(MemorySegment _x0, int _x1, MemorySegment _x2);
+        }
+
+        private static final FunctionDescriptor $DESC = FunctionDescriptor.ofVoid(
+            b2AABB.layout(),
+            Box2D.C_INT,
+            Box2D.C_POINTER
+        );
+
+        /**
+         * The descriptor of this function pointer
+         */
+        public static FunctionDescriptor descriptor() {
+            return $DESC;
+        }
+
+        private static final MethodHandle UP$MH = Box2D.upcallHandle(DrawBoundsFcn.Function.class, "apply", $DESC);
+
+        /**
+         * Allocates a new upcall stub, whose implementation is defined by {@code fi}.
+         * The lifetime of the returned segment is managed by {@code arena}
+         */
+        public static MemorySegment allocate(DrawBoundsFcn.Function fi, Arena arena) {
+            return Linker.nativeLinker().upcallStub(UP$MH.bindTo(fi), $DESC, arena);
+        }
+
+        private static final MethodHandle DOWN$MH = Linker.nativeLinker().downcallHandle($DESC);
+
+        /**
+         * Invoke the upcall stub {@code funcPtr}, with given parameters
+         */
+        public static void invoke(MemorySegment funcPtr, MemorySegment _x0, int _x1, MemorySegment _x2) {
+            try {
+                 DOWN$MH.invokeExact(funcPtr, _x0, _x1, _x2);
+            } catch (Error | RuntimeException ex) {
+                throw ex;
+            } catch (Throwable ex$) {
+                throw new AssertionError("should not reach here", ex$);
+            }
+        }
+    }
+
+    private static final AddressLayout DrawBoundsFcn$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("DrawBoundsFcn"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * void (*DrawBoundsFcn)(b2AABB, b2HexColor, void *)
+     * }
+     */
+    public static final AddressLayout DrawBoundsFcn$layout() {
+        return DrawBoundsFcn$LAYOUT;
+    }
+
+    private static final long DrawBoundsFcn$OFFSET = $LAYOUT.byteOffset(groupElement("DrawBoundsFcn"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * void (*DrawBoundsFcn)(b2AABB, b2HexColor, void *)
+     * }
+     */
+    public static final long DrawBoundsFcn$offset() {
+        return DrawBoundsFcn$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * void (*DrawBoundsFcn)(b2AABB, b2HexColor, void *)
+     * }
+     */
+    public static MemorySegment DrawBoundsFcn(MemorySegment struct) {
+        return struct.get(DrawBoundsFcn$LAYOUT, DrawBoundsFcn$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * void (*DrawBoundsFcn)(b2AABB, b2HexColor, void *)
+     * }
+     */
+    public static void DrawBoundsFcn(MemorySegment struct, MemorySegment fieldValue) {
+        struct.set(DrawBoundsFcn$LAYOUT, DrawBoundsFcn$OFFSET, fieldValue);
     }
 
     private static final GroupLayout drawingBounds$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("drawingBounds"));
@@ -1048,312 +1159,92 @@ public class b2DebugDraw {
         MemorySegment.copy(fieldValue, 0L, struct, drawingBounds$OFFSET, drawingBounds$LAYOUT.byteSize());
     }
 
-    private static final OfBoolean useDrawingBounds$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("useDrawingBounds"));
+    private static final OfFloat forceScale$LAYOUT = (OfFloat)$LAYOUT.select(groupElement("forceScale"));
 
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * _Bool useDrawingBounds
+     * float forceScale
      * }
      */
-    public static final OfBoolean useDrawingBounds$layout() {
-        return useDrawingBounds$LAYOUT;
+    public static final OfFloat forceScale$layout() {
+        return forceScale$LAYOUT;
     }
 
-    private static final long useDrawingBounds$OFFSET = $LAYOUT.byteOffset(groupElement("useDrawingBounds"));
+    private static final long forceScale$OFFSET = $LAYOUT.byteOffset(groupElement("forceScale"));
 
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * _Bool useDrawingBounds
+     * float forceScale
      * }
      */
-    public static final long useDrawingBounds$offset() {
-        return useDrawingBounds$OFFSET;
+    public static final long forceScale$offset() {
+        return forceScale$OFFSET;
     }
 
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * _Bool useDrawingBounds
+     * float forceScale
      * }
      */
-    public static boolean useDrawingBounds(MemorySegment struct) {
-        return struct.get(useDrawingBounds$LAYOUT, useDrawingBounds$OFFSET);
+    public static float forceScale(MemorySegment struct) {
+        return struct.get(forceScale$LAYOUT, forceScale$OFFSET);
     }
 
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * _Bool useDrawingBounds
+     * float forceScale
      * }
      */
-    public static void useDrawingBounds(MemorySegment struct, boolean fieldValue) {
-        struct.set(useDrawingBounds$LAYOUT, useDrawingBounds$OFFSET, fieldValue);
+    public static void forceScale(MemorySegment struct, float fieldValue) {
+        struct.set(forceScale$LAYOUT, forceScale$OFFSET, fieldValue);
     }
 
-    private static final OfBoolean drawShapes$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("drawShapes"));
+    private static final OfFloat jointScale$LAYOUT = (OfFloat)$LAYOUT.select(groupElement("jointScale"));
 
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * _Bool drawShapes
+     * float jointScale
      * }
      */
-    public static final OfBoolean drawShapes$layout() {
-        return drawShapes$LAYOUT;
+    public static final OfFloat jointScale$layout() {
+        return jointScale$LAYOUT;
     }
 
-    private static final long drawShapes$OFFSET = $LAYOUT.byteOffset(groupElement("drawShapes"));
+    private static final long jointScale$OFFSET = $LAYOUT.byteOffset(groupElement("jointScale"));
 
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * _Bool drawShapes
+     * float jointScale
      * }
      */
-    public static final long drawShapes$offset() {
-        return drawShapes$OFFSET;
+    public static final long jointScale$offset() {
+        return jointScale$OFFSET;
     }
 
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * _Bool drawShapes
+     * float jointScale
      * }
      */
-    public static boolean drawShapes(MemorySegment struct) {
-        return struct.get(drawShapes$LAYOUT, drawShapes$OFFSET);
+    public static float jointScale(MemorySegment struct) {
+        return struct.get(jointScale$LAYOUT, jointScale$OFFSET);
     }
 
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * _Bool drawShapes
+     * float jointScale
      * }
      */
-    public static void drawShapes(MemorySegment struct, boolean fieldValue) {
-        struct.set(drawShapes$LAYOUT, drawShapes$OFFSET, fieldValue);
-    }
-
-    private static final OfBoolean drawJoints$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("drawJoints"));
-
-    /**
-     * Layout for field:
-     * {@snippet lang=c :
-     * _Bool drawJoints
-     * }
-     */
-    public static final OfBoolean drawJoints$layout() {
-        return drawJoints$LAYOUT;
-    }
-
-    private static final long drawJoints$OFFSET = $LAYOUT.byteOffset(groupElement("drawJoints"));
-
-    /**
-     * Offset for field:
-     * {@snippet lang=c :
-     * _Bool drawJoints
-     * }
-     */
-    public static final long drawJoints$offset() {
-        return drawJoints$OFFSET;
-    }
-
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * _Bool drawJoints
-     * }
-     */
-    public static boolean drawJoints(MemorySegment struct) {
-        return struct.get(drawJoints$LAYOUT, drawJoints$OFFSET);
-    }
-
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * _Bool drawJoints
-     * }
-     */
-    public static void drawJoints(MemorySegment struct, boolean fieldValue) {
-        struct.set(drawJoints$LAYOUT, drawJoints$OFFSET, fieldValue);
-    }
-
-    private static final OfBoolean drawJointExtras$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("drawJointExtras"));
-
-    /**
-     * Layout for field:
-     * {@snippet lang=c :
-     * _Bool drawJointExtras
-     * }
-     */
-    public static final OfBoolean drawJointExtras$layout() {
-        return drawJointExtras$LAYOUT;
-    }
-
-    private static final long drawJointExtras$OFFSET = $LAYOUT.byteOffset(groupElement("drawJointExtras"));
-
-    /**
-     * Offset for field:
-     * {@snippet lang=c :
-     * _Bool drawJointExtras
-     * }
-     */
-    public static final long drawJointExtras$offset() {
-        return drawJointExtras$OFFSET;
-    }
-
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * _Bool drawJointExtras
-     * }
-     */
-    public static boolean drawJointExtras(MemorySegment struct) {
-        return struct.get(drawJointExtras$LAYOUT, drawJointExtras$OFFSET);
-    }
-
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * _Bool drawJointExtras
-     * }
-     */
-    public static void drawJointExtras(MemorySegment struct, boolean fieldValue) {
-        struct.set(drawJointExtras$LAYOUT, drawJointExtras$OFFSET, fieldValue);
-    }
-
-    private static final OfBoolean drawBounds$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("drawBounds"));
-
-    /**
-     * Layout for field:
-     * {@snippet lang=c :
-     * _Bool drawBounds
-     * }
-     */
-    public static final OfBoolean drawBounds$layout() {
-        return drawBounds$LAYOUT;
-    }
-
-    private static final long drawBounds$OFFSET = $LAYOUT.byteOffset(groupElement("drawBounds"));
-
-    /**
-     * Offset for field:
-     * {@snippet lang=c :
-     * _Bool drawBounds
-     * }
-     */
-    public static final long drawBounds$offset() {
-        return drawBounds$OFFSET;
-    }
-
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * _Bool drawBounds
-     * }
-     */
-    public static boolean drawBounds(MemorySegment struct) {
-        return struct.get(drawBounds$LAYOUT, drawBounds$OFFSET);
-    }
-
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * _Bool drawBounds
-     * }
-     */
-    public static void drawBounds(MemorySegment struct, boolean fieldValue) {
-        struct.set(drawBounds$LAYOUT, drawBounds$OFFSET, fieldValue);
-    }
-
-    private static final OfBoolean drawMass$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("drawMass"));
-
-    /**
-     * Layout for field:
-     * {@snippet lang=c :
-     * _Bool drawMass
-     * }
-     */
-    public static final OfBoolean drawMass$layout() {
-        return drawMass$LAYOUT;
-    }
-
-    private static final long drawMass$OFFSET = $LAYOUT.byteOffset(groupElement("drawMass"));
-
-    /**
-     * Offset for field:
-     * {@snippet lang=c :
-     * _Bool drawMass
-     * }
-     */
-    public static final long drawMass$offset() {
-        return drawMass$OFFSET;
-    }
-
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * _Bool drawMass
-     * }
-     */
-    public static boolean drawMass(MemorySegment struct) {
-        return struct.get(drawMass$LAYOUT, drawMass$OFFSET);
-    }
-
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * _Bool drawMass
-     * }
-     */
-    public static void drawMass(MemorySegment struct, boolean fieldValue) {
-        struct.set(drawMass$LAYOUT, drawMass$OFFSET, fieldValue);
-    }
-
-    private static final OfBoolean drawBodyNames$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("drawBodyNames"));
-
-    /**
-     * Layout for field:
-     * {@snippet lang=c :
-     * _Bool drawBodyNames
-     * }
-     */
-    public static final OfBoolean drawBodyNames$layout() {
-        return drawBodyNames$LAYOUT;
-    }
-
-    private static final long drawBodyNames$OFFSET = $LAYOUT.byteOffset(groupElement("drawBodyNames"));
-
-    /**
-     * Offset for field:
-     * {@snippet lang=c :
-     * _Bool drawBodyNames
-     * }
-     */
-    public static final long drawBodyNames$offset() {
-        return drawBodyNames$OFFSET;
-    }
-
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * _Bool drawBodyNames
-     * }
-     */
-    public static boolean drawBodyNames(MemorySegment struct) {
-        return struct.get(drawBodyNames$LAYOUT, drawBodyNames$OFFSET);
-    }
-
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * _Bool drawBodyNames
-     * }
-     */
-    public static void drawBodyNames(MemorySegment struct, boolean fieldValue) {
-        struct.set(drawBodyNames$LAYOUT, drawBodyNames$OFFSET, fieldValue);
+    public static void jointScale(MemorySegment struct, float fieldValue) {
+        struct.set(jointScale$LAYOUT, jointScale$OFFSET, fieldValue);
     }
 
     private static final OfBoolean drawContacts$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("drawContacts"));
@@ -1361,7 +1252,7 @@ public class b2DebugDraw {
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * _Bool drawContacts
+     * bool drawContacts
      * }
      */
     public static final OfBoolean drawContacts$layout() {
@@ -1373,7 +1264,7 @@ public class b2DebugDraw {
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * _Bool drawContacts
+     * bool drawContacts
      * }
      */
     public static final long drawContacts$offset() {
@@ -1383,7 +1274,7 @@ public class b2DebugDraw {
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * _Bool drawContacts
+     * bool drawContacts
      * }
      */
     public static boolean drawContacts(MemorySegment struct) {
@@ -1393,11 +1284,363 @@ public class b2DebugDraw {
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * _Bool drawContacts
+     * bool drawContacts
      * }
      */
     public static void drawContacts(MemorySegment struct, boolean fieldValue) {
         struct.set(drawContacts$LAYOUT, drawContacts$OFFSET, fieldValue);
+    }
+
+    private static final OfBoolean drawAnchorA$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("drawAnchorA"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * bool drawAnchorA
+     * }
+     */
+    public static final OfBoolean drawAnchorA$layout() {
+        return drawAnchorA$LAYOUT;
+    }
+
+    private static final long drawAnchorA$OFFSET = $LAYOUT.byteOffset(groupElement("drawAnchorA"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * bool drawAnchorA
+     * }
+     */
+    public static final long drawAnchorA$offset() {
+        return drawAnchorA$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * bool drawAnchorA
+     * }
+     */
+    public static boolean drawAnchorA(MemorySegment struct) {
+        return struct.get(drawAnchorA$LAYOUT, drawAnchorA$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * bool drawAnchorA
+     * }
+     */
+    public static void drawAnchorA(MemorySegment struct, boolean fieldValue) {
+        struct.set(drawAnchorA$LAYOUT, drawAnchorA$OFFSET, fieldValue);
+    }
+
+    private static final OfBoolean drawShapes$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("drawShapes"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * bool drawShapes
+     * }
+     */
+    public static final OfBoolean drawShapes$layout() {
+        return drawShapes$LAYOUT;
+    }
+
+    private static final long drawShapes$OFFSET = $LAYOUT.byteOffset(groupElement("drawShapes"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * bool drawShapes
+     * }
+     */
+    public static final long drawShapes$offset() {
+        return drawShapes$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * bool drawShapes
+     * }
+     */
+    public static boolean drawShapes(MemorySegment struct) {
+        return struct.get(drawShapes$LAYOUT, drawShapes$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * bool drawShapes
+     * }
+     */
+    public static void drawShapes(MemorySegment struct, boolean fieldValue) {
+        struct.set(drawShapes$LAYOUT, drawShapes$OFFSET, fieldValue);
+    }
+
+    private static final OfBoolean drawChainNormals$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("drawChainNormals"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * bool drawChainNormals
+     * }
+     */
+    public static final OfBoolean drawChainNormals$layout() {
+        return drawChainNormals$LAYOUT;
+    }
+
+    private static final long drawChainNormals$OFFSET = $LAYOUT.byteOffset(groupElement("drawChainNormals"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * bool drawChainNormals
+     * }
+     */
+    public static final long drawChainNormals$offset() {
+        return drawChainNormals$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * bool drawChainNormals
+     * }
+     */
+    public static boolean drawChainNormals(MemorySegment struct) {
+        return struct.get(drawChainNormals$LAYOUT, drawChainNormals$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * bool drawChainNormals
+     * }
+     */
+    public static void drawChainNormals(MemorySegment struct, boolean fieldValue) {
+        struct.set(drawChainNormals$LAYOUT, drawChainNormals$OFFSET, fieldValue);
+    }
+
+    private static final OfBoolean drawJoints$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("drawJoints"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * bool drawJoints
+     * }
+     */
+    public static final OfBoolean drawJoints$layout() {
+        return drawJoints$LAYOUT;
+    }
+
+    private static final long drawJoints$OFFSET = $LAYOUT.byteOffset(groupElement("drawJoints"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * bool drawJoints
+     * }
+     */
+    public static final long drawJoints$offset() {
+        return drawJoints$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * bool drawJoints
+     * }
+     */
+    public static boolean drawJoints(MemorySegment struct) {
+        return struct.get(drawJoints$LAYOUT, drawJoints$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * bool drawJoints
+     * }
+     */
+    public static void drawJoints(MemorySegment struct, boolean fieldValue) {
+        struct.set(drawJoints$LAYOUT, drawJoints$OFFSET, fieldValue);
+    }
+
+    private static final OfBoolean drawJointExtras$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("drawJointExtras"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * bool drawJointExtras
+     * }
+     */
+    public static final OfBoolean drawJointExtras$layout() {
+        return drawJointExtras$LAYOUT;
+    }
+
+    private static final long drawJointExtras$OFFSET = $LAYOUT.byteOffset(groupElement("drawJointExtras"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * bool drawJointExtras
+     * }
+     */
+    public static final long drawJointExtras$offset() {
+        return drawJointExtras$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * bool drawJointExtras
+     * }
+     */
+    public static boolean drawJointExtras(MemorySegment struct) {
+        return struct.get(drawJointExtras$LAYOUT, drawJointExtras$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * bool drawJointExtras
+     * }
+     */
+    public static void drawJointExtras(MemorySegment struct, boolean fieldValue) {
+        struct.set(drawJointExtras$LAYOUT, drawJointExtras$OFFSET, fieldValue);
+    }
+
+    private static final OfBoolean drawBounds$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("drawBounds"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * bool drawBounds
+     * }
+     */
+    public static final OfBoolean drawBounds$layout() {
+        return drawBounds$LAYOUT;
+    }
+
+    private static final long drawBounds$OFFSET = $LAYOUT.byteOffset(groupElement("drawBounds"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * bool drawBounds
+     * }
+     */
+    public static final long drawBounds$offset() {
+        return drawBounds$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * bool drawBounds
+     * }
+     */
+    public static boolean drawBounds(MemorySegment struct) {
+        return struct.get(drawBounds$LAYOUT, drawBounds$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * bool drawBounds
+     * }
+     */
+    public static void drawBounds(MemorySegment struct, boolean fieldValue) {
+        struct.set(drawBounds$LAYOUT, drawBounds$OFFSET, fieldValue);
+    }
+
+    private static final OfBoolean drawMass$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("drawMass"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * bool drawMass
+     * }
+     */
+    public static final OfBoolean drawMass$layout() {
+        return drawMass$LAYOUT;
+    }
+
+    private static final long drawMass$OFFSET = $LAYOUT.byteOffset(groupElement("drawMass"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * bool drawMass
+     * }
+     */
+    public static final long drawMass$offset() {
+        return drawMass$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * bool drawMass
+     * }
+     */
+    public static boolean drawMass(MemorySegment struct) {
+        return struct.get(drawMass$LAYOUT, drawMass$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * bool drawMass
+     * }
+     */
+    public static void drawMass(MemorySegment struct, boolean fieldValue) {
+        struct.set(drawMass$LAYOUT, drawMass$OFFSET, fieldValue);
+    }
+
+    private static final OfBoolean drawBodyNames$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("drawBodyNames"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * bool drawBodyNames
+     * }
+     */
+    public static final OfBoolean drawBodyNames$layout() {
+        return drawBodyNames$LAYOUT;
+    }
+
+    private static final long drawBodyNames$OFFSET = $LAYOUT.byteOffset(groupElement("drawBodyNames"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * bool drawBodyNames
+     * }
+     */
+    public static final long drawBodyNames$offset() {
+        return drawBodyNames$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * bool drawBodyNames
+     * }
+     */
+    public static boolean drawBodyNames(MemorySegment struct) {
+        return struct.get(drawBodyNames$LAYOUT, drawBodyNames$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * bool drawBodyNames
+     * }
+     */
+    public static void drawBodyNames(MemorySegment struct, boolean fieldValue) {
+        struct.set(drawBodyNames$LAYOUT, drawBodyNames$OFFSET, fieldValue);
     }
 
     private static final OfBoolean drawGraphColors$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("drawGraphColors"));
@@ -1405,7 +1648,7 @@ public class b2DebugDraw {
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * _Bool drawGraphColors
+     * bool drawGraphColors
      * }
      */
     public static final OfBoolean drawGraphColors$layout() {
@@ -1417,7 +1660,7 @@ public class b2DebugDraw {
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * _Bool drawGraphColors
+     * bool drawGraphColors
      * }
      */
     public static final long drawGraphColors$offset() {
@@ -1427,7 +1670,7 @@ public class b2DebugDraw {
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * _Bool drawGraphColors
+     * bool drawGraphColors
      * }
      */
     public static boolean drawGraphColors(MemorySegment struct) {
@@ -1437,99 +1680,11 @@ public class b2DebugDraw {
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * _Bool drawGraphColors
+     * bool drawGraphColors
      * }
      */
     public static void drawGraphColors(MemorySegment struct, boolean fieldValue) {
         struct.set(drawGraphColors$LAYOUT, drawGraphColors$OFFSET, fieldValue);
-    }
-
-    private static final OfBoolean drawContactNormals$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("drawContactNormals"));
-
-    /**
-     * Layout for field:
-     * {@snippet lang=c :
-     * _Bool drawContactNormals
-     * }
-     */
-    public static final OfBoolean drawContactNormals$layout() {
-        return drawContactNormals$LAYOUT;
-    }
-
-    private static final long drawContactNormals$OFFSET = $LAYOUT.byteOffset(groupElement("drawContactNormals"));
-
-    /**
-     * Offset for field:
-     * {@snippet lang=c :
-     * _Bool drawContactNormals
-     * }
-     */
-    public static final long drawContactNormals$offset() {
-        return drawContactNormals$OFFSET;
-    }
-
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * _Bool drawContactNormals
-     * }
-     */
-    public static boolean drawContactNormals(MemorySegment struct) {
-        return struct.get(drawContactNormals$LAYOUT, drawContactNormals$OFFSET);
-    }
-
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * _Bool drawContactNormals
-     * }
-     */
-    public static void drawContactNormals(MemorySegment struct, boolean fieldValue) {
-        struct.set(drawContactNormals$LAYOUT, drawContactNormals$OFFSET, fieldValue);
-    }
-
-    private static final OfBoolean drawContactImpulses$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("drawContactImpulses"));
-
-    /**
-     * Layout for field:
-     * {@snippet lang=c :
-     * _Bool drawContactImpulses
-     * }
-     */
-    public static final OfBoolean drawContactImpulses$layout() {
-        return drawContactImpulses$LAYOUT;
-    }
-
-    private static final long drawContactImpulses$OFFSET = $LAYOUT.byteOffset(groupElement("drawContactImpulses"));
-
-    /**
-     * Offset for field:
-     * {@snippet lang=c :
-     * _Bool drawContactImpulses
-     * }
-     */
-    public static final long drawContactImpulses$offset() {
-        return drawContactImpulses$OFFSET;
-    }
-
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * _Bool drawContactImpulses
-     * }
-     */
-    public static boolean drawContactImpulses(MemorySegment struct) {
-        return struct.get(drawContactImpulses$LAYOUT, drawContactImpulses$OFFSET);
-    }
-
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * _Bool drawContactImpulses
-     * }
-     */
-    public static void drawContactImpulses(MemorySegment struct, boolean fieldValue) {
-        struct.set(drawContactImpulses$LAYOUT, drawContactImpulses$OFFSET, fieldValue);
     }
 
     private static final OfBoolean drawContactFeatures$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("drawContactFeatures"));
@@ -1537,7 +1692,7 @@ public class b2DebugDraw {
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * _Bool drawContactFeatures
+     * bool drawContactFeatures
      * }
      */
     public static final OfBoolean drawContactFeatures$layout() {
@@ -1549,7 +1704,7 @@ public class b2DebugDraw {
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * _Bool drawContactFeatures
+     * bool drawContactFeatures
      * }
      */
     public static final long drawContactFeatures$offset() {
@@ -1559,7 +1714,7 @@ public class b2DebugDraw {
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * _Bool drawContactFeatures
+     * bool drawContactFeatures
      * }
      */
     public static boolean drawContactFeatures(MemorySegment struct) {
@@ -1569,55 +1724,143 @@ public class b2DebugDraw {
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * _Bool drawContactFeatures
+     * bool drawContactFeatures
      * }
      */
     public static void drawContactFeatures(MemorySegment struct, boolean fieldValue) {
         struct.set(drawContactFeatures$LAYOUT, drawContactFeatures$OFFSET, fieldValue);
     }
 
-    private static final OfBoolean drawFrictionImpulses$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("drawFrictionImpulses"));
+    private static final OfBoolean drawContactNormals$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("drawContactNormals"));
 
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * _Bool drawFrictionImpulses
+     * bool drawContactNormals
      * }
      */
-    public static final OfBoolean drawFrictionImpulses$layout() {
-        return drawFrictionImpulses$LAYOUT;
+    public static final OfBoolean drawContactNormals$layout() {
+        return drawContactNormals$LAYOUT;
     }
 
-    private static final long drawFrictionImpulses$OFFSET = $LAYOUT.byteOffset(groupElement("drawFrictionImpulses"));
+    private static final long drawContactNormals$OFFSET = $LAYOUT.byteOffset(groupElement("drawContactNormals"));
 
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * _Bool drawFrictionImpulses
+     * bool drawContactNormals
      * }
      */
-    public static final long drawFrictionImpulses$offset() {
-        return drawFrictionImpulses$OFFSET;
+    public static final long drawContactNormals$offset() {
+        return drawContactNormals$OFFSET;
     }
 
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * _Bool drawFrictionImpulses
+     * bool drawContactNormals
      * }
      */
-    public static boolean drawFrictionImpulses(MemorySegment struct) {
-        return struct.get(drawFrictionImpulses$LAYOUT, drawFrictionImpulses$OFFSET);
+    public static boolean drawContactNormals(MemorySegment struct) {
+        return struct.get(drawContactNormals$LAYOUT, drawContactNormals$OFFSET);
     }
 
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * _Bool drawFrictionImpulses
+     * bool drawContactNormals
      * }
      */
-    public static void drawFrictionImpulses(MemorySegment struct, boolean fieldValue) {
-        struct.set(drawFrictionImpulses$LAYOUT, drawFrictionImpulses$OFFSET, fieldValue);
+    public static void drawContactNormals(MemorySegment struct, boolean fieldValue) {
+        struct.set(drawContactNormals$LAYOUT, drawContactNormals$OFFSET, fieldValue);
+    }
+
+    private static final OfBoolean drawContactForces$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("drawContactForces"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * bool drawContactForces
+     * }
+     */
+    public static final OfBoolean drawContactForces$layout() {
+        return drawContactForces$LAYOUT;
+    }
+
+    private static final long drawContactForces$OFFSET = $LAYOUT.byteOffset(groupElement("drawContactForces"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * bool drawContactForces
+     * }
+     */
+    public static final long drawContactForces$offset() {
+        return drawContactForces$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * bool drawContactForces
+     * }
+     */
+    public static boolean drawContactForces(MemorySegment struct) {
+        return struct.get(drawContactForces$LAYOUT, drawContactForces$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * bool drawContactForces
+     * }
+     */
+    public static void drawContactForces(MemorySegment struct, boolean fieldValue) {
+        struct.set(drawContactForces$LAYOUT, drawContactForces$OFFSET, fieldValue);
+    }
+
+    private static final OfBoolean drawFrictionForces$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("drawFrictionForces"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * bool drawFrictionForces
+     * }
+     */
+    public static final OfBoolean drawFrictionForces$layout() {
+        return drawFrictionForces$LAYOUT;
+    }
+
+    private static final long drawFrictionForces$OFFSET = $LAYOUT.byteOffset(groupElement("drawFrictionForces"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * bool drawFrictionForces
+     * }
+     */
+    public static final long drawFrictionForces$offset() {
+        return drawFrictionForces$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * bool drawFrictionForces
+     * }
+     */
+    public static boolean drawFrictionForces(MemorySegment struct) {
+        return struct.get(drawFrictionForces$LAYOUT, drawFrictionForces$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * bool drawFrictionForces
+     * }
+     */
+    public static void drawFrictionForces(MemorySegment struct, boolean fieldValue) {
+        struct.set(drawFrictionForces$LAYOUT, drawFrictionForces$OFFSET, fieldValue);
     }
 
     private static final OfBoolean drawIslands$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("drawIslands"));
@@ -1625,7 +1868,7 @@ public class b2DebugDraw {
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * _Bool drawIslands
+     * bool drawIslands
      * }
      */
     public static final OfBoolean drawIslands$layout() {
@@ -1637,7 +1880,7 @@ public class b2DebugDraw {
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * _Bool drawIslands
+     * bool drawIslands
      * }
      */
     public static final long drawIslands$offset() {
@@ -1647,7 +1890,7 @@ public class b2DebugDraw {
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * _Bool drawIslands
+     * bool drawIslands
      * }
      */
     public static boolean drawIslands(MemorySegment struct) {
@@ -1657,7 +1900,7 @@ public class b2DebugDraw {
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * _Bool drawIslands
+     * bool drawIslands
      * }
      */
     public static void drawIslands(MemorySegment struct, boolean fieldValue) {

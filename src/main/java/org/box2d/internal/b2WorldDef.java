@@ -17,20 +17,23 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
  * struct b2WorldDef {
  *     b2Vec2 gravity;
  *     float restitutionThreshold;
+ *     int restitutionIterations;
+ *     bool enableRestitutionPropagation;
  *     float hitEventThreshold;
  *     float contactHertz;
  *     float contactDampingRatio;
- *     float maxContactPushSpeed;
+ *     float contactSpeed;
  *     float maximumLinearSpeed;
- *     b2FrictionCallback *frictionCallback;
- *     b2RestitutionCallback *restitutionCallback;
- *     _Bool enableSleep;
- *     _Bool enableContinuous;
+ *     b2FrictionCallbackFcn *frictionCallback;
+ *     b2RestitutionCallbackFcn *restitutionCallback;
+ *     bool enableSleep;
+ *     bool enableContinuous;
  *     int workerCount;
- *     b2EnqueueTaskCallback *enqueueTask;
- *     b2FinishTaskCallback *finishTask;
+ *     b2EnqueueTaskCallbackFcn *enqueueTask;
+ *     b2FinishTaskCallbackFcn *finishTask;
  *     void *userTaskContext;
  *     void *userData;
+ *     b2Capacity capacity;
  *     int internalValue;
  * }
  * }
@@ -44,10 +47,13 @@ public class b2WorldDef {
     private static final GroupLayout $LAYOUT = MemoryLayout.structLayout(
         b2Vec2.layout().withName("gravity"),
         Box2D.C_FLOAT.withName("restitutionThreshold"),
+        Box2D.C_INT.withName("restitutionIterations"),
+        Box2D.C_BOOL.withName("enableRestitutionPropagation"),
+        MemoryLayout.paddingLayout(3),
         Box2D.C_FLOAT.withName("hitEventThreshold"),
         Box2D.C_FLOAT.withName("contactHertz"),
         Box2D.C_FLOAT.withName("contactDampingRatio"),
-        Box2D.C_FLOAT.withName("maxContactPushSpeed"),
+        Box2D.C_FLOAT.withName("contactSpeed"),
         Box2D.C_FLOAT.withName("maximumLinearSpeed"),
         Box2D.C_POINTER.withName("frictionCallback"),
         Box2D.C_POINTER.withName("restitutionCallback"),
@@ -59,6 +65,7 @@ public class b2WorldDef {
         Box2D.C_POINTER.withName("finishTask"),
         Box2D.C_POINTER.withName("userTaskContext"),
         Box2D.C_POINTER.withName("userData"),
+        b2Capacity.layout().withName("capacity"),
         Box2D.C_INT.withName("internalValue"),
         MemoryLayout.paddingLayout(4)
     ).withName("b2WorldDef");
@@ -156,6 +163,94 @@ public class b2WorldDef {
      */
     public static void restitutionThreshold(MemorySegment struct, float fieldValue) {
         struct.set(restitutionThreshold$LAYOUT, restitutionThreshold$OFFSET, fieldValue);
+    }
+
+    private static final OfInt restitutionIterations$LAYOUT = (OfInt)$LAYOUT.select(groupElement("restitutionIterations"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * int restitutionIterations
+     * }
+     */
+    public static final OfInt restitutionIterations$layout() {
+        return restitutionIterations$LAYOUT;
+    }
+
+    private static final long restitutionIterations$OFFSET = $LAYOUT.byteOffset(groupElement("restitutionIterations"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * int restitutionIterations
+     * }
+     */
+    public static final long restitutionIterations$offset() {
+        return restitutionIterations$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * int restitutionIterations
+     * }
+     */
+    public static int restitutionIterations(MemorySegment struct) {
+        return struct.get(restitutionIterations$LAYOUT, restitutionIterations$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * int restitutionIterations
+     * }
+     */
+    public static void restitutionIterations(MemorySegment struct, int fieldValue) {
+        struct.set(restitutionIterations$LAYOUT, restitutionIterations$OFFSET, fieldValue);
+    }
+
+    private static final OfBoolean enableRestitutionPropagation$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("enableRestitutionPropagation"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * bool enableRestitutionPropagation
+     * }
+     */
+    public static final OfBoolean enableRestitutionPropagation$layout() {
+        return enableRestitutionPropagation$LAYOUT;
+    }
+
+    private static final long enableRestitutionPropagation$OFFSET = $LAYOUT.byteOffset(groupElement("enableRestitutionPropagation"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * bool enableRestitutionPropagation
+     * }
+     */
+    public static final long enableRestitutionPropagation$offset() {
+        return enableRestitutionPropagation$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * bool enableRestitutionPropagation
+     * }
+     */
+    public static boolean enableRestitutionPropagation(MemorySegment struct) {
+        return struct.get(enableRestitutionPropagation$LAYOUT, enableRestitutionPropagation$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * bool enableRestitutionPropagation
+     * }
+     */
+    public static void enableRestitutionPropagation(MemorySegment struct, boolean fieldValue) {
+        struct.set(enableRestitutionPropagation$LAYOUT, enableRestitutionPropagation$OFFSET, fieldValue);
     }
 
     private static final OfFloat hitEventThreshold$LAYOUT = (OfFloat)$LAYOUT.select(groupElement("hitEventThreshold"));
@@ -290,48 +385,48 @@ public class b2WorldDef {
         struct.set(contactDampingRatio$LAYOUT, contactDampingRatio$OFFSET, fieldValue);
     }
 
-    private static final OfFloat maxContactPushSpeed$LAYOUT = (OfFloat)$LAYOUT.select(groupElement("maxContactPushSpeed"));
+    private static final OfFloat contactSpeed$LAYOUT = (OfFloat)$LAYOUT.select(groupElement("contactSpeed"));
 
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * float maxContactPushSpeed
+     * float contactSpeed
      * }
      */
-    public static final OfFloat maxContactPushSpeed$layout() {
-        return maxContactPushSpeed$LAYOUT;
+    public static final OfFloat contactSpeed$layout() {
+        return contactSpeed$LAYOUT;
     }
 
-    private static final long maxContactPushSpeed$OFFSET = $LAYOUT.byteOffset(groupElement("maxContactPushSpeed"));
+    private static final long contactSpeed$OFFSET = $LAYOUT.byteOffset(groupElement("contactSpeed"));
 
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * float maxContactPushSpeed
+     * float contactSpeed
      * }
      */
-    public static final long maxContactPushSpeed$offset() {
-        return maxContactPushSpeed$OFFSET;
+    public static final long contactSpeed$offset() {
+        return contactSpeed$OFFSET;
     }
 
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * float maxContactPushSpeed
+     * float contactSpeed
      * }
      */
-    public static float maxContactPushSpeed(MemorySegment struct) {
-        return struct.get(maxContactPushSpeed$LAYOUT, maxContactPushSpeed$OFFSET);
+    public static float contactSpeed(MemorySegment struct) {
+        return struct.get(contactSpeed$LAYOUT, contactSpeed$OFFSET);
     }
 
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * float maxContactPushSpeed
+     * float contactSpeed
      * }
      */
-    public static void maxContactPushSpeed(MemorySegment struct, float fieldValue) {
-        struct.set(maxContactPushSpeed$LAYOUT, maxContactPushSpeed$OFFSET, fieldValue);
+    public static void contactSpeed(MemorySegment struct, float fieldValue) {
+        struct.set(contactSpeed$LAYOUT, contactSpeed$OFFSET, fieldValue);
     }
 
     private static final OfFloat maximumLinearSpeed$LAYOUT = (OfFloat)$LAYOUT.select(groupElement("maximumLinearSpeed"));
@@ -383,7 +478,7 @@ public class b2WorldDef {
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * b2FrictionCallback *frictionCallback
+     * b2FrictionCallbackFcn *frictionCallback
      * }
      */
     public static final AddressLayout frictionCallback$layout() {
@@ -395,7 +490,7 @@ public class b2WorldDef {
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * b2FrictionCallback *frictionCallback
+     * b2FrictionCallbackFcn *frictionCallback
      * }
      */
     public static final long frictionCallback$offset() {
@@ -405,7 +500,7 @@ public class b2WorldDef {
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * b2FrictionCallback *frictionCallback
+     * b2FrictionCallbackFcn *frictionCallback
      * }
      */
     public static MemorySegment frictionCallback(MemorySegment struct) {
@@ -415,7 +510,7 @@ public class b2WorldDef {
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * b2FrictionCallback *frictionCallback
+     * b2FrictionCallbackFcn *frictionCallback
      * }
      */
     public static void frictionCallback(MemorySegment struct, MemorySegment fieldValue) {
@@ -427,7 +522,7 @@ public class b2WorldDef {
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * b2RestitutionCallback *restitutionCallback
+     * b2RestitutionCallbackFcn *restitutionCallback
      * }
      */
     public static final AddressLayout restitutionCallback$layout() {
@@ -439,7 +534,7 @@ public class b2WorldDef {
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * b2RestitutionCallback *restitutionCallback
+     * b2RestitutionCallbackFcn *restitutionCallback
      * }
      */
     public static final long restitutionCallback$offset() {
@@ -449,7 +544,7 @@ public class b2WorldDef {
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * b2RestitutionCallback *restitutionCallback
+     * b2RestitutionCallbackFcn *restitutionCallback
      * }
      */
     public static MemorySegment restitutionCallback(MemorySegment struct) {
@@ -459,7 +554,7 @@ public class b2WorldDef {
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * b2RestitutionCallback *restitutionCallback
+     * b2RestitutionCallbackFcn *restitutionCallback
      * }
      */
     public static void restitutionCallback(MemorySegment struct, MemorySegment fieldValue) {
@@ -471,7 +566,7 @@ public class b2WorldDef {
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * _Bool enableSleep
+     * bool enableSleep
      * }
      */
     public static final OfBoolean enableSleep$layout() {
@@ -483,7 +578,7 @@ public class b2WorldDef {
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * _Bool enableSleep
+     * bool enableSleep
      * }
      */
     public static final long enableSleep$offset() {
@@ -493,7 +588,7 @@ public class b2WorldDef {
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * _Bool enableSleep
+     * bool enableSleep
      * }
      */
     public static boolean enableSleep(MemorySegment struct) {
@@ -503,7 +598,7 @@ public class b2WorldDef {
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * _Bool enableSleep
+     * bool enableSleep
      * }
      */
     public static void enableSleep(MemorySegment struct, boolean fieldValue) {
@@ -515,7 +610,7 @@ public class b2WorldDef {
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * _Bool enableContinuous
+     * bool enableContinuous
      * }
      */
     public static final OfBoolean enableContinuous$layout() {
@@ -527,7 +622,7 @@ public class b2WorldDef {
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * _Bool enableContinuous
+     * bool enableContinuous
      * }
      */
     public static final long enableContinuous$offset() {
@@ -537,7 +632,7 @@ public class b2WorldDef {
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * _Bool enableContinuous
+     * bool enableContinuous
      * }
      */
     public static boolean enableContinuous(MemorySegment struct) {
@@ -547,7 +642,7 @@ public class b2WorldDef {
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * _Bool enableContinuous
+     * bool enableContinuous
      * }
      */
     public static void enableContinuous(MemorySegment struct, boolean fieldValue) {
@@ -603,7 +698,7 @@ public class b2WorldDef {
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * b2EnqueueTaskCallback *enqueueTask
+     * b2EnqueueTaskCallbackFcn *enqueueTask
      * }
      */
     public static final AddressLayout enqueueTask$layout() {
@@ -615,7 +710,7 @@ public class b2WorldDef {
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * b2EnqueueTaskCallback *enqueueTask
+     * b2EnqueueTaskCallbackFcn *enqueueTask
      * }
      */
     public static final long enqueueTask$offset() {
@@ -625,7 +720,7 @@ public class b2WorldDef {
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * b2EnqueueTaskCallback *enqueueTask
+     * b2EnqueueTaskCallbackFcn *enqueueTask
      * }
      */
     public static MemorySegment enqueueTask(MemorySegment struct) {
@@ -635,7 +730,7 @@ public class b2WorldDef {
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * b2EnqueueTaskCallback *enqueueTask
+     * b2EnqueueTaskCallbackFcn *enqueueTask
      * }
      */
     public static void enqueueTask(MemorySegment struct, MemorySegment fieldValue) {
@@ -647,7 +742,7 @@ public class b2WorldDef {
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * b2FinishTaskCallback *finishTask
+     * b2FinishTaskCallbackFcn *finishTask
      * }
      */
     public static final AddressLayout finishTask$layout() {
@@ -659,7 +754,7 @@ public class b2WorldDef {
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * b2FinishTaskCallback *finishTask
+     * b2FinishTaskCallbackFcn *finishTask
      * }
      */
     public static final long finishTask$offset() {
@@ -669,7 +764,7 @@ public class b2WorldDef {
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * b2FinishTaskCallback *finishTask
+     * b2FinishTaskCallbackFcn *finishTask
      * }
      */
     public static MemorySegment finishTask(MemorySegment struct) {
@@ -679,7 +774,7 @@ public class b2WorldDef {
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * b2FinishTaskCallback *finishTask
+     * b2FinishTaskCallbackFcn *finishTask
      * }
      */
     public static void finishTask(MemorySegment struct, MemorySegment fieldValue) {
@@ -772,6 +867,50 @@ public class b2WorldDef {
      */
     public static void userData(MemorySegment struct, MemorySegment fieldValue) {
         struct.set(userData$LAYOUT, userData$OFFSET, fieldValue);
+    }
+
+    private static final GroupLayout capacity$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("capacity"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * b2Capacity capacity
+     * }
+     */
+    public static final GroupLayout capacity$layout() {
+        return capacity$LAYOUT;
+    }
+
+    private static final long capacity$OFFSET = $LAYOUT.byteOffset(groupElement("capacity"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * b2Capacity capacity
+     * }
+     */
+    public static final long capacity$offset() {
+        return capacity$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * b2Capacity capacity
+     * }
+     */
+    public static MemorySegment capacity(MemorySegment struct) {
+        return struct.asSlice(capacity$OFFSET, capacity$LAYOUT.byteSize());
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * b2Capacity capacity
+     * }
+     */
+    public static void capacity(MemorySegment struct, MemorySegment fieldValue) {
+        MemorySegment.copy(fieldValue, 0L, struct, capacity$OFFSET, capacity$LAYOUT.byteSize());
     }
 
     private static final OfInt internalValue$LAYOUT = (OfInt)$LAYOUT.select(groupElement("internalValue"));

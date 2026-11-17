@@ -1,6 +1,6 @@
 name: Check Bindings
 
-# Checks that jextract binding generation is host independent: the bindings are generated on Linux, Windows and macOS with the stock upstream jextract,
+# Checks that jextract binding generation is host independent: the bindings are generated on Linux, Windows and macOS with the jextract fork (built from source on each runner),
 #  and the three outputs must be byte-identical. When the Box2D tag is the repository's binding_version, the output must also match the bindings committed under src/main/java/org/box2d/internal.
 #
 # Runs on its own: it does not compile the wrappers or run the test suite.
@@ -31,9 +31,11 @@ permissions:
   contents: read
 
 env:
-  # Stock upstream early-access build (https://jdk.java.net/jextract/). Bump all four together.
-  JEXTRACT_BASE_URL: https://download.java.net/java/early_access/jextract/25/2
-  JEXTRACT_FILE_PREFIX: openjdk-25-jextract+2-4
+  # jextract is built like the local fork: upstream openjdk/jextract at JEXTRACT_COMMIT plus
+  # jextract/fork/ (fork.patch and the overlay/ files), with JDK 25 and libclang LLVM_VERSION.
+  # Keep these in step with the fork.
+  JEXTRACT_COMMIT: 3be13db493b35bca7b714393b89b1a2e1b2d7e13
+  LLVM_VERSION: 18.1.8
 
 jobs:
   generate:
@@ -45,16 +47,13 @@ jobs:
         include:
           - name: linux
             os: ubuntu-latest
-            jextract_platform: linux-x64
-            jextract_sha256: d0cc481abc1adb16fb9514e1c5e0bfc08d38c29228bece667fb5054ceaffaa42
+            llvm_asset: clang+llvm-18.1.8-x86_64-linux-gnu-ubuntu-18.04.tar.xz
           - name: win
             os: windows-latest
-            jextract_platform: windows-x64
-            jextract_sha256: b03533eb6b249a154752b7c7bf93cdb8c147cf2f9699422e615e84b7fb652872
+            llvm_asset: LLVM-18.1.8-win64.exe
           - name: mac
             os: macos-latest   # arm64 (Apple Silicon)
-            jextract_platform: macos-aarch64
-            jextract_sha256: 3dd1dd1bde059d271739e2cc2290c64f93f85488c86c01e566c0e374eece798f
+            llvm_asset: clang+llvm-18.1.8-arm64-apple-macos11.tar.xz
     defaults:
       run:
         shell: bash
@@ -93,20 +92,86 @@ jobs:
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v6
 
-      # Relative paths only: GNU tar on Windows reads "D:\..." as a remote host.
-      - name: Install jextract
+      # The built jextract image is self-contained (its own runtime and libclang), so it is cached
+      # and rebuilt only when the commit, the fork patch or the LLVM version changes.
+      - name: Restore jextract
+        id: jextract-cache
+        uses: actions/cache@v6
+        with:
+          path: ${{ runner.temp }}/jextract-image
+          key: jextract-${{ runner.os }}-${{ runner.arch }}-${{ env.JEXTRACT_COMMIT }}-${{ hashFiles('jextract/fork/**') }}-llvm${{ env.LLVM_VERSION }}-jdk25
+
+      # Checked out by hand with autocrlf off: the patch has LF line endings, and Windows runners
+      # would otherwise check the text files out as CRLF. The overlay (Gradle wrapper) is copied
+      # over the checkout as is.
+      - name: Fetch jextract source and apply the fork
+        if: steps.jextract-cache.outputs.cache-hit != 'true'
+        run: |
+          src="$RUNNER_TEMP/jextract-src"
+          git init -q "$src"
+          git -C "$src" config core.autocrlf false
+          git -C "$src" remote add origin https://github.com/openjdk/jextract.git
+          git -C "$src" fetch -q --depth 1 origin "$JEXTRACT_COMMIT"
+          git -C "$src" checkout -q FETCH_HEAD
+          git -C "$src" apply "$GITHUB_WORKSPACE/jextract/fork/fork.patch"
+          cp -R "$GITHUB_WORKSPACE/jextract/fork/overlay/." "$src/"
+          git -C "$src" status --short
+
+      # jextract's build takes libclang from <llvm_home>/<bin|lib> and the clang builtin headers
+      # from <llvm_home>/lib/clang/<version>/include. Only those are staged into a small
+      # llvm_home, which keeps the cached image small. Relative paths for tar: GNU tar on
+      # Windows reads "D:\..." as a remote host.
+      - name: Download libclang
+        if: steps.jextract-cache.outputs.cache-hit != 'true'
+        id: llvm
+        run: |
+          asset="${{ matrix.llvm_asset }}"
+          cd "$RUNNER_TEMP"
+          curl -fsSL -o "$asset" "https://github.com/llvm/llvm-project/releases/download/llvmorg-${LLVM_VERSION}/${asset}"
+          case "$RUNNER_OS" in
+            Linux)
+              top="${asset%.tar.xz}"
+              tar -xJf "$asset" --wildcards "$top/lib/libclang.so*" "$top/lib/clang"
+              libdir=lib; libsrc=$(readlink -f "$top/lib/libclang.so") ;;
+            macOS)
+              top="${asset%.tar.xz}"
+              tar -xJf "$asset" "$top/lib/libclang.dylib" "$top/lib/clang"
+              libdir=lib; libsrc="$top/lib/libclang.dylib" ;;
+            Windows)
+              top=llvm-full
+              7z x -y -o"$top" "$asset" > /dev/null
+              libdir=bin; libsrc="$top/bin/libclang.dll" ;;
+          esac
+          ver=$(ls "$top/lib/clang")
+          case "$RUNNER_OS" in
+            Linux) libname="libclang.so.${ver}" ;;
+            *)     libname=$(basename "$libsrc") ;;
+          esac
+          mkdir -p llvm/lib/clang "llvm/$libdir"
+          cp -R "$top/lib/clang/$ver" llvm/lib/clang/
+          cp -L "$libsrc" "llvm/$libdir/$libname"
+          ls -l "llvm/$libdir"
+          if [ "$RUNNER_OS" = "Linux" ]; then ldd "llvm/$libdir/$libname"; fi
+          home="$RUNNER_TEMP/llvm"
+          if [ "$RUNNER_OS" = "Windows" ]; then home=$(cygpath -m "$home"); fi
+          echo "home=${home}" >> "$GITHUB_OUTPUT"
+
+      - name: Build jextract
+        if: steps.jextract-cache.outputs.cache-hit != 'true'
+        run: |
+          jdk="$JAVA_HOME"
+          if [ "$RUNNER_OS" = "Windows" ]; then jdk=$(cygpath -m "$jdk"); fi
+          cd "$RUNNER_TEMP/jextract-src"
+          chmod +x gradlew
+          ./gradlew --no-daemon "-Pjdk_home=${jdk}" "-Pllvm_home=${{ steps.llvm.outputs.home }}" verify
+          rm -rf "$RUNNER_TEMP/jextract-image"
+          cp -R build/jextract "$RUNNER_TEMP/jextract-image"
+
+      - name: Locate jextract
         id: jextract
         run: |
-          file="${JEXTRACT_FILE_PREFIX}_${{ matrix.jextract_platform }}_bin.tar.gz"
-          mkdir -p "$RUNNER_TEMP/jextract"
-          cd "$RUNNER_TEMP/jextract"
-          curl -fsSL -o "$file" "${JEXTRACT_BASE_URL}/${file}"
-          if command -v sha256sum >/dev/null; then sum=sha256sum; else sum="shasum -a 256"; fi
-          echo "${{ matrix.jextract_sha256 }}  ${file}" | $sum -c -
-          tar -xzf "$file"
-          name=jextract; [ "$RUNNER_OS" = "Windows" ] && name=jextract.bat
-          cmd=$(find "$PWD" -path "*/bin/${name}" -type f | head -n 1)
-          [ -n "$cmd" ] || { echo "::error::bin/${name} not found in ${file}"; exit 1; }
+          cmd="$RUNNER_TEMP/jextract-image/bin/jextract"
+          if [ "$RUNNER_OS" = "Windows" ]; then cmd="${cmd}.bat"; fi
           "$cmd" --version
           # Gradle needs a native path on Windows.
           if [ "$RUNNER_OS" = "Windows" ]; then cmd=$(cygpath -w "$cmd"); fi

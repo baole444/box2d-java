@@ -14,7 +14,7 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
 
 /**
  * {@snippet lang=c :
- * typedef _Bool (b2TreeQueryCallbackFcn)(int, uint64_t, void *)
+ * typedef bool (b2TreeQueryCallbackFcn)(int, uint64_t, void *)
  * }
  */
 public final class b2TreeQueryCallbackFcn {

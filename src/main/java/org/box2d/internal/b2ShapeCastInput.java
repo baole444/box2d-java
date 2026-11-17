@@ -18,7 +18,7 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
  *     b2ShapeProxy proxy;
  *     b2Vec2 translation;
  *     float maxFraction;
- *     _Bool canEncroach;
+ *     bool canEncroach;
  * }
  * }
  */
@@ -180,7 +180,7 @@ public class b2ShapeCastInput {
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * _Bool canEncroach
+     * bool canEncroach
      * }
      */
     public static final OfBoolean canEncroach$layout() {
@@ -192,7 +192,7 @@ public class b2ShapeCastInput {
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * _Bool canEncroach
+     * bool canEncroach
      * }
      */
     public static final long canEncroach$offset() {
@@ -202,7 +202,7 @@ public class b2ShapeCastInput {
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * _Bool canEncroach
+     * bool canEncroach
      * }
      */
     public static boolean canEncroach(MemorySegment struct) {
@@ -212,7 +212,7 @@ public class b2ShapeCastInput {
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * _Bool canEncroach
+     * bool canEncroach
      * }
      */
     public static void canEncroach(MemorySegment struct, boolean fieldValue) {

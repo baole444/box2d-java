@@ -18,7 +18,7 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
  *     b2Plane plane;
  *     float pushLimit;
  *     float push;
- *     _Bool clipVelocity;
+ *     bool clipVelocity;
  * }
  * }
  */
@@ -180,7 +180,7 @@ public class b2CollisionPlane {
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * _Bool clipVelocity
+     * bool clipVelocity
      * }
      */
     public static final OfBoolean clipVelocity$layout() {
@@ -192,7 +192,7 @@ public class b2CollisionPlane {
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * _Bool clipVelocity
+     * bool clipVelocity
      * }
      */
     public static final long clipVelocity$offset() {
@@ -202,7 +202,7 @@ public class b2CollisionPlane {
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * _Bool clipVelocity
+     * bool clipVelocity
      * }
      */
     public static boolean clipVelocity(MemorySegment struct) {
@@ -212,7 +212,7 @@ public class b2CollisionPlane {
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * _Bool clipVelocity
+     * bool clipVelocity
      * }
      */
     public static void clipVelocity(MemorySegment struct, boolean fieldValue) {

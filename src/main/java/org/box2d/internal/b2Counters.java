@@ -15,6 +15,7 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
 /**
  * {@snippet lang=c :
  * struct b2Counters {
+ *     size_t byteCount;
  *     int bodyCount;
  *     int shapeCount;
  *     int contactCount;
@@ -23,9 +24,10 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
  *     int stackUsed;
  *     int staticTreeHeight;
  *     int treeHeight;
- *     int byteCount;
  *     int taskCount;
- *     int colorCounts[12];
+ *     int colorCounts[24];
+ *     int awakeContactCount;
+ *     int recycledContactCount;
  * }
  * }
  */
@@ -36,6 +38,7 @@ public class b2Counters {
     }
 
     private static final GroupLayout $LAYOUT = MemoryLayout.structLayout(
+        Box2D.C_LONG_LONG.withName("byteCount"),
         Box2D.C_INT.withName("bodyCount"),
         Box2D.C_INT.withName("shapeCount"),
         Box2D.C_INT.withName("contactCount"),
@@ -44,9 +47,11 @@ public class b2Counters {
         Box2D.C_INT.withName("stackUsed"),
         Box2D.C_INT.withName("staticTreeHeight"),
         Box2D.C_INT.withName("treeHeight"),
-        Box2D.C_INT.withName("byteCount"),
         Box2D.C_INT.withName("taskCount"),
-        MemoryLayout.sequenceLayout(12, Box2D.C_INT).withName("colorCounts")
+        MemoryLayout.sequenceLayout(24, Box2D.C_INT).withName("colorCounts"),
+        Box2D.C_INT.withName("awakeContactCount"),
+        Box2D.C_INT.withName("recycledContactCount"),
+        MemoryLayout.paddingLayout(4)
     ).withName("b2Counters");
 
     /**
@@ -54,6 +59,50 @@ public class b2Counters {
      */
     public static final GroupLayout layout() {
         return $LAYOUT;
+    }
+
+    private static final OfLong byteCount$LAYOUT = (OfLong)$LAYOUT.select(groupElement("byteCount"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * size_t byteCount
+     * }
+     */
+    public static final OfLong byteCount$layout() {
+        return byteCount$LAYOUT;
+    }
+
+    private static final long byteCount$OFFSET = $LAYOUT.byteOffset(groupElement("byteCount"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * size_t byteCount
+     * }
+     */
+    public static final long byteCount$offset() {
+        return byteCount$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * size_t byteCount
+     * }
+     */
+    public static long byteCount(MemorySegment struct) {
+        return struct.get(byteCount$LAYOUT, byteCount$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * size_t byteCount
+     * }
+     */
+    public static void byteCount(MemorySegment struct, long fieldValue) {
+        struct.set(byteCount$LAYOUT, byteCount$OFFSET, fieldValue);
     }
 
     private static final OfInt bodyCount$LAYOUT = (OfInt)$LAYOUT.select(groupElement("bodyCount"));
@@ -408,50 +457,6 @@ public class b2Counters {
         struct.set(treeHeight$LAYOUT, treeHeight$OFFSET, fieldValue);
     }
 
-    private static final OfInt byteCount$LAYOUT = (OfInt)$LAYOUT.select(groupElement("byteCount"));
-
-    /**
-     * Layout for field:
-     * {@snippet lang=c :
-     * int byteCount
-     * }
-     */
-    public static final OfInt byteCount$layout() {
-        return byteCount$LAYOUT;
-    }
-
-    private static final long byteCount$OFFSET = $LAYOUT.byteOffset(groupElement("byteCount"));
-
-    /**
-     * Offset for field:
-     * {@snippet lang=c :
-     * int byteCount
-     * }
-     */
-    public static final long byteCount$offset() {
-        return byteCount$OFFSET;
-    }
-
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * int byteCount
-     * }
-     */
-    public static int byteCount(MemorySegment struct) {
-        return struct.get(byteCount$LAYOUT, byteCount$OFFSET);
-    }
-
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * int byteCount
-     * }
-     */
-    public static void byteCount(MemorySegment struct, int fieldValue) {
-        struct.set(byteCount$LAYOUT, byteCount$OFFSET, fieldValue);
-    }
-
     private static final OfInt taskCount$LAYOUT = (OfInt)$LAYOUT.select(groupElement("taskCount"));
 
     /**
@@ -501,7 +506,7 @@ public class b2Counters {
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * int colorCounts[12]
+     * int colorCounts[24]
      * }
      */
     public static final SequenceLayout colorCounts$layout() {
@@ -513,7 +518,7 @@ public class b2Counters {
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * int colorCounts[12]
+     * int colorCounts[24]
      * }
      */
     public static final long colorCounts$offset() {
@@ -523,7 +528,7 @@ public class b2Counters {
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * int colorCounts[12]
+     * int colorCounts[24]
      * }
      */
     public static MemorySegment colorCounts(MemorySegment struct) {
@@ -533,19 +538,19 @@ public class b2Counters {
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * int colorCounts[12]
+     * int colorCounts[24]
      * }
      */
     public static void colorCounts(MemorySegment struct, MemorySegment fieldValue) {
         MemorySegment.copy(fieldValue, 0L, struct, colorCounts$OFFSET, colorCounts$LAYOUT.byteSize());
     }
 
-    private static long[] colorCounts$DIMS = { 12 };
+    private static long[] colorCounts$DIMS = { 24 };
 
     /**
      * Dimensions for array field:
      * {@snippet lang=c :
-     * int colorCounts[12]
+     * int colorCounts[24]
      * }
      */
     public static long[] colorCounts$dimensions() {
@@ -556,7 +561,7 @@ public class b2Counters {
     /**
      * Indexed getter for field:
      * {@snippet lang=c :
-     * int colorCounts[12]
+     * int colorCounts[24]
      * }
      */
     public static int colorCounts(MemorySegment struct, long index0) {
@@ -566,11 +571,99 @@ public class b2Counters {
     /**
      * Indexed setter for field:
      * {@snippet lang=c :
-     * int colorCounts[12]
+     * int colorCounts[24]
      * }
      */
     public static void colorCounts(MemorySegment struct, long index0, int fieldValue) {
         colorCounts$ELEM_HANDLE.set(struct, colorCounts$OFFSET, index0, fieldValue);
+    }
+
+    private static final OfInt awakeContactCount$LAYOUT = (OfInt)$LAYOUT.select(groupElement("awakeContactCount"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * int awakeContactCount
+     * }
+     */
+    public static final OfInt awakeContactCount$layout() {
+        return awakeContactCount$LAYOUT;
+    }
+
+    private static final long awakeContactCount$OFFSET = $LAYOUT.byteOffset(groupElement("awakeContactCount"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * int awakeContactCount
+     * }
+     */
+    public static final long awakeContactCount$offset() {
+        return awakeContactCount$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * int awakeContactCount
+     * }
+     */
+    public static int awakeContactCount(MemorySegment struct) {
+        return struct.get(awakeContactCount$LAYOUT, awakeContactCount$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * int awakeContactCount
+     * }
+     */
+    public static void awakeContactCount(MemorySegment struct, int fieldValue) {
+        struct.set(awakeContactCount$LAYOUT, awakeContactCount$OFFSET, fieldValue);
+    }
+
+    private static final OfInt recycledContactCount$LAYOUT = (OfInt)$LAYOUT.select(groupElement("recycledContactCount"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * int recycledContactCount
+     * }
+     */
+    public static final OfInt recycledContactCount$layout() {
+        return recycledContactCount$LAYOUT;
+    }
+
+    private static final long recycledContactCount$OFFSET = $LAYOUT.byteOffset(groupElement("recycledContactCount"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * int recycledContactCount
+     * }
+     */
+    public static final long recycledContactCount$offset() {
+        return recycledContactCount$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * int recycledContactCount
+     * }
+     */
+    public static int recycledContactCount(MemorySegment struct) {
+        return struct.get(recycledContactCount$LAYOUT, recycledContactCount$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * int recycledContactCount
+     * }
+     */
+    public static void recycledContactCount(MemorySegment struct, int fieldValue) {
+        struct.set(recycledContactCount$LAYOUT, recycledContactCount$OFFSET, fieldValue);
     }
 
     /**

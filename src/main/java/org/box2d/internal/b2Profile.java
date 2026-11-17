@@ -19,19 +19,20 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
  *     float pairs;
  *     float collide;
  *     float solve;
- *     float mergeIslands;
- *     float prepareStages;
- *     float solveConstraints;
+ *     float solverSetup;
+ *     float constraints;
  *     float prepareConstraints;
  *     float integrateVelocities;
  *     float warmStart;
  *     float solveImpulses;
  *     float integratePositions;
  *     float relaxImpulses;
- *     float applyRestitution;
+ *     float restitution;
  *     float storeImpulses;
  *     float splitIslands;
  *     float transforms;
+ *     float sensorHits;
+ *     float jointEvents;
  *     float hitEvents;
  *     float refit;
  *     float bullets;
@@ -51,19 +52,20 @@ public class b2Profile {
         Box2D.C_FLOAT.withName("pairs"),
         Box2D.C_FLOAT.withName("collide"),
         Box2D.C_FLOAT.withName("solve"),
-        Box2D.C_FLOAT.withName("mergeIslands"),
-        Box2D.C_FLOAT.withName("prepareStages"),
-        Box2D.C_FLOAT.withName("solveConstraints"),
+        Box2D.C_FLOAT.withName("solverSetup"),
+        Box2D.C_FLOAT.withName("constraints"),
         Box2D.C_FLOAT.withName("prepareConstraints"),
         Box2D.C_FLOAT.withName("integrateVelocities"),
         Box2D.C_FLOAT.withName("warmStart"),
         Box2D.C_FLOAT.withName("solveImpulses"),
         Box2D.C_FLOAT.withName("integratePositions"),
         Box2D.C_FLOAT.withName("relaxImpulses"),
-        Box2D.C_FLOAT.withName("applyRestitution"),
+        Box2D.C_FLOAT.withName("restitution"),
         Box2D.C_FLOAT.withName("storeImpulses"),
         Box2D.C_FLOAT.withName("splitIslands"),
         Box2D.C_FLOAT.withName("transforms"),
+        Box2D.C_FLOAT.withName("sensorHits"),
+        Box2D.C_FLOAT.withName("jointEvents"),
         Box2D.C_FLOAT.withName("hitEvents"),
         Box2D.C_FLOAT.withName("refit"),
         Box2D.C_FLOAT.withName("bullets"),
@@ -254,136 +256,92 @@ public class b2Profile {
         struct.set(solve$LAYOUT, solve$OFFSET, fieldValue);
     }
 
-    private static final OfFloat mergeIslands$LAYOUT = (OfFloat)$LAYOUT.select(groupElement("mergeIslands"));
+    private static final OfFloat solverSetup$LAYOUT = (OfFloat)$LAYOUT.select(groupElement("solverSetup"));
 
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * float mergeIslands
+     * float solverSetup
      * }
      */
-    public static final OfFloat mergeIslands$layout() {
-        return mergeIslands$LAYOUT;
+    public static final OfFloat solverSetup$layout() {
+        return solverSetup$LAYOUT;
     }
 
-    private static final long mergeIslands$OFFSET = $LAYOUT.byteOffset(groupElement("mergeIslands"));
+    private static final long solverSetup$OFFSET = $LAYOUT.byteOffset(groupElement("solverSetup"));
 
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * float mergeIslands
+     * float solverSetup
      * }
      */
-    public static final long mergeIslands$offset() {
-        return mergeIslands$OFFSET;
+    public static final long solverSetup$offset() {
+        return solverSetup$OFFSET;
     }
 
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * float mergeIslands
+     * float solverSetup
      * }
      */
-    public static float mergeIslands(MemorySegment struct) {
-        return struct.get(mergeIslands$LAYOUT, mergeIslands$OFFSET);
+    public static float solverSetup(MemorySegment struct) {
+        return struct.get(solverSetup$LAYOUT, solverSetup$OFFSET);
     }
 
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * float mergeIslands
+     * float solverSetup
      * }
      */
-    public static void mergeIslands(MemorySegment struct, float fieldValue) {
-        struct.set(mergeIslands$LAYOUT, mergeIslands$OFFSET, fieldValue);
+    public static void solverSetup(MemorySegment struct, float fieldValue) {
+        struct.set(solverSetup$LAYOUT, solverSetup$OFFSET, fieldValue);
     }
 
-    private static final OfFloat prepareStages$LAYOUT = (OfFloat)$LAYOUT.select(groupElement("prepareStages"));
+    private static final OfFloat constraints$LAYOUT = (OfFloat)$LAYOUT.select(groupElement("constraints"));
 
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * float prepareStages
+     * float constraints
      * }
      */
-    public static final OfFloat prepareStages$layout() {
-        return prepareStages$LAYOUT;
+    public static final OfFloat constraints$layout() {
+        return constraints$LAYOUT;
     }
 
-    private static final long prepareStages$OFFSET = $LAYOUT.byteOffset(groupElement("prepareStages"));
+    private static final long constraints$OFFSET = $LAYOUT.byteOffset(groupElement("constraints"));
 
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * float prepareStages
+     * float constraints
      * }
      */
-    public static final long prepareStages$offset() {
-        return prepareStages$OFFSET;
+    public static final long constraints$offset() {
+        return constraints$OFFSET;
     }
 
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * float prepareStages
+     * float constraints
      * }
      */
-    public static float prepareStages(MemorySegment struct) {
-        return struct.get(prepareStages$LAYOUT, prepareStages$OFFSET);
+    public static float constraints(MemorySegment struct) {
+        return struct.get(constraints$LAYOUT, constraints$OFFSET);
     }
 
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * float prepareStages
+     * float constraints
      * }
      */
-    public static void prepareStages(MemorySegment struct, float fieldValue) {
-        struct.set(prepareStages$LAYOUT, prepareStages$OFFSET, fieldValue);
-    }
-
-    private static final OfFloat solveConstraints$LAYOUT = (OfFloat)$LAYOUT.select(groupElement("solveConstraints"));
-
-    /**
-     * Layout for field:
-     * {@snippet lang=c :
-     * float solveConstraints
-     * }
-     */
-    public static final OfFloat solveConstraints$layout() {
-        return solveConstraints$LAYOUT;
-    }
-
-    private static final long solveConstraints$OFFSET = $LAYOUT.byteOffset(groupElement("solveConstraints"));
-
-    /**
-     * Offset for field:
-     * {@snippet lang=c :
-     * float solveConstraints
-     * }
-     */
-    public static final long solveConstraints$offset() {
-        return solveConstraints$OFFSET;
-    }
-
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * float solveConstraints
-     * }
-     */
-    public static float solveConstraints(MemorySegment struct) {
-        return struct.get(solveConstraints$LAYOUT, solveConstraints$OFFSET);
-    }
-
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * float solveConstraints
-     * }
-     */
-    public static void solveConstraints(MemorySegment struct, float fieldValue) {
-        struct.set(solveConstraints$LAYOUT, solveConstraints$OFFSET, fieldValue);
+    public static void constraints(MemorySegment struct, float fieldValue) {
+        struct.set(constraints$LAYOUT, constraints$OFFSET, fieldValue);
     }
 
     private static final OfFloat prepareConstraints$LAYOUT = (OfFloat)$LAYOUT.select(groupElement("prepareConstraints"));
@@ -650,48 +608,48 @@ public class b2Profile {
         struct.set(relaxImpulses$LAYOUT, relaxImpulses$OFFSET, fieldValue);
     }
 
-    private static final OfFloat applyRestitution$LAYOUT = (OfFloat)$LAYOUT.select(groupElement("applyRestitution"));
+    private static final OfFloat restitution$LAYOUT = (OfFloat)$LAYOUT.select(groupElement("restitution"));
 
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * float applyRestitution
+     * float restitution
      * }
      */
-    public static final OfFloat applyRestitution$layout() {
-        return applyRestitution$LAYOUT;
+    public static final OfFloat restitution$layout() {
+        return restitution$LAYOUT;
     }
 
-    private static final long applyRestitution$OFFSET = $LAYOUT.byteOffset(groupElement("applyRestitution"));
+    private static final long restitution$OFFSET = $LAYOUT.byteOffset(groupElement("restitution"));
 
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * float applyRestitution
+     * float restitution
      * }
      */
-    public static final long applyRestitution$offset() {
-        return applyRestitution$OFFSET;
+    public static final long restitution$offset() {
+        return restitution$OFFSET;
     }
 
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * float applyRestitution
+     * float restitution
      * }
      */
-    public static float applyRestitution(MemorySegment struct) {
-        return struct.get(applyRestitution$LAYOUT, applyRestitution$OFFSET);
+    public static float restitution(MemorySegment struct) {
+        return struct.get(restitution$LAYOUT, restitution$OFFSET);
     }
 
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * float applyRestitution
+     * float restitution
      * }
      */
-    public static void applyRestitution(MemorySegment struct, float fieldValue) {
-        struct.set(applyRestitution$LAYOUT, applyRestitution$OFFSET, fieldValue);
+    public static void restitution(MemorySegment struct, float fieldValue) {
+        struct.set(restitution$LAYOUT, restitution$OFFSET, fieldValue);
     }
 
     private static final OfFloat storeImpulses$LAYOUT = (OfFloat)$LAYOUT.select(groupElement("storeImpulses"));
@@ -824,6 +782,94 @@ public class b2Profile {
      */
     public static void transforms(MemorySegment struct, float fieldValue) {
         struct.set(transforms$LAYOUT, transforms$OFFSET, fieldValue);
+    }
+
+    private static final OfFloat sensorHits$LAYOUT = (OfFloat)$LAYOUT.select(groupElement("sensorHits"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * float sensorHits
+     * }
+     */
+    public static final OfFloat sensorHits$layout() {
+        return sensorHits$LAYOUT;
+    }
+
+    private static final long sensorHits$OFFSET = $LAYOUT.byteOffset(groupElement("sensorHits"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * float sensorHits
+     * }
+     */
+    public static final long sensorHits$offset() {
+        return sensorHits$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * float sensorHits
+     * }
+     */
+    public static float sensorHits(MemorySegment struct) {
+        return struct.get(sensorHits$LAYOUT, sensorHits$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * float sensorHits
+     * }
+     */
+    public static void sensorHits(MemorySegment struct, float fieldValue) {
+        struct.set(sensorHits$LAYOUT, sensorHits$OFFSET, fieldValue);
+    }
+
+    private static final OfFloat jointEvents$LAYOUT = (OfFloat)$LAYOUT.select(groupElement("jointEvents"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * float jointEvents
+     * }
+     */
+    public static final OfFloat jointEvents$layout() {
+        return jointEvents$LAYOUT;
+    }
+
+    private static final long jointEvents$OFFSET = $LAYOUT.byteOffset(groupElement("jointEvents"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * float jointEvents
+     * }
+     */
+    public static final long jointEvents$offset() {
+        return jointEvents$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * float jointEvents
+     * }
+     */
+    public static float jointEvents(MemorySegment struct) {
+        return struct.get(jointEvents$LAYOUT, jointEvents$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * float jointEvents
+     * }
+     */
+    public static void jointEvents(MemorySegment struct, float fieldValue) {
+        struct.set(jointEvents$LAYOUT, jointEvents$OFFSET, fieldValue);
     }
 
     private static final OfFloat hitEvents$LAYOUT = (OfFloat)$LAYOUT.select(groupElement("hitEvents"));

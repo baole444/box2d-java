@@ -16,7 +16,7 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
  * {@snippet lang=c :
  * struct b2BodyDef {
  *     b2BodyType type;
- *     b2Vec2 position;
+ *     b2Pos position;
  *     b2Rot rotation;
  *     b2Vec2 linearVelocity;
  *     float angularVelocity;
@@ -24,14 +24,16 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
  *     float angularDamping;
  *     float gravityScale;
  *     float sleepThreshold;
+ *     float safetyFactor;
  *     const char *name;
  *     void *userData;
- *     _Bool enableSleep;
- *     _Bool isAwake;
- *     _Bool fixedRotation;
- *     _Bool isBullet;
- *     _Bool isEnabled;
- *     _Bool allowFastRotation;
+ *     b2MotionLocks motionLocks;
+ *     bool enableSleep;
+ *     bool isAwake;
+ *     bool isBullet;
+ *     bool isEnabled;
+ *     bool allowFastRotation;
+ *     bool enableContactRecycling;
  *     int internalValue;
  * }
  * }
@@ -52,17 +54,19 @@ public class b2BodyDef {
         Box2D.C_FLOAT.withName("angularDamping"),
         Box2D.C_FLOAT.withName("gravityScale"),
         Box2D.C_FLOAT.withName("sleepThreshold"),
+        Box2D.C_FLOAT.withName("safetyFactor"),
+        MemoryLayout.paddingLayout(4),
         Box2D.C_POINTER.withName("name"),
         Box2D.C_POINTER.withName("userData"),
+        b2MotionLocks.layout().withName("motionLocks"),
         Box2D.C_BOOL.withName("enableSleep"),
         Box2D.C_BOOL.withName("isAwake"),
-        Box2D.C_BOOL.withName("fixedRotation"),
         Box2D.C_BOOL.withName("isBullet"),
         Box2D.C_BOOL.withName("isEnabled"),
         Box2D.C_BOOL.withName("allowFastRotation"),
-        MemoryLayout.paddingLayout(2),
-        Box2D.C_INT.withName("internalValue"),
-        MemoryLayout.paddingLayout(4)
+        Box2D.C_BOOL.withName("enableContactRecycling"),
+        MemoryLayout.paddingLayout(3),
+        Box2D.C_INT.withName("internalValue")
     ).withName("b2BodyDef");
 
     /**
@@ -121,7 +125,7 @@ public class b2BodyDef {
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * b2Vec2 position
+     * b2Pos position
      * }
      */
     public static final GroupLayout position$layout() {
@@ -133,7 +137,7 @@ public class b2BodyDef {
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * b2Vec2 position
+     * b2Pos position
      * }
      */
     public static final long position$offset() {
@@ -143,7 +147,7 @@ public class b2BodyDef {
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * b2Vec2 position
+     * b2Pos position
      * }
      */
     public static MemorySegment position(MemorySegment struct) {
@@ -153,7 +157,7 @@ public class b2BodyDef {
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * b2Vec2 position
+     * b2Pos position
      * }
      */
     public static void position(MemorySegment struct, MemorySegment fieldValue) {
@@ -468,6 +472,50 @@ public class b2BodyDef {
         struct.set(sleepThreshold$LAYOUT, sleepThreshold$OFFSET, fieldValue);
     }
 
+    private static final OfFloat safetyFactor$LAYOUT = (OfFloat)$LAYOUT.select(groupElement("safetyFactor"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * float safetyFactor
+     * }
+     */
+    public static final OfFloat safetyFactor$layout() {
+        return safetyFactor$LAYOUT;
+    }
+
+    private static final long safetyFactor$OFFSET = $LAYOUT.byteOffset(groupElement("safetyFactor"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * float safetyFactor
+     * }
+     */
+    public static final long safetyFactor$offset() {
+        return safetyFactor$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * float safetyFactor
+     * }
+     */
+    public static float safetyFactor(MemorySegment struct) {
+        return struct.get(safetyFactor$LAYOUT, safetyFactor$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * float safetyFactor
+     * }
+     */
+    public static void safetyFactor(MemorySegment struct, float fieldValue) {
+        struct.set(safetyFactor$LAYOUT, safetyFactor$OFFSET, fieldValue);
+    }
+
     private static final AddressLayout name$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("name"));
 
     /**
@@ -556,12 +604,56 @@ public class b2BodyDef {
         struct.set(userData$LAYOUT, userData$OFFSET, fieldValue);
     }
 
+    private static final GroupLayout motionLocks$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("motionLocks"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * b2MotionLocks motionLocks
+     * }
+     */
+    public static final GroupLayout motionLocks$layout() {
+        return motionLocks$LAYOUT;
+    }
+
+    private static final long motionLocks$OFFSET = $LAYOUT.byteOffset(groupElement("motionLocks"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * b2MotionLocks motionLocks
+     * }
+     */
+    public static final long motionLocks$offset() {
+        return motionLocks$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * b2MotionLocks motionLocks
+     * }
+     */
+    public static MemorySegment motionLocks(MemorySegment struct) {
+        return struct.asSlice(motionLocks$OFFSET, motionLocks$LAYOUT.byteSize());
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * b2MotionLocks motionLocks
+     * }
+     */
+    public static void motionLocks(MemorySegment struct, MemorySegment fieldValue) {
+        MemorySegment.copy(fieldValue, 0L, struct, motionLocks$OFFSET, motionLocks$LAYOUT.byteSize());
+    }
+
     private static final OfBoolean enableSleep$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("enableSleep"));
 
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * _Bool enableSleep
+     * bool enableSleep
      * }
      */
     public static final OfBoolean enableSleep$layout() {
@@ -573,7 +665,7 @@ public class b2BodyDef {
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * _Bool enableSleep
+     * bool enableSleep
      * }
      */
     public static final long enableSleep$offset() {
@@ -583,7 +675,7 @@ public class b2BodyDef {
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * _Bool enableSleep
+     * bool enableSleep
      * }
      */
     public static boolean enableSleep(MemorySegment struct) {
@@ -593,7 +685,7 @@ public class b2BodyDef {
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * _Bool enableSleep
+     * bool enableSleep
      * }
      */
     public static void enableSleep(MemorySegment struct, boolean fieldValue) {
@@ -605,7 +697,7 @@ public class b2BodyDef {
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * _Bool isAwake
+     * bool isAwake
      * }
      */
     public static final OfBoolean isAwake$layout() {
@@ -617,7 +709,7 @@ public class b2BodyDef {
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * _Bool isAwake
+     * bool isAwake
      * }
      */
     public static final long isAwake$offset() {
@@ -627,7 +719,7 @@ public class b2BodyDef {
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * _Bool isAwake
+     * bool isAwake
      * }
      */
     public static boolean isAwake(MemorySegment struct) {
@@ -637,55 +729,11 @@ public class b2BodyDef {
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * _Bool isAwake
+     * bool isAwake
      * }
      */
     public static void isAwake(MemorySegment struct, boolean fieldValue) {
         struct.set(isAwake$LAYOUT, isAwake$OFFSET, fieldValue);
-    }
-
-    private static final OfBoolean fixedRotation$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("fixedRotation"));
-
-    /**
-     * Layout for field:
-     * {@snippet lang=c :
-     * _Bool fixedRotation
-     * }
-     */
-    public static final OfBoolean fixedRotation$layout() {
-        return fixedRotation$LAYOUT;
-    }
-
-    private static final long fixedRotation$OFFSET = $LAYOUT.byteOffset(groupElement("fixedRotation"));
-
-    /**
-     * Offset for field:
-     * {@snippet lang=c :
-     * _Bool fixedRotation
-     * }
-     */
-    public static final long fixedRotation$offset() {
-        return fixedRotation$OFFSET;
-    }
-
-    /**
-     * Getter for field:
-     * {@snippet lang=c :
-     * _Bool fixedRotation
-     * }
-     */
-    public static boolean fixedRotation(MemorySegment struct) {
-        return struct.get(fixedRotation$LAYOUT, fixedRotation$OFFSET);
-    }
-
-    /**
-     * Setter for field:
-     * {@snippet lang=c :
-     * _Bool fixedRotation
-     * }
-     */
-    public static void fixedRotation(MemorySegment struct, boolean fieldValue) {
-        struct.set(fixedRotation$LAYOUT, fixedRotation$OFFSET, fieldValue);
     }
 
     private static final OfBoolean isBullet$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("isBullet"));
@@ -693,7 +741,7 @@ public class b2BodyDef {
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * _Bool isBullet
+     * bool isBullet
      * }
      */
     public static final OfBoolean isBullet$layout() {
@@ -705,7 +753,7 @@ public class b2BodyDef {
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * _Bool isBullet
+     * bool isBullet
      * }
      */
     public static final long isBullet$offset() {
@@ -715,7 +763,7 @@ public class b2BodyDef {
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * _Bool isBullet
+     * bool isBullet
      * }
      */
     public static boolean isBullet(MemorySegment struct) {
@@ -725,7 +773,7 @@ public class b2BodyDef {
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * _Bool isBullet
+     * bool isBullet
      * }
      */
     public static void isBullet(MemorySegment struct, boolean fieldValue) {
@@ -737,7 +785,7 @@ public class b2BodyDef {
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * _Bool isEnabled
+     * bool isEnabled
      * }
      */
     public static final OfBoolean isEnabled$layout() {
@@ -749,7 +797,7 @@ public class b2BodyDef {
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * _Bool isEnabled
+     * bool isEnabled
      * }
      */
     public static final long isEnabled$offset() {
@@ -759,7 +807,7 @@ public class b2BodyDef {
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * _Bool isEnabled
+     * bool isEnabled
      * }
      */
     public static boolean isEnabled(MemorySegment struct) {
@@ -769,7 +817,7 @@ public class b2BodyDef {
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * _Bool isEnabled
+     * bool isEnabled
      * }
      */
     public static void isEnabled(MemorySegment struct, boolean fieldValue) {
@@ -781,7 +829,7 @@ public class b2BodyDef {
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * _Bool allowFastRotation
+     * bool allowFastRotation
      * }
      */
     public static final OfBoolean allowFastRotation$layout() {
@@ -793,7 +841,7 @@ public class b2BodyDef {
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * _Bool allowFastRotation
+     * bool allowFastRotation
      * }
      */
     public static final long allowFastRotation$offset() {
@@ -803,7 +851,7 @@ public class b2BodyDef {
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * _Bool allowFastRotation
+     * bool allowFastRotation
      * }
      */
     public static boolean allowFastRotation(MemorySegment struct) {
@@ -813,11 +861,55 @@ public class b2BodyDef {
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * _Bool allowFastRotation
+     * bool allowFastRotation
      * }
      */
     public static void allowFastRotation(MemorySegment struct, boolean fieldValue) {
         struct.set(allowFastRotation$LAYOUT, allowFastRotation$OFFSET, fieldValue);
+    }
+
+    private static final OfBoolean enableContactRecycling$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("enableContactRecycling"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * bool enableContactRecycling
+     * }
+     */
+    public static final OfBoolean enableContactRecycling$layout() {
+        return enableContactRecycling$LAYOUT;
+    }
+
+    private static final long enableContactRecycling$OFFSET = $LAYOUT.byteOffset(groupElement("enableContactRecycling"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * bool enableContactRecycling
+     * }
+     */
+    public static final long enableContactRecycling$offset() {
+        return enableContactRecycling$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * bool enableContactRecycling
+     * }
+     */
+    public static boolean enableContactRecycling(MemorySegment struct) {
+        return struct.get(enableContactRecycling$LAYOUT, enableContactRecycling$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * bool enableContactRecycling
+     * }
+     */
+    public static void enableContactRecycling(MemorySegment struct, boolean fieldValue) {
+        struct.set(enableContactRecycling$LAYOUT, enableContactRecycling$OFFSET, fieldValue);
     }
 
     private static final OfInt internalValue$LAYOUT = (OfInt)$LAYOUT.select(groupElement("internalValue"));

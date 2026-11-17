@@ -17,7 +17,7 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
  * struct b2PlaneResult {
  *     b2Plane plane;
  *     b2Vec2 point;
- *     _Bool hit;
+ *     bool hit;
  * }
  * }
  */
@@ -134,7 +134,7 @@ public class b2PlaneResult {
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * _Bool hit
+     * bool hit
      * }
      */
     public static final OfBoolean hit$layout() {
@@ -146,7 +146,7 @@ public class b2PlaneResult {
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * _Bool hit
+     * bool hit
      * }
      */
     public static final long hit$offset() {
@@ -156,7 +156,7 @@ public class b2PlaneResult {
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * _Bool hit
+     * bool hit
      * }
      */
     public static boolean hit(MemorySegment struct) {
@@ -166,7 +166,7 @@ public class b2PlaneResult {
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * _Bool hit
+     * bool hit
      * }
      */
     public static void hit(MemorySegment struct, boolean fieldValue) {

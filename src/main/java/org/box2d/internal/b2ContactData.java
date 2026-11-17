@@ -15,6 +15,7 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
 /**
  * {@snippet lang=c :
  * struct b2ContactData {
+ *     b2ContactId contactId;
  *     b2ShapeId shapeIdA;
  *     b2ShapeId shapeIdB;
  *     b2Manifold manifold;
@@ -28,6 +29,7 @@ public class b2ContactData {
     }
 
     private static final GroupLayout $LAYOUT = MemoryLayout.structLayout(
+        b2ContactId.layout().withName("contactId"),
         b2ShapeId.layout().withName("shapeIdA"),
         b2ShapeId.layout().withName("shapeIdB"),
         b2Manifold.layout().withName("manifold")
@@ -38,6 +40,50 @@ public class b2ContactData {
      */
     public static final GroupLayout layout() {
         return $LAYOUT;
+    }
+
+    private static final GroupLayout contactId$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("contactId"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * b2ContactId contactId
+     * }
+     */
+    public static final GroupLayout contactId$layout() {
+        return contactId$LAYOUT;
+    }
+
+    private static final long contactId$OFFSET = $LAYOUT.byteOffset(groupElement("contactId"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * b2ContactId contactId
+     * }
+     */
+    public static final long contactId$offset() {
+        return contactId$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * b2ContactId contactId
+     * }
+     */
+    public static MemorySegment contactId(MemorySegment struct) {
+        return struct.asSlice(contactId$OFFSET, contactId$LAYOUT.byteSize());
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * b2ContactId contactId
+     * }
+     */
+    public static void contactId(MemorySegment struct, MemorySegment fieldValue) {
+        MemorySegment.copy(fieldValue, 0L, struct, contactId$OFFSET, contactId$LAYOUT.byteSize());
     }
 
     private static final GroupLayout shapeIdA$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("shapeIdA"));

@@ -16,7 +16,7 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
  * {@snippet lang=c :
  * struct b2ExplosionDef {
  *     uint64_t maskBits;
- *     b2Vec2 position;
+ *     b2Pos position;
  *     float radius;
  *     float falloff;
  *     float impulsePerLength;
@@ -94,7 +94,7 @@ public class b2ExplosionDef {
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * b2Vec2 position
+     * b2Pos position
      * }
      */
     public static final GroupLayout position$layout() {
@@ -106,7 +106,7 @@ public class b2ExplosionDef {
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * b2Vec2 position
+     * b2Pos position
      * }
      */
     public static final long position$offset() {
@@ -116,7 +116,7 @@ public class b2ExplosionDef {
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * b2Vec2 position
+     * b2Pos position
      * }
      */
     public static MemorySegment position(MemorySegment struct) {
@@ -126,7 +126,7 @@ public class b2ExplosionDef {
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * b2Vec2 position
+     * b2Pos position
      * }
      */
     public static void position(MemorySegment struct, MemorySegment fieldValue) {

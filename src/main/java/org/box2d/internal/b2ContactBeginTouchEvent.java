@@ -17,7 +17,7 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
  * struct b2ContactBeginTouchEvent {
  *     b2ShapeId shapeIdA;
  *     b2ShapeId shapeIdB;
- *     b2Manifold manifold;
+ *     b2ContactId contactId;
  * }
  * }
  */
@@ -30,7 +30,7 @@ public class b2ContactBeginTouchEvent {
     private static final GroupLayout $LAYOUT = MemoryLayout.structLayout(
         b2ShapeId.layout().withName("shapeIdA"),
         b2ShapeId.layout().withName("shapeIdB"),
-        b2Manifold.layout().withName("manifold")
+        b2ContactId.layout().withName("contactId")
     ).withName("b2ContactBeginTouchEvent");
 
     /**
@@ -128,48 +128,48 @@ public class b2ContactBeginTouchEvent {
         MemorySegment.copy(fieldValue, 0L, struct, shapeIdB$OFFSET, shapeIdB$LAYOUT.byteSize());
     }
 
-    private static final GroupLayout manifold$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("manifold"));
+    private static final GroupLayout contactId$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("contactId"));
 
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * b2Manifold manifold
+     * b2ContactId contactId
      * }
      */
-    public static final GroupLayout manifold$layout() {
-        return manifold$LAYOUT;
+    public static final GroupLayout contactId$layout() {
+        return contactId$LAYOUT;
     }
 
-    private static final long manifold$OFFSET = $LAYOUT.byteOffset(groupElement("manifold"));
+    private static final long contactId$OFFSET = $LAYOUT.byteOffset(groupElement("contactId"));
 
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * b2Manifold manifold
+     * b2ContactId contactId
      * }
      */
-    public static final long manifold$offset() {
-        return manifold$OFFSET;
+    public static final long contactId$offset() {
+        return contactId$OFFSET;
     }
 
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * b2Manifold manifold
+     * b2ContactId contactId
      * }
      */
-    public static MemorySegment manifold(MemorySegment struct) {
-        return struct.asSlice(manifold$OFFSET, manifold$LAYOUT.byteSize());
+    public static MemorySegment contactId(MemorySegment struct) {
+        return struct.asSlice(contactId$OFFSET, contactId$LAYOUT.byteSize());
     }
 
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * b2Manifold manifold
+     * b2ContactId contactId
      * }
      */
-    public static void manifold(MemorySegment struct, MemorySegment fieldValue) {
-        MemorySegment.copy(fieldValue, 0L, struct, manifold$OFFSET, manifold$LAYOUT.byteSize());
+    public static void contactId(MemorySegment struct, MemorySegment fieldValue) {
+        MemorySegment.copy(fieldValue, 0L, struct, contactId$OFFSET, contactId$LAYOUT.byteSize());
     }
 
     /**

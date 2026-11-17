@@ -17,12 +17,14 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
  * struct b2ChainDef {
  *     void *userData;
  *     const b2Vec2 *points;
- *     int count;
+ *     int pointCount;
+ *     b2Vec2 ghost1;
+ *     b2Vec2 ghost2;
  *     const b2SurfaceMaterial *materials;
  *     int materialCount;
  *     b2Filter filter;
- *     _Bool isLoop;
- *     _Bool enableSensorEvents;
+ *     bool isLoop;
+ *     bool enableSensorEvents;
  *     int internalValue;
  * }
  * }
@@ -36,7 +38,9 @@ public class b2ChainDef {
     private static final GroupLayout $LAYOUT = MemoryLayout.structLayout(
         Box2D.C_POINTER.withName("userData"),
         Box2D.C_POINTER.withName("points"),
-        Box2D.C_INT.withName("count"),
+        Box2D.C_INT.withName("pointCount"),
+        b2Vec2.layout().withName("ghost1"),
+        b2Vec2.layout().withName("ghost2"),
         MemoryLayout.paddingLayout(4),
         Box2D.C_POINTER.withName("materials"),
         Box2D.C_INT.withName("materialCount"),
@@ -143,48 +147,136 @@ public class b2ChainDef {
         struct.set(points$LAYOUT, points$OFFSET, fieldValue);
     }
 
-    private static final OfInt count$LAYOUT = (OfInt)$LAYOUT.select(groupElement("count"));
+    private static final OfInt pointCount$LAYOUT = (OfInt)$LAYOUT.select(groupElement("pointCount"));
 
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * int count
+     * int pointCount
      * }
      */
-    public static final OfInt count$layout() {
-        return count$LAYOUT;
+    public static final OfInt pointCount$layout() {
+        return pointCount$LAYOUT;
     }
 
-    private static final long count$OFFSET = $LAYOUT.byteOffset(groupElement("count"));
+    private static final long pointCount$OFFSET = $LAYOUT.byteOffset(groupElement("pointCount"));
 
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * int count
+     * int pointCount
      * }
      */
-    public static final long count$offset() {
-        return count$OFFSET;
+    public static final long pointCount$offset() {
+        return pointCount$OFFSET;
     }
 
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * int count
+     * int pointCount
      * }
      */
-    public static int count(MemorySegment struct) {
-        return struct.get(count$LAYOUT, count$OFFSET);
+    public static int pointCount(MemorySegment struct) {
+        return struct.get(pointCount$LAYOUT, pointCount$OFFSET);
     }
 
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * int count
+     * int pointCount
      * }
      */
-    public static void count(MemorySegment struct, int fieldValue) {
-        struct.set(count$LAYOUT, count$OFFSET, fieldValue);
+    public static void pointCount(MemorySegment struct, int fieldValue) {
+        struct.set(pointCount$LAYOUT, pointCount$OFFSET, fieldValue);
+    }
+
+    private static final GroupLayout ghost1$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("ghost1"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * b2Vec2 ghost1
+     * }
+     */
+    public static final GroupLayout ghost1$layout() {
+        return ghost1$LAYOUT;
+    }
+
+    private static final long ghost1$OFFSET = $LAYOUT.byteOffset(groupElement("ghost1"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * b2Vec2 ghost1
+     * }
+     */
+    public static final long ghost1$offset() {
+        return ghost1$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * b2Vec2 ghost1
+     * }
+     */
+    public static MemorySegment ghost1(MemorySegment struct) {
+        return struct.asSlice(ghost1$OFFSET, ghost1$LAYOUT.byteSize());
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * b2Vec2 ghost1
+     * }
+     */
+    public static void ghost1(MemorySegment struct, MemorySegment fieldValue) {
+        MemorySegment.copy(fieldValue, 0L, struct, ghost1$OFFSET, ghost1$LAYOUT.byteSize());
+    }
+
+    private static final GroupLayout ghost2$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("ghost2"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * b2Vec2 ghost2
+     * }
+     */
+    public static final GroupLayout ghost2$layout() {
+        return ghost2$LAYOUT;
+    }
+
+    private static final long ghost2$OFFSET = $LAYOUT.byteOffset(groupElement("ghost2"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * b2Vec2 ghost2
+     * }
+     */
+    public static final long ghost2$offset() {
+        return ghost2$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * b2Vec2 ghost2
+     * }
+     */
+    public static MemorySegment ghost2(MemorySegment struct) {
+        return struct.asSlice(ghost2$OFFSET, ghost2$LAYOUT.byteSize());
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * b2Vec2 ghost2
+     * }
+     */
+    public static void ghost2(MemorySegment struct, MemorySegment fieldValue) {
+        MemorySegment.copy(fieldValue, 0L, struct, ghost2$OFFSET, ghost2$LAYOUT.byteSize());
     }
 
     private static final AddressLayout materials$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("materials"));
@@ -324,7 +416,7 @@ public class b2ChainDef {
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * _Bool isLoop
+     * bool isLoop
      * }
      */
     public static final OfBoolean isLoop$layout() {
@@ -336,7 +428,7 @@ public class b2ChainDef {
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * _Bool isLoop
+     * bool isLoop
      * }
      */
     public static final long isLoop$offset() {
@@ -346,7 +438,7 @@ public class b2ChainDef {
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * _Bool isLoop
+     * bool isLoop
      * }
      */
     public static boolean isLoop(MemorySegment struct) {
@@ -356,7 +448,7 @@ public class b2ChainDef {
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * _Bool isLoop
+     * bool isLoop
      * }
      */
     public static void isLoop(MemorySegment struct, boolean fieldValue) {
@@ -368,7 +460,7 @@ public class b2ChainDef {
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * _Bool enableSensorEvents
+     * bool enableSensorEvents
      * }
      */
     public static final OfBoolean enableSensorEvents$layout() {
@@ -380,7 +472,7 @@ public class b2ChainDef {
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * _Bool enableSensorEvents
+     * bool enableSensorEvents
      * }
      */
     public static final long enableSensorEvents$offset() {
@@ -390,7 +482,7 @@ public class b2ChainDef {
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * _Bool enableSensorEvents
+     * bool enableSensorEvents
      * }
      */
     public static boolean enableSensorEvents(MemorySegment struct) {
@@ -400,7 +492,7 @@ public class b2ChainDef {
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * _Bool enableSensorEvents
+     * bool enableSensorEvents
      * }
      */
     public static void enableSensorEvents(MemorySegment struct, boolean fieldValue) {

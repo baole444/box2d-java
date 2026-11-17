@@ -1,0 +1,8 @@
+# jextract fork, used by .github/workflows/check-bindings.yml.
+# Line endings are pinned so the files are byte-identical on every checkout, including Windows runners with core.autocrlf.
+# The patch is applied with git apply against LF sources.
+jextract/fork/fork.patch                           text eol=lf
+jextract/fork/overlay/gradlew                      text eol=lf
+jextract/fork/overlay/gradlew.bat                  text eol=crlf
+jextract/fork/overlay/gradle/wrapper/*.properties  text eol=lf
+jextract/fork/overlay/gradle/wrapper/*.jar         binary

@@ -15,15 +15,17 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
 /**
  * {@snippet lang=c :
  * struct b2MotorJointDef {
- *     b2BodyId bodyIdA;
- *     b2BodyId bodyIdB;
- *     b2Vec2 linearOffset;
- *     float angularOffset;
- *     float maxForce;
- *     float maxTorque;
- *     float correctionFactor;
- *     _Bool collideConnected;
- *     void *userData;
+ *     b2JointDef base;
+ *     b2Vec2 linearVelocity;
+ *     float maxVelocityForce;
+ *     float angularVelocity;
+ *     float maxVelocityTorque;
+ *     float linearHertz;
+ *     float linearDampingRatio;
+ *     float maxSpringForce;
+ *     float angularHertz;
+ *     float angularDampingRatio;
+ *     float maxSpringTorque;
  *     int internalValue;
  * }
  * }
@@ -35,18 +37,18 @@ public class b2MotorJointDef {
     }
 
     private static final GroupLayout $LAYOUT = MemoryLayout.structLayout(
-        b2BodyId.layout().withName("bodyIdA"),
-        b2BodyId.layout().withName("bodyIdB"),
-        b2Vec2.layout().withName("linearOffset"),
-        Box2D.C_FLOAT.withName("angularOffset"),
-        Box2D.C_FLOAT.withName("maxForce"),
-        Box2D.C_FLOAT.withName("maxTorque"),
-        Box2D.C_FLOAT.withName("correctionFactor"),
-        Box2D.C_BOOL.withName("collideConnected"),
-        MemoryLayout.paddingLayout(7),
-        Box2D.C_POINTER.withName("userData"),
-        Box2D.C_INT.withName("internalValue"),
-        MemoryLayout.paddingLayout(4)
+        b2JointDef.layout().withName("base"),
+        b2Vec2.layout().withName("linearVelocity"),
+        Box2D.C_FLOAT.withName("maxVelocityForce"),
+        Box2D.C_FLOAT.withName("angularVelocity"),
+        Box2D.C_FLOAT.withName("maxVelocityTorque"),
+        Box2D.C_FLOAT.withName("linearHertz"),
+        Box2D.C_FLOAT.withName("linearDampingRatio"),
+        Box2D.C_FLOAT.withName("maxSpringForce"),
+        Box2D.C_FLOAT.withName("angularHertz"),
+        Box2D.C_FLOAT.withName("angularDampingRatio"),
+        Box2D.C_FLOAT.withName("maxSpringTorque"),
+        Box2D.C_INT.withName("internalValue")
     ).withName("b2MotorJointDef");
 
     /**
@@ -56,400 +58,488 @@ public class b2MotorJointDef {
         return $LAYOUT;
     }
 
-    private static final GroupLayout bodyIdA$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("bodyIdA"));
+    private static final GroupLayout base$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("base"));
 
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * b2BodyId bodyIdA
+     * b2JointDef base
      * }
      */
-    public static final GroupLayout bodyIdA$layout() {
-        return bodyIdA$LAYOUT;
+    public static final GroupLayout base$layout() {
+        return base$LAYOUT;
     }
 
-    private static final long bodyIdA$OFFSET = $LAYOUT.byteOffset(groupElement("bodyIdA"));
+    private static final long base$OFFSET = $LAYOUT.byteOffset(groupElement("base"));
 
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * b2BodyId bodyIdA
+     * b2JointDef base
      * }
      */
-    public static final long bodyIdA$offset() {
-        return bodyIdA$OFFSET;
+    public static final long base$offset() {
+        return base$OFFSET;
     }
 
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * b2BodyId bodyIdA
+     * b2JointDef base
      * }
      */
-    public static MemorySegment bodyIdA(MemorySegment struct) {
-        return struct.asSlice(bodyIdA$OFFSET, bodyIdA$LAYOUT.byteSize());
+    public static MemorySegment base(MemorySegment struct) {
+        return struct.asSlice(base$OFFSET, base$LAYOUT.byteSize());
     }
 
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * b2BodyId bodyIdA
+     * b2JointDef base
      * }
      */
-    public static void bodyIdA(MemorySegment struct, MemorySegment fieldValue) {
-        MemorySegment.copy(fieldValue, 0L, struct, bodyIdA$OFFSET, bodyIdA$LAYOUT.byteSize());
+    public static void base(MemorySegment struct, MemorySegment fieldValue) {
+        MemorySegment.copy(fieldValue, 0L, struct, base$OFFSET, base$LAYOUT.byteSize());
     }
 
-    private static final GroupLayout bodyIdB$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("bodyIdB"));
+    private static final GroupLayout linearVelocity$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("linearVelocity"));
 
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * b2BodyId bodyIdB
+     * b2Vec2 linearVelocity
      * }
      */
-    public static final GroupLayout bodyIdB$layout() {
-        return bodyIdB$LAYOUT;
+    public static final GroupLayout linearVelocity$layout() {
+        return linearVelocity$LAYOUT;
     }
 
-    private static final long bodyIdB$OFFSET = $LAYOUT.byteOffset(groupElement("bodyIdB"));
+    private static final long linearVelocity$OFFSET = $LAYOUT.byteOffset(groupElement("linearVelocity"));
 
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * b2BodyId bodyIdB
+     * b2Vec2 linearVelocity
      * }
      */
-    public static final long bodyIdB$offset() {
-        return bodyIdB$OFFSET;
+    public static final long linearVelocity$offset() {
+        return linearVelocity$OFFSET;
     }
 
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * b2BodyId bodyIdB
+     * b2Vec2 linearVelocity
      * }
      */
-    public static MemorySegment bodyIdB(MemorySegment struct) {
-        return struct.asSlice(bodyIdB$OFFSET, bodyIdB$LAYOUT.byteSize());
+    public static MemorySegment linearVelocity(MemorySegment struct) {
+        return struct.asSlice(linearVelocity$OFFSET, linearVelocity$LAYOUT.byteSize());
     }
 
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * b2BodyId bodyIdB
+     * b2Vec2 linearVelocity
      * }
      */
-    public static void bodyIdB(MemorySegment struct, MemorySegment fieldValue) {
-        MemorySegment.copy(fieldValue, 0L, struct, bodyIdB$OFFSET, bodyIdB$LAYOUT.byteSize());
+    public static void linearVelocity(MemorySegment struct, MemorySegment fieldValue) {
+        MemorySegment.copy(fieldValue, 0L, struct, linearVelocity$OFFSET, linearVelocity$LAYOUT.byteSize());
     }
 
-    private static final GroupLayout linearOffset$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("linearOffset"));
+    private static final OfFloat maxVelocityForce$LAYOUT = (OfFloat)$LAYOUT.select(groupElement("maxVelocityForce"));
 
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * b2Vec2 linearOffset
+     * float maxVelocityForce
      * }
      */
-    public static final GroupLayout linearOffset$layout() {
-        return linearOffset$LAYOUT;
+    public static final OfFloat maxVelocityForce$layout() {
+        return maxVelocityForce$LAYOUT;
     }
 
-    private static final long linearOffset$OFFSET = $LAYOUT.byteOffset(groupElement("linearOffset"));
+    private static final long maxVelocityForce$OFFSET = $LAYOUT.byteOffset(groupElement("maxVelocityForce"));
 
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * b2Vec2 linearOffset
+     * float maxVelocityForce
      * }
      */
-    public static final long linearOffset$offset() {
-        return linearOffset$OFFSET;
+    public static final long maxVelocityForce$offset() {
+        return maxVelocityForce$OFFSET;
     }
 
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * b2Vec2 linearOffset
+     * float maxVelocityForce
      * }
      */
-    public static MemorySegment linearOffset(MemorySegment struct) {
-        return struct.asSlice(linearOffset$OFFSET, linearOffset$LAYOUT.byteSize());
+    public static float maxVelocityForce(MemorySegment struct) {
+        return struct.get(maxVelocityForce$LAYOUT, maxVelocityForce$OFFSET);
     }
 
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * b2Vec2 linearOffset
+     * float maxVelocityForce
      * }
      */
-    public static void linearOffset(MemorySegment struct, MemorySegment fieldValue) {
-        MemorySegment.copy(fieldValue, 0L, struct, linearOffset$OFFSET, linearOffset$LAYOUT.byteSize());
+    public static void maxVelocityForce(MemorySegment struct, float fieldValue) {
+        struct.set(maxVelocityForce$LAYOUT, maxVelocityForce$OFFSET, fieldValue);
     }
 
-    private static final OfFloat angularOffset$LAYOUT = (OfFloat)$LAYOUT.select(groupElement("angularOffset"));
+    private static final OfFloat angularVelocity$LAYOUT = (OfFloat)$LAYOUT.select(groupElement("angularVelocity"));
 
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * float angularOffset
+     * float angularVelocity
      * }
      */
-    public static final OfFloat angularOffset$layout() {
-        return angularOffset$LAYOUT;
+    public static final OfFloat angularVelocity$layout() {
+        return angularVelocity$LAYOUT;
     }
 
-    private static final long angularOffset$OFFSET = $LAYOUT.byteOffset(groupElement("angularOffset"));
+    private static final long angularVelocity$OFFSET = $LAYOUT.byteOffset(groupElement("angularVelocity"));
 
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * float angularOffset
+     * float angularVelocity
      * }
      */
-    public static final long angularOffset$offset() {
-        return angularOffset$OFFSET;
+    public static final long angularVelocity$offset() {
+        return angularVelocity$OFFSET;
     }
 
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * float angularOffset
+     * float angularVelocity
      * }
      */
-    public static float angularOffset(MemorySegment struct) {
-        return struct.get(angularOffset$LAYOUT, angularOffset$OFFSET);
+    public static float angularVelocity(MemorySegment struct) {
+        return struct.get(angularVelocity$LAYOUT, angularVelocity$OFFSET);
     }
 
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * float angularOffset
+     * float angularVelocity
      * }
      */
-    public static void angularOffset(MemorySegment struct, float fieldValue) {
-        struct.set(angularOffset$LAYOUT, angularOffset$OFFSET, fieldValue);
+    public static void angularVelocity(MemorySegment struct, float fieldValue) {
+        struct.set(angularVelocity$LAYOUT, angularVelocity$OFFSET, fieldValue);
     }
 
-    private static final OfFloat maxForce$LAYOUT = (OfFloat)$LAYOUT.select(groupElement("maxForce"));
+    private static final OfFloat maxVelocityTorque$LAYOUT = (OfFloat)$LAYOUT.select(groupElement("maxVelocityTorque"));
 
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * float maxForce
+     * float maxVelocityTorque
      * }
      */
-    public static final OfFloat maxForce$layout() {
-        return maxForce$LAYOUT;
+    public static final OfFloat maxVelocityTorque$layout() {
+        return maxVelocityTorque$LAYOUT;
     }
 
-    private static final long maxForce$OFFSET = $LAYOUT.byteOffset(groupElement("maxForce"));
+    private static final long maxVelocityTorque$OFFSET = $LAYOUT.byteOffset(groupElement("maxVelocityTorque"));
 
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * float maxForce
+     * float maxVelocityTorque
      * }
      */
-    public static final long maxForce$offset() {
-        return maxForce$OFFSET;
+    public static final long maxVelocityTorque$offset() {
+        return maxVelocityTorque$OFFSET;
     }
 
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * float maxForce
+     * float maxVelocityTorque
      * }
      */
-    public static float maxForce(MemorySegment struct) {
-        return struct.get(maxForce$LAYOUT, maxForce$OFFSET);
+    public static float maxVelocityTorque(MemorySegment struct) {
+        return struct.get(maxVelocityTorque$LAYOUT, maxVelocityTorque$OFFSET);
     }
 
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * float maxForce
+     * float maxVelocityTorque
      * }
      */
-    public static void maxForce(MemorySegment struct, float fieldValue) {
-        struct.set(maxForce$LAYOUT, maxForce$OFFSET, fieldValue);
+    public static void maxVelocityTorque(MemorySegment struct, float fieldValue) {
+        struct.set(maxVelocityTorque$LAYOUT, maxVelocityTorque$OFFSET, fieldValue);
     }
 
-    private static final OfFloat maxTorque$LAYOUT = (OfFloat)$LAYOUT.select(groupElement("maxTorque"));
+    private static final OfFloat linearHertz$LAYOUT = (OfFloat)$LAYOUT.select(groupElement("linearHertz"));
 
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * float maxTorque
+     * float linearHertz
      * }
      */
-    public static final OfFloat maxTorque$layout() {
-        return maxTorque$LAYOUT;
+    public static final OfFloat linearHertz$layout() {
+        return linearHertz$LAYOUT;
     }
 
-    private static final long maxTorque$OFFSET = $LAYOUT.byteOffset(groupElement("maxTorque"));
+    private static final long linearHertz$OFFSET = $LAYOUT.byteOffset(groupElement("linearHertz"));
 
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * float maxTorque
+     * float linearHertz
      * }
      */
-    public static final long maxTorque$offset() {
-        return maxTorque$OFFSET;
+    public static final long linearHertz$offset() {
+        return linearHertz$OFFSET;
     }
 
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * float maxTorque
+     * float linearHertz
      * }
      */
-    public static float maxTorque(MemorySegment struct) {
-        return struct.get(maxTorque$LAYOUT, maxTorque$OFFSET);
+    public static float linearHertz(MemorySegment struct) {
+        return struct.get(linearHertz$LAYOUT, linearHertz$OFFSET);
     }
 
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * float maxTorque
+     * float linearHertz
      * }
      */
-    public static void maxTorque(MemorySegment struct, float fieldValue) {
-        struct.set(maxTorque$LAYOUT, maxTorque$OFFSET, fieldValue);
+    public static void linearHertz(MemorySegment struct, float fieldValue) {
+        struct.set(linearHertz$LAYOUT, linearHertz$OFFSET, fieldValue);
     }
 
-    private static final OfFloat correctionFactor$LAYOUT = (OfFloat)$LAYOUT.select(groupElement("correctionFactor"));
+    private static final OfFloat linearDampingRatio$LAYOUT = (OfFloat)$LAYOUT.select(groupElement("linearDampingRatio"));
 
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * float correctionFactor
+     * float linearDampingRatio
      * }
      */
-    public static final OfFloat correctionFactor$layout() {
-        return correctionFactor$LAYOUT;
+    public static final OfFloat linearDampingRatio$layout() {
+        return linearDampingRatio$LAYOUT;
     }
 
-    private static final long correctionFactor$OFFSET = $LAYOUT.byteOffset(groupElement("correctionFactor"));
+    private static final long linearDampingRatio$OFFSET = $LAYOUT.byteOffset(groupElement("linearDampingRatio"));
 
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * float correctionFactor
+     * float linearDampingRatio
      * }
      */
-    public static final long correctionFactor$offset() {
-        return correctionFactor$OFFSET;
+    public static final long linearDampingRatio$offset() {
+        return linearDampingRatio$OFFSET;
     }
 
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * float correctionFactor
+     * float linearDampingRatio
      * }
      */
-    public static float correctionFactor(MemorySegment struct) {
-        return struct.get(correctionFactor$LAYOUT, correctionFactor$OFFSET);
+    public static float linearDampingRatio(MemorySegment struct) {
+        return struct.get(linearDampingRatio$LAYOUT, linearDampingRatio$OFFSET);
     }
 
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * float correctionFactor
+     * float linearDampingRatio
      * }
      */
-    public static void correctionFactor(MemorySegment struct, float fieldValue) {
-        struct.set(correctionFactor$LAYOUT, correctionFactor$OFFSET, fieldValue);
+    public static void linearDampingRatio(MemorySegment struct, float fieldValue) {
+        struct.set(linearDampingRatio$LAYOUT, linearDampingRatio$OFFSET, fieldValue);
     }
 
-    private static final OfBoolean collideConnected$LAYOUT = (OfBoolean)$LAYOUT.select(groupElement("collideConnected"));
+    private static final OfFloat maxSpringForce$LAYOUT = (OfFloat)$LAYOUT.select(groupElement("maxSpringForce"));
 
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * _Bool collideConnected
+     * float maxSpringForce
      * }
      */
-    public static final OfBoolean collideConnected$layout() {
-        return collideConnected$LAYOUT;
+    public static final OfFloat maxSpringForce$layout() {
+        return maxSpringForce$LAYOUT;
     }
 
-    private static final long collideConnected$OFFSET = $LAYOUT.byteOffset(groupElement("collideConnected"));
+    private static final long maxSpringForce$OFFSET = $LAYOUT.byteOffset(groupElement("maxSpringForce"));
 
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * _Bool collideConnected
+     * float maxSpringForce
      * }
      */
-    public static final long collideConnected$offset() {
-        return collideConnected$OFFSET;
+    public static final long maxSpringForce$offset() {
+        return maxSpringForce$OFFSET;
     }
 
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * _Bool collideConnected
+     * float maxSpringForce
      * }
      */
-    public static boolean collideConnected(MemorySegment struct) {
-        return struct.get(collideConnected$LAYOUT, collideConnected$OFFSET);
+    public static float maxSpringForce(MemorySegment struct) {
+        return struct.get(maxSpringForce$LAYOUT, maxSpringForce$OFFSET);
     }
 
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * _Bool collideConnected
+     * float maxSpringForce
      * }
      */
-    public static void collideConnected(MemorySegment struct, boolean fieldValue) {
-        struct.set(collideConnected$LAYOUT, collideConnected$OFFSET, fieldValue);
+    public static void maxSpringForce(MemorySegment struct, float fieldValue) {
+        struct.set(maxSpringForce$LAYOUT, maxSpringForce$OFFSET, fieldValue);
     }
 
-    private static final AddressLayout userData$LAYOUT = (AddressLayout)$LAYOUT.select(groupElement("userData"));
+    private static final OfFloat angularHertz$LAYOUT = (OfFloat)$LAYOUT.select(groupElement("angularHertz"));
 
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * void *userData
+     * float angularHertz
      * }
      */
-    public static final AddressLayout userData$layout() {
-        return userData$LAYOUT;
+    public static final OfFloat angularHertz$layout() {
+        return angularHertz$LAYOUT;
     }
 
-    private static final long userData$OFFSET = $LAYOUT.byteOffset(groupElement("userData"));
+    private static final long angularHertz$OFFSET = $LAYOUT.byteOffset(groupElement("angularHertz"));
 
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * void *userData
+     * float angularHertz
      * }
      */
-    public static final long userData$offset() {
-        return userData$OFFSET;
+    public static final long angularHertz$offset() {
+        return angularHertz$OFFSET;
     }
 
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * void *userData
+     * float angularHertz
      * }
      */
-    public static MemorySegment userData(MemorySegment struct) {
-        return struct.get(userData$LAYOUT, userData$OFFSET);
+    public static float angularHertz(MemorySegment struct) {
+        return struct.get(angularHertz$LAYOUT, angularHertz$OFFSET);
     }
 
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * void *userData
+     * float angularHertz
      * }
      */
-    public static void userData(MemorySegment struct, MemorySegment fieldValue) {
-        struct.set(userData$LAYOUT, userData$OFFSET, fieldValue);
+    public static void angularHertz(MemorySegment struct, float fieldValue) {
+        struct.set(angularHertz$LAYOUT, angularHertz$OFFSET, fieldValue);
+    }
+
+    private static final OfFloat angularDampingRatio$LAYOUT = (OfFloat)$LAYOUT.select(groupElement("angularDampingRatio"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * float angularDampingRatio
+     * }
+     */
+    public static final OfFloat angularDampingRatio$layout() {
+        return angularDampingRatio$LAYOUT;
+    }
+
+    private static final long angularDampingRatio$OFFSET = $LAYOUT.byteOffset(groupElement("angularDampingRatio"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * float angularDampingRatio
+     * }
+     */
+    public static final long angularDampingRatio$offset() {
+        return angularDampingRatio$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * float angularDampingRatio
+     * }
+     */
+    public static float angularDampingRatio(MemorySegment struct) {
+        return struct.get(angularDampingRatio$LAYOUT, angularDampingRatio$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * float angularDampingRatio
+     * }
+     */
+    public static void angularDampingRatio(MemorySegment struct, float fieldValue) {
+        struct.set(angularDampingRatio$LAYOUT, angularDampingRatio$OFFSET, fieldValue);
+    }
+
+    private static final OfFloat maxSpringTorque$LAYOUT = (OfFloat)$LAYOUT.select(groupElement("maxSpringTorque"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * float maxSpringTorque
+     * }
+     */
+    public static final OfFloat maxSpringTorque$layout() {
+        return maxSpringTorque$LAYOUT;
+    }
+
+    private static final long maxSpringTorque$OFFSET = $LAYOUT.byteOffset(groupElement("maxSpringTorque"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * float maxSpringTorque
+     * }
+     */
+    public static final long maxSpringTorque$offset() {
+        return maxSpringTorque$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * float maxSpringTorque
+     * }
+     */
+    public static float maxSpringTorque(MemorySegment struct) {
+        return struct.get(maxSpringTorque$LAYOUT, maxSpringTorque$OFFSET);
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * float maxSpringTorque
+     * }
+     */
+    public static void maxSpringTorque(MemorySegment struct, float fieldValue) {
+        struct.set(maxSpringTorque$LAYOUT, maxSpringTorque$OFFSET, fieldValue);
     }
 
     private static final OfInt internalValue$LAYOUT = (OfInt)$LAYOUT.select(groupElement("internalValue"));

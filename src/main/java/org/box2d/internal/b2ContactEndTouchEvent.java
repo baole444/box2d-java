@@ -17,6 +17,7 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
  * struct b2ContactEndTouchEvent {
  *     b2ShapeId shapeIdA;
  *     b2ShapeId shapeIdB;
+ *     b2ContactId contactId;
  * }
  * }
  */
@@ -28,7 +29,8 @@ public class b2ContactEndTouchEvent {
 
     private static final GroupLayout $LAYOUT = MemoryLayout.structLayout(
         b2ShapeId.layout().withName("shapeIdA"),
-        b2ShapeId.layout().withName("shapeIdB")
+        b2ShapeId.layout().withName("shapeIdB"),
+        b2ContactId.layout().withName("contactId")
     ).withName("b2ContactEndTouchEvent");
 
     /**
@@ -124,6 +126,50 @@ public class b2ContactEndTouchEvent {
      */
     public static void shapeIdB(MemorySegment struct, MemorySegment fieldValue) {
         MemorySegment.copy(fieldValue, 0L, struct, shapeIdB$OFFSET, shapeIdB$LAYOUT.byteSize());
+    }
+
+    private static final GroupLayout contactId$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("contactId"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * b2ContactId contactId
+     * }
+     */
+    public static final GroupLayout contactId$layout() {
+        return contactId$LAYOUT;
+    }
+
+    private static final long contactId$OFFSET = $LAYOUT.byteOffset(groupElement("contactId"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * b2ContactId contactId
+     * }
+     */
+    public static final long contactId$offset() {
+        return contactId$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * b2ContactId contactId
+     * }
+     */
+    public static MemorySegment contactId(MemorySegment struct) {
+        return struct.asSlice(contactId$OFFSET, contactId$LAYOUT.byteSize());
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * b2ContactId contactId
+     * }
+     */
+    public static void contactId(MemorySegment struct, MemorySegment fieldValue) {
+        MemorySegment.copy(fieldValue, 0L, struct, contactId$OFFSET, contactId$LAYOUT.byteSize());
     }
 
     /**

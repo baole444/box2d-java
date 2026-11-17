@@ -19,7 +19,7 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
  *     float restitution;
  *     float rollingResistance;
  *     float tangentSpeed;
- *     int userMaterialId;
+ *     uint64_t userMaterialId;
  *     uint32_t customColor;
  * }
  * }
@@ -35,8 +35,9 @@ public class b2SurfaceMaterial {
         Box2D.C_FLOAT.withName("restitution"),
         Box2D.C_FLOAT.withName("rollingResistance"),
         Box2D.C_FLOAT.withName("tangentSpeed"),
-        Box2D.C_INT.withName("userMaterialId"),
-        Box2D.C_INT.withName("customColor")
+        Box2D.C_LONG_LONG.withName("userMaterialId"),
+        Box2D.C_INT.withName("customColor"),
+        MemoryLayout.paddingLayout(4)
     ).withName("b2SurfaceMaterial");
 
     /**
@@ -222,15 +223,15 @@ public class b2SurfaceMaterial {
         struct.set(tangentSpeed$LAYOUT, tangentSpeed$OFFSET, fieldValue);
     }
 
-    private static final OfInt userMaterialId$LAYOUT = (OfInt)$LAYOUT.select(groupElement("userMaterialId"));
+    private static final OfLong userMaterialId$LAYOUT = (OfLong)$LAYOUT.select(groupElement("userMaterialId"));
 
     /**
      * Layout for field:
      * {@snippet lang=c :
-     * int userMaterialId
+     * uint64_t userMaterialId
      * }
      */
-    public static final OfInt userMaterialId$layout() {
+    public static final OfLong userMaterialId$layout() {
         return userMaterialId$LAYOUT;
     }
 
@@ -239,7 +240,7 @@ public class b2SurfaceMaterial {
     /**
      * Offset for field:
      * {@snippet lang=c :
-     * int userMaterialId
+     * uint64_t userMaterialId
      * }
      */
     public static final long userMaterialId$offset() {
@@ -249,20 +250,20 @@ public class b2SurfaceMaterial {
     /**
      * Getter for field:
      * {@snippet lang=c :
-     * int userMaterialId
+     * uint64_t userMaterialId
      * }
      */
-    public static int userMaterialId(MemorySegment struct) {
+    public static long userMaterialId(MemorySegment struct) {
         return struct.get(userMaterialId$LAYOUT, userMaterialId$OFFSET);
     }
 
     /**
      * Setter for field:
      * {@snippet lang=c :
-     * int userMaterialId
+     * uint64_t userMaterialId
      * }
      */
-    public static void userMaterialId(MemorySegment struct, int fieldValue) {
+    public static void userMaterialId(MemorySegment struct, long fieldValue) {
         struct.set(userMaterialId$LAYOUT, userMaterialId$OFFSET, fieldValue);
     }
 

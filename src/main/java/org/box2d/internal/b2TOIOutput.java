@@ -16,6 +16,8 @@ import static java.lang.foreign.MemoryLayout.PathElement.*;
  * {@snippet lang=c :
  * struct b2TOIOutput {
  *     b2TOIState state;
+ *     b2Vec2 point;
+ *     b2Vec2 normal;
  *     float fraction;
  * }
  * }
@@ -28,6 +30,8 @@ public class b2TOIOutput {
 
     private static final GroupLayout $LAYOUT = MemoryLayout.structLayout(
         Box2D.C_INT.withName("state"),
+        b2Vec2.layout().withName("point"),
+        b2Vec2.layout().withName("normal"),
         Box2D.C_FLOAT.withName("fraction")
     ).withName("b2TOIOutput");
 
@@ -80,6 +84,94 @@ public class b2TOIOutput {
      */
     public static void state(MemorySegment struct, int fieldValue) {
         struct.set(state$LAYOUT, state$OFFSET, fieldValue);
+    }
+
+    private static final GroupLayout point$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("point"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * b2Vec2 point
+     * }
+     */
+    public static final GroupLayout point$layout() {
+        return point$LAYOUT;
+    }
+
+    private static final long point$OFFSET = $LAYOUT.byteOffset(groupElement("point"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * b2Vec2 point
+     * }
+     */
+    public static final long point$offset() {
+        return point$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * b2Vec2 point
+     * }
+     */
+    public static MemorySegment point(MemorySegment struct) {
+        return struct.asSlice(point$OFFSET, point$LAYOUT.byteSize());
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * b2Vec2 point
+     * }
+     */
+    public static void point(MemorySegment struct, MemorySegment fieldValue) {
+        MemorySegment.copy(fieldValue, 0L, struct, point$OFFSET, point$LAYOUT.byteSize());
+    }
+
+    private static final GroupLayout normal$LAYOUT = (GroupLayout)$LAYOUT.select(groupElement("normal"));
+
+    /**
+     * Layout for field:
+     * {@snippet lang=c :
+     * b2Vec2 normal
+     * }
+     */
+    public static final GroupLayout normal$layout() {
+        return normal$LAYOUT;
+    }
+
+    private static final long normal$OFFSET = $LAYOUT.byteOffset(groupElement("normal"));
+
+    /**
+     * Offset for field:
+     * {@snippet lang=c :
+     * b2Vec2 normal
+     * }
+     */
+    public static final long normal$offset() {
+        return normal$OFFSET;
+    }
+
+    /**
+     * Getter for field:
+     * {@snippet lang=c :
+     * b2Vec2 normal
+     * }
+     */
+    public static MemorySegment normal(MemorySegment struct) {
+        return struct.asSlice(normal$OFFSET, normal$LAYOUT.byteSize());
+    }
+
+    /**
+     * Setter for field:
+     * {@snippet lang=c :
+     * b2Vec2 normal
+     * }
+     */
+    public static void normal(MemorySegment struct, MemorySegment fieldValue) {
+        MemorySegment.copy(fieldValue, 0L, struct, normal$OFFSET, normal$LAYOUT.byteSize());
     }
 
     private static final OfFloat fraction$LAYOUT = (OfFloat)$LAYOUT.select(groupElement("fraction"));
