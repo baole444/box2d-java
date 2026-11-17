@@ -33,15 +33,15 @@ jobs:
           - name: linux
             os: ubuntu-latest
             lib: libbox2d.so
-            out: box2d-src/build/bin/libbox2d.so
+            out: box2d-src/install/lib/libbox2d.so
           - name: win
             os: windows-latest
             lib: box2d.dll
-            out: box2d-src/build/bin/Release/box2d.dll
+            out: box2d-src/install/bin/box2d.dll
           - name: mac
             os: macos-latest   # arm64 (Apple Silicon)
             lib: libbox2d.dylib
-            out: box2d-src/build/bin/libbox2d.dylib
+            out: box2d-src/install/lib/libbox2d.dylib
             cmake_extra: -DCMAKE_OSX_ARCHITECTURES=arm64
     steps:
       - name: Checkout this repository
@@ -74,10 +74,18 @@ jobs:
           -DBOX2D_UNIT_TESTS=OFF
           -DBOX2D_BENCHMARKS=OFF
           -DBOX2D_DOCS=OFF
+          -DCMAKE_INSTALL_LIBDIR=lib
+          -DCMAKE_INSTALL_BINDIR=bin
           ${{ matrix.cmake_extra }}
 
       - name: Build Box2D
         run: cmake --build box2d-src/build --config Release
+
+      # The library's build-tree location depends on Box2D's CMake layout (v3.2.0
+      # moved it from build/bin to build/src), so install to a fixed prefix instead
+      # and pick the library up from there: shared objects in lib/, DLLs in bin/.
+      - name: Install Box2D
+        run: cmake --install box2d-src/build --config Release --prefix box2d-src/install
 
       # cmake -E copy resolves the version symlink (e.g. libbox2d.so ->
       # libbox2d.so.x.y.z) and writes a plain, unversioned file with the real
