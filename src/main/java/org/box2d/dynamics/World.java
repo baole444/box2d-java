@@ -49,7 +49,8 @@ public final class World {
      * @apiNote
      * The provided definition is copied, so it can be changed and reused later.
      * <p>
-     * A definition holding an invalid value gives a world that is {@link #isValid() invalid}, see <a href="package-summary.html">invalid input</a>.
+     * A definition holding an invalid value gives a world that is {@link #isValid() invalid}.
+     * @see org.box2d/ Handling invalid input
      */
     public World(WorldDef def) {
         MemorySegment defSegment = def.segment();

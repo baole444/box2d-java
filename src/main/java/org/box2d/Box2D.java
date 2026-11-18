@@ -38,12 +38,11 @@ public final class Box2D {
     /**
      * Set the stream receiving Box2D's log messages, one message per line. Logging is off by default.
      * <p>
-     * Box2D logs warnings, such as invalid input it rejects (see {@link org.box2d.dynamics}), an unstable body
-     * whose velocity became NaN or infinite during a step, or denormal flushing that breaks determinism.
+     * Box2D logs warnings, such as invalid input it rejects, an unstable body whose velocity became NaN or infinite during a step, or denormal flushing that breaks determinism.
      * <p>
-     * Log messages may arrive on any thread calling into Box2D, including inside {@code World.step}.
-     * An exception thrown by the stream is discarded.
+     * Log messages may arrive on any thread calling into Box2D, including inside {@code World.step}. An exception thrown by the stream is discarded.
      * @param stream the stream to print to, such as {@link System#err}, or null to discard log messages
+     * @see org.box2d/ Handling invalid input
      */
     public static void logStream(PrintStream stream) {
         LogBridge.stream(stream);
