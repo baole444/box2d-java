@@ -125,7 +125,8 @@ public final class World {
      * <p>
      * No new body is created while this world is {@link #isLocked() locked}, making the returned handle {@link Body#isValid() invalid}.
      * <p>
-     * A definition holding an invalid value also gives an invalid handle, see <a href="package-summary.html">invalid input</a>.
+     * A definition holding an invalid value also gives an invalid handle.
+     * @see org.box2d/ Handling invalid input
      */
     public Body createBody(BodyDef def) {
         MemorySegment worldId = checked();
