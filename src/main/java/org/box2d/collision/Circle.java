@@ -14,7 +14,7 @@ import java.lang.foreign.MemorySegment;
  * <p>
  * Wrapper for native {@link b2Circle}.
  */
-public final class Circle {
+public final class Circle implements Geometry {
     private final MemorySegment segment;
 
     static {

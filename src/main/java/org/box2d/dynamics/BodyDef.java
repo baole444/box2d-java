@@ -346,7 +346,7 @@ public final class BodyDef {
      * @apiNote
      * The solver only uses continuous collision if there is a risk of tunnelling. If the body is moving fast enough to risk tunnelling then it is considered a "fast body".
      * <p>
-     * If a body moving N meters risks tunnelling, then the body will be considered fast if it moves more than a {@code safetyFactor * N meters} over one full time step.
+     * If a body moving N metres risks tunnelling, then the body will be considered fast if it moves more than a {@code safetyFactor * N metres} over one full time step.
      */
     public BodyDef safetyFactor(float safetyFactor) {
         b2BodyDef.safetyFactor(segment, safetyFactor);

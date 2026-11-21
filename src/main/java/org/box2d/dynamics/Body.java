@@ -1,8 +1,10 @@
 package org.box2d.dynamics;
 
 import org.box2d.NativeLoader;
-import org.box2d.collision.MassData;
+import org.box2d.collision.*;
 import org.box2d.internal.b2BodyId;
+import org.box2d.internal.b2ShapeDef;
+import org.box2d.internal.b2ShapeId;
 import org.box2d.internal.nBox2D;
 import org.box2d.math.Rot;
 import org.box2d.math.Transform;
@@ -12,11 +14,12 @@ import java.lang.foreign.Arena;
 import java.lang.foreign.MemorySegment;
 import java.lang.foreign.ValueLayout;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 /**
  * A rigid body, created by {@link World#createBody(BodyDef)}.
  * <p>
- * A body is a handle to a body owned by its {@link World}. It is freed by {@link #destroy()} or when its world is destroyed, after which {@link #isValid()} returns false.
+ * A handle to a body owned by its {@link World}. Freed by {@link #destroy()} or when its world is destroyed, after which {@link #isValid()} returns false.
  * Calling any other method on a body that is not valid throws {@link IllegalStateException}.
  * <p>
  * While the world is {@link World#isLocked() locked}, Box2D ignores changes made to the body.
@@ -54,14 +57,18 @@ public final class Body {
     /**
      * Destroy this rigid body.
      * <p>
-     * This destroys all shapes and joints attached to the body and releases the user data held for it.
+     * This destroys all shapes and joints attached to the body and releases the user data held for them and the body.
      * <p>
      * Does nothing if the body is not valid, or while its world is {@link World#isLocked() locked}.
      */
     public void destroy() {
         if (!isValid() || world.isLocked()) return;
-        world.userDataTable().release(UserDataTable.handleOf(nBox2D.nBodyGetUserData(id)));
+        UserDataTable table = world.userDataTable();
+        long[] shapeHandles = table.size() == 0 ? new long[0] : shapeUserDataHandles(id);
+        long bodyHandle = UserDataTable.handleOf(nBox2D.nBodyGetUserData(id));
         nBox2D.nDestroyBody(id);
+        table.release(bodyHandle);
+        for (long handle : shapeHandles) table.release(handle);
     }
 
     /**
@@ -695,6 +702,155 @@ public final class Body {
         return this;
     }
 
+    /**
+     * Create a circle shape and attach it to this body.
+     * <p>
+     * Contacts are not created until the next time step.
+     * @param def the shape definition
+     * @param circle the circle geometry
+     * @return the new {@link Shape} handle
+     * @apiNote
+     * The definition and geometry are copied, so they can be changed and reused later.
+     * <p>
+     * No new shape is created while the world is {@link World#isLocked() locked}, making the returned handle {@link Shape#isValid() invalid}.
+     * <p>
+     * A definition or geometry holding an invalid value also gives an invalid handle.
+     * @see org.box2d/ Handling invalid input
+     */
+    public Shape createCircleShape(ShapeDef def, Circle circle) {
+        return createShape(def, circle.segment(), nBox2D::nCreateCircleShape);
+    }
+
+    /**
+     * Create a capsule shape and attach it to this body.
+     * <p>
+     * Contacts are not created until the next time step.
+     * @param def the shape definition
+     * @param capsule the capsule geometry
+     * @return the new {@link Shape} handle
+     * @apiNote
+     * The definition and geometry are copied, so they can be changed and reused later.
+     * <p>
+     * A capsule with distance between its centres less than {@value org.box2d.Box2D#LinearSlop} is too short to be created and will be ignored
+     * <p>
+     * No new shape is created while the world is {@link World#isLocked() locked}, making the returned handle {@link Shape#isValid() invalid}.
+     * <p>
+     * A definition or geometry holding an invalid value also gives an invalid handle.
+     * @see org.box2d/ Handling invalid input
+     */
+    public Shape createCapsuleShape(ShapeDef def, Capsule capsule) {
+        return createShape(def, capsule.segment(), nBox2D::nCreateCapsuleShape);
+    }
+
+    /**
+     * Create a line segment shape and attach it to this body.
+     * <p>
+     * Contacts are not created until the next time step.
+     * @param def the shape definition
+     * @param segment the line segment geometry
+     * @return the new {@link Shape} handle
+     * @apiNote
+     * The definition and geometry are copied, so they can be changed and reused later.
+     * <p>
+     * A segment no longer than {@value org.box2d.Box2D#LinearSlop} is too short to be created and will be ignored.
+     * <p>
+     * No new shape is created while the world is {@link World#isLocked() locked}, making the returned handle {@link Shape#isValid() invalid}.
+     * <p>
+     * A definition or geometry holding an invalid value also gives an invalid handle.
+     * @see org.box2d/ Handling invalid input
+     */
+    public Shape createSegmentShape(ShapeDef def, Segment segment) {
+        return createShape(def, segment.segment(), nBox2D::nCreateSegmentShape);
+    }
+
+    /**
+     * Create a polygon shape and attach it to this body.
+     * <p>
+     * Contacts are not created until the next time step.
+     * @param def the shape definition
+     * @param polygon the polygon geometry
+     * @return the new {@link Shape} handle
+     * @apiNote
+     * The definition and geometry are copied, so they can be changed and reused later.
+     * <p>
+     * No new shape is created while the world is {@link World#isLocked() locked}, making the returned handle {@link Shape#isValid() invalid}.
+     * <p>
+     * A definition or geometry holding an invalid value also gives an invalid handle.
+     * @see org.box2d/ Handling invalid input
+     */
+    public Shape createPolygonShape(ShapeDef def, Polygon polygon) {
+        return createShape(def, polygon.segment(), nBox2D::nCreatePolygonShape);
+    }
+
+    /**
+     * Get the shapes attached to this body.
+     * @return an unmodifiable snapshot of the shapes, empty if there are none
+     */
+    public List<Shape> shapes() {
+        MemorySegment[] ids = shapeIds(checked());
+        Shape[] shapes = new Shape[ids.length];
+        for (int i = 0; i < ids.length; i++) shapes[i] = new Shape(world, ids[i]);
+        return List.of(shapes);
+    }
+
+    /**
+     * Enable or disable contact events on all shapes of this body.
+     * @param flag true to enable contact events
+     * @return this
+     * @apiNote Changing this at run-time may cause mismatched begin and end touch events.
+     * @see Shape#contactEventsEnabled(boolean) Enable contact events for shape
+     */
+    public Body enableContactEvents(boolean flag) {
+        nBox2D.nBodyEnableContactEvents(checked(), flag);
+        return this;
+    }
+
+    /**
+     * Enable or disable hit events on all shapes of this body.
+     * @param flag true to enable hit events
+     * @return this
+     * @see Shape#hitEventsEnabled(boolean) Enable hit events for shape
+     */
+    public Body enableHitEvents(boolean flag) {
+        nBox2D.nBodyEnableHitEvents(checked(), flag);
+        return this;
+    }
+
+    /**
+     * Get the current world bounding box that contains all the attached shapes.
+     * <p>
+     * This may not encompass the body origin. If there are no shapes attached then the box is empty and centred on the body origin.
+     * @return a new {@link AABB} holding the bounds
+     * @apiNote Box2D pads each shape's box by a small speculative margin, so the result is slightly larger than the geometry.
+     */
+    public AABB computeBounds() {
+        return new AABB(nBox2D.nBodyComputeBounds(checked()));
+    }
+
+    /**
+     * Get the minimum distance from any point on the body shapes to the centre of mass.
+     * @return the minimum extent
+     */
+    public float minExtent() {
+        return nBox2D.nBodyGetMinExtent(checked());
+    }
+
+    /**
+     * Get the maximum distance from any point on the body shapes to the centre of mass.
+     * @return the maximum extent
+     */
+    public float maxExtent() {
+        return nBox2D.nBodyGetMaxExtent(checked());
+    }
+
+    /**
+     * Get the maximum distance from any point on the body shapes to the body origin. Conservative.
+     * @return the maximum extent from the origin
+     */
+    public float maxExtentFromOrigin() {
+        return nBox2D.nBodyGetMaxExtentFromOrigin(checked());
+    }
+
     @Override
     public String toString() {
         return String.format("Body{index=%d, world=%d, generation=%d, valid=%b}", b2BodyId.index1(id) - 1,
@@ -752,5 +908,57 @@ public final class Body {
     private MemorySegment checked() {
         if (!isValid()) throw new IllegalStateException("Invalid body: it or its world has been destroyed");
         return id;
+    }
+
+    /**
+     * Create a shape through a native creation function, registering the definition's user data.
+     * The slot is released again when Box2D rejects the shape.
+     */
+    private Shape createShape(ShapeDef def, MemorySegment geometry, ShapeCreator creator) {
+        MemorySegment bodyId = checked();
+        MemorySegment defSegment = def.segment();
+        UserDataTable table = world.userDataTable();
+        long handle = table.register(def.userData());
+        MemorySegment shapeId;
+        b2ShapeDef.userData(defSegment, UserDataTable.pointerOf(handle));
+        try {
+            shapeId = creator.create(bodyId, defSegment, geometry);
+        } finally {
+            b2ShapeDef.userData(defSegment, MemorySegment.NULL);
+        }
+        if (b2ShapeId.index1(shapeId) == 0) table.release(handle);
+        return new Shape(world, shapeId);
+    }
+
+    /**
+     * Get the ids of all shapes attached to a body, each as a slice of one auto arena array.
+     */
+    private static MemorySegment[] shapeIds(MemorySegment bodyId) {
+        int capacity = nBox2D.nBodyGetShapeCount(bodyId);
+        if (capacity == 0) return new MemorySegment[0];
+        long size = b2ShapeId.layout().byteSize();
+        MemorySegment array = Arena.ofAuto().allocate(b2ShapeId.layout(), capacity);
+        int count = nBox2D.nBodyGetShapes(bodyId, array, capacity);
+        MemorySegment[] ids = new MemorySegment[count];
+        for (int i = 0; i < count; i++) ids[i] = array.asSlice(i * size, size);
+        return ids;
+    }
+
+    /**
+     * Get the user data handles of all shapes attached to a body.
+     */
+    private static long[] shapeUserDataHandles(MemorySegment bodyId) {
+        MemorySegment[] ids = shapeIds(bodyId);
+        long[] handles = new long[ids.length];
+        for (int i = 0; i < ids.length; i++) handles[i] = UserDataTable.handleOf(nBox2D.nShapeGetUserData(ids[i]));
+        return handles;
+    }
+
+    /**
+     * A native {@code b2Create*Shape} function.
+     */
+    @FunctionalInterface
+    private interface ShapeCreator {
+        MemorySegment create(MemorySegment bodyId, MemorySegment def, MemorySegment geometry);
     }
 }

@@ -14,6 +14,7 @@ import java.lang.foreign.ValueLayout;
  * Methods that return a struct by value, allocate the result in an auto arena,
  * meaning returned segment manges its own lifetime through reachability.
  */
+@SuppressWarnings("unused")
 public class nBox2D {
     static {
         if (!NativeLoader.isLoaded()) NativeLoader.load();
@@ -608,7 +609,7 @@ public class nBox2D {
     /**
      * Native implement of {@code b2World_GetContactRecycleDistance}.
      * @param worldId the memory segment of the {@link b2WorldId}
-     * @return the contact point recycling distance, usually in meters
+     * @return the contact point recycling distance, usually in metres
      */
     public static float nWorldGetContactRecycleDistance(MemorySegment worldId) {
         return Box2D.b2World_GetContactRecycleDistance(worldId);
@@ -991,7 +992,7 @@ public class nBox2D {
     /**
      * Native implement of {@code b2World_SetContactRecycleDistance}.
      * @param worldId the memory segment of the {@link b2WorldId}
-     * @param recycleDistance the contact point recycling distance, usually in meters, set to 0.0 disables recycling
+     * @param recycleDistance the contact point recycling distance, usually in metres, set to 0.0 disables recycling
      */
     public static void nWorldSetContactRecycleDistance(MemorySegment worldId, float recycleDistance) {
         Box2D.b2World_SetContactRecycleDistance(worldId, recycleDistance);
@@ -1111,5 +1112,524 @@ public class nBox2D {
      */
     public static long nWorldGetStateHash(MemorySegment worldId) {
         return Box2D.b2World_GetStateHash(worldId);
+    }
+
+    /**
+     * Native implement of {@code b2DefaultShapeDef}.
+     * @return the memory segment of a {@link b2ShapeDef}, initialised with Box2D's default values
+     */
+    public static MemorySegment nDefaultShapeDef() {
+        return Box2D.b2DefaultShapeDef(Arena.ofAuto());
+    }
+
+    /**
+     * Native implement of {@code b2DefaultSurfaceMaterial}.
+     * @return the memory segment of a {@link b2SurfaceMaterial}, initialised with Box2D's default values
+     */
+    public static MemorySegment nDefaultSurfaceMaterial() {
+        return Box2D.b2DefaultSurfaceMaterial(Arena.ofAuto());
+    }
+
+    /**
+     * Native constant {@code b2_circleShape}.
+     * @return the enum value for native {@code b2ShapeType}'s circle
+     */
+    public static int nCircleShape() {
+        return Box2D.b2_circleShape();
+    }
+
+    /**
+     * Native constant {@code b2_capsuleShape}.
+     * @return the enum value for native {@code b2ShapeType}'s capsule
+     */
+    public static int nCapsuleShape() {
+        return Box2D.b2_capsuleShape();
+    }
+
+    /**
+     * Native constant {@code b2_segmentShape}.
+     * @return the enum value for native {@code b2ShapeType}'s segment
+     */
+    public static int nSegmentShape() {
+        return Box2D.b2_segmentShape();
+    }
+
+    /**
+     * Native constant {@code b2_polygonShape}.
+     * @return the enum value for native {@code b2ShapeType}'s polygon
+     */
+    public static int nPolygonShape() {
+        return Box2D.b2_polygonShape();
+    }
+
+    /**
+     * Native constant {@code b2_chainSegmentShape}.
+     * @return the enum value for native {@code b2ShapeType}'s chain segment
+     */
+    public static int nChainSegmentShape() {
+        return Box2D.b2_chainSegmentShape();
+    }
+
+    /**
+     * Native implement of {@code b2CreateCircleShape}.
+     * @param bodyId the memory segment of the {@link b2BodyId}
+     * @param def the memory segment of the {@link b2ShapeDef}, copied by Box2D
+     * @param circle the memory segment of the {@link b2Circle}, copied by Box2D
+     * @return the memory segment of the new {@link b2ShapeId}, the null id when rejected
+     */
+    public static MemorySegment nCreateCircleShape(MemorySegment bodyId, MemorySegment def, MemorySegment circle) {
+        return Box2D.b2CreateCircleShape(Arena.ofAuto(), bodyId, def, circle);
+    }
+
+    /**
+     * Native implement of {@code b2CreateCapsuleShape}.
+     * @param bodyId the memory segment of the {@link b2BodyId}
+     * @param def the memory segment of the {@link b2ShapeDef}, copied by Box2D
+     * @param capsule the memory segment of the {@link b2Capsule}, copied by Box2D
+     * @return the memory segment of the new {@link b2ShapeId}, the null id when rejected
+     */
+    public static MemorySegment nCreateCapsuleShape(MemorySegment bodyId, MemorySegment def, MemorySegment capsule) {
+        return Box2D.b2CreateCapsuleShape(Arena.ofAuto(), bodyId, def, capsule);
+    }
+
+    /**
+     * Native implement of {@code b2CreateSegmentShape}.
+     * @param bodyId the memory segment of the {@link b2BodyId}
+     * @param def the memory segment of the {@link b2ShapeDef}, copied by Box2D
+     * @param segment the memory segment of the {@link b2Segment}, copied by Box2D
+     * @return the memory segment of the new {@link b2ShapeId}, the null id when rejected
+     */
+    public static MemorySegment nCreateSegmentShape(MemorySegment bodyId, MemorySegment def, MemorySegment segment) {
+        return Box2D.b2CreateSegmentShape(Arena.ofAuto(), bodyId, def, segment);
+    }
+
+    /**
+     * Native implement of {@code b2CreatePolygonShape}.
+     * @param bodyId the memory segment of the {@link b2BodyId}
+     * @param def the memory segment of the {@link b2ShapeDef}, copied by Box2D
+     * @param polygon the memory segment of the {@link b2Polygon}, copied by Box2D
+     * @return the memory segment of the new {@link b2ShapeId}, the null id when rejected
+     */
+    public static MemorySegment nCreatePolygonShape(MemorySegment bodyId, MemorySegment def, MemorySegment polygon) {
+        return Box2D.b2CreatePolygonShape(Arena.ofAuto(), bodyId, def, polygon);
+    }
+
+    /**
+     * Native implement of {@code b2DestroyShape}.
+     * @param shapeId the memory segment of the {@link b2ShapeId}
+     * @param updateBodyMass true to update the body mass properties
+     */
+    public static void nDestroyShape(MemorySegment shapeId, boolean updateBodyMass) {
+        Box2D.b2DestroyShape(shapeId, updateBodyMass);
+    }
+
+    /**
+     * Native implement of {@code b2Shape_IsValid}.
+     * @param shapeId the memory segment of the {@link b2ShapeId}
+     * @return true if the shape id is valid
+     */
+    public static boolean nShapeIsValid(MemorySegment shapeId) {
+        return Box2D.b2Shape_IsValid(shapeId);
+    }
+
+    /**
+     * Native implement of {@code b2Shape_GetType}.
+     * @param shapeId the memory segment of the {@link b2ShapeId}
+     * @return the native {@code b2ShapeType} value
+     */
+    public static int nShapeGetType(MemorySegment shapeId) {
+        return Box2D.b2Shape_GetType(shapeId);
+    }
+
+    /**
+     * Native implement of {@code b2Shape_GetBody}.
+     * @param shapeId the memory segment of the {@link b2ShapeId}
+     * @return the memory segment of the owning {@link b2BodyId}
+     */
+    public static MemorySegment nShapeGetBody(MemorySegment shapeId) {
+        return Box2D.b2Shape_GetBody(Arena.ofAuto(), shapeId);
+    }
+
+    /**
+     * Native implement of {@code b2Shape_IsSensor}.
+     * @param shapeId the memory segment of the {@link b2ShapeId}
+     * @return true if the shape is a sensor
+     */
+    public static boolean nShapeIsSensor(MemorySegment shapeId) {
+        return Box2D.b2Shape_IsSensor(shapeId);
+    }
+
+    /**
+     * Native implement of {@code b2Shape_SetUserData}.
+     * @param shapeId the memory segment of the {@link b2ShapeId}
+     * @param userData the user data pointer
+     */
+    public static void nShapeSetUserData(MemorySegment shapeId, MemorySegment userData) {
+        Box2D.b2Shape_SetUserData(shapeId, userData);
+    }
+
+    /**
+     * Native implement of {@code b2Shape_GetUserData}.
+     * @param shapeId the memory segment of the {@link b2ShapeId}
+     * @return the user data pointer
+     */
+    public static MemorySegment nShapeGetUserData(MemorySegment shapeId) {
+        return Box2D.b2Shape_GetUserData(shapeId);
+    }
+
+    /**
+     * Native implement of {@code b2Shape_SetDensity}.
+     * @param shapeId the memory segment of the {@link b2ShapeId}
+     * @param density the density, usually in kg/m²
+     * @param updateBodyMass true to update the body mass properties
+     */
+    public static void nShapeSetDensity(MemorySegment shapeId, float density, boolean updateBodyMass) {
+        Box2D.b2Shape_SetDensity(shapeId, density, updateBodyMass);
+    }
+
+    /**
+     * Native implement of {@code b2Shape_GetDensity}.
+     * @param shapeId the memory segment of the {@link b2ShapeId}
+     * @return the density
+     */
+    public static float nShapeGetDensity(MemorySegment shapeId) {
+        return Box2D.b2Shape_GetDensity(shapeId);
+    }
+
+    /**
+     * Native implement of {@code b2Shape_SetFriction}.
+     * @param shapeId the memory segment of the {@link b2ShapeId}
+     * @param friction the friction coefficient
+     */
+    public static void nShapeSetFriction(MemorySegment shapeId, float friction) {
+        Box2D.b2Shape_SetFriction(shapeId, friction);
+    }
+
+    /**
+     * Native implement of {@code b2Shape_GetFriction}.
+     * @param shapeId the memory segment of the {@link b2ShapeId}
+     * @return the friction coefficient
+     */
+    public static float nShapeGetFriction(MemorySegment shapeId) {
+        return Box2D.b2Shape_GetFriction(shapeId);
+    }
+
+    /**
+     * Native implement of {@code b2Shape_SetRestitution}.
+     * @param shapeId the memory segment of the {@link b2ShapeId}
+     * @param restitution the coefficient of restitution
+     */
+    public static void nShapeSetRestitution(MemorySegment shapeId, float restitution) {
+        Box2D.b2Shape_SetRestitution(shapeId, restitution);
+    }
+
+    /**
+     * Native implement of {@code b2Shape_GetRestitution}.
+     * @param shapeId the memory segment of the {@link b2ShapeId}
+     * @return the coefficient of restitution
+     */
+    public static float nShapeGetRestitution(MemorySegment shapeId) {
+        return Box2D.b2Shape_GetRestitution(shapeId);
+    }
+
+    /**
+     * Native implement of {@code b2Shape_SetUserMaterial}.
+     * @param shapeId the memory segment of the {@link b2ShapeId}
+     * @param material the user material identifier
+     */
+    public static void nShapeSetUserMaterial(MemorySegment shapeId, long material) {
+        Box2D.b2Shape_SetUserMaterial(shapeId, material);
+    }
+
+    /**
+     * Native implement of {@code b2Shape_GetUserMaterial}.
+     * @param shapeId the memory segment of the {@link b2ShapeId}
+     * @return the user material identifier
+     */
+    public static long nShapeGetUserMaterial(MemorySegment shapeId) {
+        return Box2D.b2Shape_GetUserMaterial(shapeId);
+    }
+
+    /**
+     * Native implement of {@code b2Shape_SetSurfaceMaterial}.
+     * @param shapeId the memory segment of the {@link b2ShapeId}
+     * @param material the memory segment of the {@link b2SurfaceMaterial}, copied by Box2D
+     */
+    public static void nShapeSetSurfaceMaterial(MemorySegment shapeId, MemorySegment material) {
+        Box2D.b2Shape_SetSurfaceMaterial(shapeId, material);
+    }
+
+    /**
+     * Native implement of {@code b2Shape_GetSurfaceMaterial}.
+     * @param shapeId the memory segment of the {@link b2ShapeId}
+     * @return the memory segment of the resulting {@link b2SurfaceMaterial}
+     */
+    public static MemorySegment nShapeGetSurfaceMaterial(MemorySegment shapeId) {
+        return Box2D.b2Shape_GetSurfaceMaterial(Arena.ofAuto(), shapeId);
+    }
+
+    /**
+     * Native implement of {@code b2Shape_GetFilter}.
+     * @param shapeId the memory segment of the {@link b2ShapeId}
+     * @return the memory segment of the resulting {@link b2Filter}
+     */
+    public static MemorySegment nShapeGetFilter(MemorySegment shapeId) {
+        return Box2D.b2Shape_GetFilter(Arena.ofAuto(), shapeId);
+    }
+
+    /**
+     * Native implement of {@code b2Shape_SetFilter}.
+     * @param shapeId the memory segment of the {@link b2ShapeId}
+     * @param filter the memory segment of the {@link b2Filter}
+     */
+    public static void nShapeSetFilter(MemorySegment shapeId, MemorySegment filter) {
+        Box2D.b2Shape_SetFilter(shapeId, filter);
+    }
+
+    /**
+     * Native implement of {@code b2Shape_EnableSensorEvents}.
+     * @param shapeId the memory segment of the {@link b2ShapeId}
+     * @param flag true to enable sensor events
+     */
+    public static void nShapeEnableSensorEvents(MemorySegment shapeId, boolean flag) {
+        Box2D.b2Shape_EnableSensorEvents(shapeId, flag);
+    }
+
+    /**
+     * Native implement of {@code b2Shape_AreSensorEventsEnabled}.
+     * @param shapeId the memory segment of the {@link b2ShapeId}
+     * @return true if sensor events are enabled
+     */
+    public static boolean nShapeAreSensorEventsEnabled(MemorySegment shapeId) {
+        return Box2D.b2Shape_AreSensorEventsEnabled(shapeId);
+    }
+
+    /**
+     * Native implement of {@code b2Shape_EnableContactEvents}.
+     * @param shapeId the memory segment of the {@link b2ShapeId}
+     * @param flag true to enable contact events
+     */
+    public static void nShapeEnableContactEvents(MemorySegment shapeId, boolean flag) {
+        Box2D.b2Shape_EnableContactEvents(shapeId, flag);
+    }
+
+    /**
+     * Native implement of {@code b2Shape_AreContactEventsEnabled}.
+     * @param shapeId the memory segment of the {@link b2ShapeId}
+     * @return true if contact events are enabled
+     */
+    public static boolean nShapeAreContactEventsEnabled(MemorySegment shapeId) {
+        return Box2D.b2Shape_AreContactEventsEnabled(shapeId);
+    }
+
+    /**
+     * Native implement of {@code b2Shape_EnablePreSolveEvents}.
+     * @param shapeId the memory segment of the {@link b2ShapeId}
+     * @param flag true to enable pre-solve events
+     */
+    public static void nShapeEnablePreSolveEvents(MemorySegment shapeId, boolean flag) {
+        Box2D.b2Shape_EnablePreSolveEvents(shapeId, flag);
+    }
+
+    /**
+     * Native implement of {@code b2Shape_ArePreSolveEventsEnabled}.
+     * @param shapeId the memory segment of the {@link b2ShapeId}
+     * @return true if pre-solve events are enabled
+     */
+    public static boolean nShapeArePreSolveEventsEnabled(MemorySegment shapeId) {
+        return Box2D.b2Shape_ArePreSolveEventsEnabled(shapeId);
+    }
+
+    /**
+     * Native implement of {@code b2Shape_EnableHitEvents}.
+     * @param shapeId the memory segment of the {@link b2ShapeId}
+     * @param flag true to enable hit events
+     */
+    public static void nShapeEnableHitEvents(MemorySegment shapeId, boolean flag) {
+        Box2D.b2Shape_EnableHitEvents(shapeId, flag);
+    }
+
+    /**
+     * Native implement of {@code b2Shape_AreHitEventsEnabled}.
+     * @param shapeId the memory segment of the {@link b2ShapeId}
+     * @return true if hit events are enabled
+     */
+    public static boolean nShapeAreHitEventsEnabled(MemorySegment shapeId) {
+        return Box2D.b2Shape_AreHitEventsEnabled(shapeId);
+    }
+
+    /**
+     * Native implement of {@code b2Shape_TestPoint}.
+     * @param shapeId the memory segment of the {@link b2ShapeId}
+     * @param point the memory segment of the world point {@link b2Vec2}
+     * @return true if the point is inside the shape
+     */
+    public static boolean nShapeTestPoint(MemorySegment shapeId, MemorySegment point) {
+        return Box2D.b2Shape_TestPoint(shapeId, point);
+    }
+
+    /**
+     * Native implement of {@code b2Shape_CastRay}.
+     * @param shapeId the memory segment of the {@link b2ShapeId}
+     * @param origin the memory segment of the world ray origin {@link b2Vec2}
+     * @param translation the memory segment of the ray translation {@link b2Vec2}
+     * @return the memory segment of the resulting {@link b2CastOutput}
+     */
+    public static MemorySegment nShapeCastRay(MemorySegment shapeId, MemorySegment origin, MemorySegment translation) {
+        return Box2D.b2Shape_CastRay(Arena.ofAuto(), shapeId, origin, translation);
+    }
+
+    /**
+     * Native implement of {@code b2Shape_GetCircle}.
+     * @param shapeId the memory segment of the {@link b2ShapeId}
+     * @return the memory segment of the resulting {@link b2Circle}
+     */
+    public static MemorySegment nShapeGetCircle(MemorySegment shapeId) {
+        return Box2D.b2Shape_GetCircle(Arena.ofAuto(), shapeId);
+    }
+
+    /**
+     * Native implement of {@code b2Shape_GetCapsule}.
+     * @param shapeId the memory segment of the {@link b2ShapeId}
+     * @return the memory segment of the resulting {@link b2Capsule}
+     */
+    public static MemorySegment nShapeGetCapsule(MemorySegment shapeId) {
+        return Box2D.b2Shape_GetCapsule(Arena.ofAuto(), shapeId);
+    }
+
+    /**
+     * Native implement of {@code b2Shape_GetSegment}.
+     * @param shapeId the memory segment of the {@link b2ShapeId}
+     * @return the memory segment of the resulting {@link b2Segment}
+     */
+    public static MemorySegment nShapeGetSegment(MemorySegment shapeId) {
+        return Box2D.b2Shape_GetSegment(Arena.ofAuto(), shapeId);
+    }
+
+    /**
+     * Native implement of {@code b2Shape_GetPolygon}.
+     * @param shapeId the memory segment of the {@link b2ShapeId}
+     * @return the memory segment of the resulting {@link b2Polygon}
+     */
+    public static MemorySegment nShapeGetPolygon(MemorySegment shapeId) {
+        return Box2D.b2Shape_GetPolygon(Arena.ofAuto(), shapeId);
+    }
+
+    /**
+     * Native implement of {@code b2Shape_SetCircle}.
+     * @param shapeId the memory segment of the {@link b2ShapeId}
+     * @param circle the memory segment of the {@link b2Circle}, copied by Box2D
+     */
+    public static void nShapeSetCircle(MemorySegment shapeId, MemorySegment circle) {
+        Box2D.b2Shape_SetCircle(shapeId, circle);
+    }
+
+    /**
+     * Native implement of {@code b2Shape_SetCapsule}.
+     * @param shapeId the memory segment of the {@link b2ShapeId}
+     * @param capsule the memory segment of the {@link b2Capsule}, copied by Box2D
+     */
+    public static void nShapeSetCapsule(MemorySegment shapeId, MemorySegment capsule) {
+        Box2D.b2Shape_SetCapsule(shapeId, capsule);
+    }
+
+    /**
+     * Native implement of {@code b2Shape_SetSegment}.
+     * @param shapeId the memory segment of the {@link b2ShapeId}
+     * @param segment the memory segment of the {@link b2Segment}, copied by Box2D
+     */
+    public static void nShapeSetSegment(MemorySegment shapeId, MemorySegment segment) {
+        Box2D.b2Shape_SetSegment(shapeId, segment);
+    }
+
+    /**
+     * Native implement of {@code b2Shape_SetPolygon}.
+     * @param shapeId the memory segment of the {@link b2ShapeId}
+     * @param polygon the memory segment of the {@link b2Polygon}, copied by Box2D
+     */
+    public static void nShapeSetPolygon(MemorySegment shapeId, MemorySegment polygon) {
+        Box2D.b2Shape_SetPolygon(shapeId, polygon);
+    }
+
+    /**
+     * Native implement of {@code b2Shape_GetBounds}.
+     * @param shapeId the memory segment of the {@link b2ShapeId}
+     * @return the memory segment of the resulting {@link b2AABB}
+     */
+    public static MemorySegment nShapeGetBounds(MemorySegment shapeId) {
+        return Box2D.b2Shape_GetBounds(Arena.ofAuto(), shapeId);
+    }
+
+    /**
+     * Native implement of {@code b2Shape_ComputeMassData}.
+     * @param shapeId the memory segment of the {@link b2ShapeId}
+     * @return the memory segment of the resulting {@link b2MassData}
+     */
+    public static MemorySegment nShapeComputeMassData(MemorySegment shapeId) {
+        return Box2D.b2Shape_ComputeMassData(Arena.ofAuto(), shapeId);
+    }
+
+    /**
+     * Native implement of {@code b2Shape_GetClosestPoint}.
+     * @param shapeId the memory segment of the {@link b2ShapeId}
+     * @param target the memory segment of the world target {@link b2Vec2}
+     * @return the memory segment of the resulting closest world point {@link b2Vec2}
+     */
+    public static MemorySegment nShapeGetClosestPoint(MemorySegment shapeId, MemorySegment target) {
+        return Box2D.b2Shape_GetClosestPoint(Arena.ofAuto(), shapeId, target);
+    }
+
+    /**
+     * Native implement of {@code b2Body_EnableContactEvents}.
+     * @param bodyId the memory segment of the {@link b2BodyId}
+     * @param flag true to enable contact events on all shapes
+     */
+    public static void nBodyEnableContactEvents(MemorySegment bodyId, boolean flag) {
+        Box2D.b2Body_EnableContactEvents(bodyId, flag);
+    }
+
+    /**
+     * Native implement of {@code b2Body_EnableHitEvents}.
+     * @param bodyId the memory segment of the {@link b2BodyId}
+     * @param flag true to enable hit events on all shapes
+     */
+    public static void nBodyEnableHitEvents(MemorySegment bodyId, boolean flag) {
+        Box2D.b2Body_EnableHitEvents(bodyId, flag);
+    }
+
+    /**
+     * Native implement of {@code b2Body_ComputeBounds}.
+     * @param bodyId the memory segment of the {@link b2BodyId}
+     * @return the memory segment of the resulting {@link b2AABB}
+     */
+    public static MemorySegment nBodyComputeBounds(MemorySegment bodyId) {
+        return Box2D.b2Body_ComputeBounds(Arena.ofAuto(), bodyId);
+    }
+
+    /**
+     * Native implement of {@code b2Body_GetMinExtent}.
+     * @param bodyId the memory segment of the {@link b2BodyId}
+     * @return the minimum extent
+     */
+    public static float nBodyGetMinExtent(MemorySegment bodyId) {
+        return Box2D.b2Body_GetMinExtent(bodyId);
+    }
+
+    /**
+     * Native implement of {@code b2Body_GetMaxExtent}.
+     * @param bodyId the memory segment of the {@link b2BodyId}
+     * @return the maximum extent
+     */
+    public static float nBodyGetMaxExtent(MemorySegment bodyId) {
+        return Box2D.b2Body_GetMaxExtent(bodyId);
+    }
+
+    /**
+     * Native implement of {@code b2Body_GetMaxExtentFromOrigin}.
+     * @param bodyId the memory segment of the {@link b2BodyId}
+     * @return the maximum extent from the body origin
+     */
+    public static float nBodyGetMaxExtentFromOrigin(MemorySegment bodyId) {
+        return Box2D.b2Body_GetMaxExtentFromOrigin(bodyId);
     }
 }

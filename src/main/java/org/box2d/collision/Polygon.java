@@ -20,7 +20,7 @@ import java.lang.foreign.MemorySegment;
  * <p>
  * Wrapper for native {@link b2Polygon}.
  */
-public final class Polygon {
+public final class Polygon implements Geometry {
     /**
      * Maximum number of vertices a polygon may have.
      */

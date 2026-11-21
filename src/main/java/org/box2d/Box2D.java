@@ -24,6 +24,14 @@ public final class Box2D {
      */
     public static final float Pi = 3.14159265359f;
 
+    /**
+     * A small length used as a collision and constraint tolerance, in metres. Normally, this is 0.5 cm.
+     * <p>
+     * It is chosen to be numerically significant, but visually insignificant.
+     * A capsule or segment no longer than this is too short to be a shape.
+     */
+    public static final float LinearSlop = 0.005f;
+
     private Box2D() {}
 
     /**

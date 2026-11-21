@@ -12,7 +12,7 @@ import java.lang.foreign.MemorySegment;
  * The world contains all bodies and joints. It manages all aspects of the simulation and allows for async queries (such as AABB and ray-casts).
  * <p>
  * A world that is no longer needed must be {@link #destroy() destroyed}.
- * After which, all the {@link Body Bodies} within it will become {@link Body#isValid() invalid}.
+ * After which, all the {@link Body Bodies} and {@link Shape Shapes} within it will become invalid.
  * <p>
  * Wrapper for native {@code b2WorldId}.
  */
@@ -347,7 +347,7 @@ public final class World {
     }
 
     /**
-     * Get the contact point recycling distance, usually in meters.
+     * Get the contact point recycling distance, usually in metres.
      * @return the recycle distance
      */
     public float contactRecycleDistance() {
@@ -355,7 +355,7 @@ public final class World {
     }
 
     /**
-     * Set the contact point recycling distance, usually in meters.
+     * Set the contact point recycling distance, usually in metres.
      * <p>
      * Setting this to zero disables contact point recycling.
      * @param recycleDistance the recycle distance

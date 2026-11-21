@@ -14,7 +14,7 @@ import java.lang.foreign.MemorySegment;
  * <p>
  * Wrapper for native {@link b2Capsule}.
  */
-public final class Capsule {
+public final class Capsule implements Geometry {
     private final MemorySegment segment;
 
     static {

@@ -2,6 +2,7 @@ package org.box2d.dynamics;
 
 import org.box2d.collision.AABB;
 import org.box2d.collision.MassData;
+import org.box2d.collision.Polygon;
 import org.box2d.math.Vec2;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -124,6 +125,16 @@ class WorldTest {
         } finally {
             other.destroy();
         }
+    }
+
+    @Test
+    @DisplayName("World bounds contain its shapes")
+    void testBoundsWithShapes() {
+        Body ground = world.createBody(new BodyDef().position(5.0f, 0.0f));
+        ground.createPolygonShape(new ShapeDef(), Polygon.box(2.0f, 1.0f));
+        AABB bounds = world.bounds();
+        assertTrue(bounds.lowerBound().x() <= 3.0f && bounds.lowerBound().y() <= -1.0f, "world bounds expected to reach the shape's lower corner");
+        assertTrue(bounds.upperBound().x() >= 7.0f && bounds.upperBound().y() >= 1.0f, "world bounds expected to reach the shape's upper corner");
     }
 
     @Test

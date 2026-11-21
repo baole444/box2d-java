@@ -1,6 +1,10 @@
 package org.box2d.dynamics;
 
+import org.box2d.Box2D;
+import org.box2d.collision.AABB;
+import org.box2d.collision.Circle;
 import org.box2d.collision.MassData;
+import org.box2d.collision.Polygon;
 import org.box2d.math.Rot;
 import org.box2d.math.Transform;
 import org.box2d.math.Vec2;
@@ -265,5 +269,40 @@ class BodyTest {
         for (int i = 0; i < 60; i++) world.step(1.0f / 60.0f, 4);
         assertTrue(body.position().y() < 10.0f, "body expected to fall");
         assertTrue(body.linearVelocity().y() < 0.0f, "body expected to move downward");
+    }
+
+    @Test
+    @DisplayName("Body bounds and extents follow its shapes")
+    void testBoundsAndExtents() {
+        Body body = world.createBody(new BodyDef().type(BodyType.DynamicBody).position(2.0f, 3.0f));
+        AABB empty = body.computeBounds();
+        assertEquals(2.0f, empty.lowerBound().x(), delta, "body without shapes expected bounds at its origin (x)");
+        assertEquals(3.0f, empty.upperBound().y(), delta, "body without shapes expected bounds at its origin (y)");
+
+        body.createCircleShape(new ShapeDef(), new Circle(1.0f));
+        // Box2D pads stored bounds by its speculative distance, 4 linear slops
+        float margin = 4.0f * Box2D.LinearSlop + delta;
+        AABB bounds = body.computeBounds();
+        assertEquals(1.0f, bounds.lowerBound().x(), margin, "lower bound x expected about 1");
+        assertEquals(2.0f, bounds.lowerBound().y(), margin, "lower bound y expected about 2");
+        assertEquals(3.0f, bounds.upperBound().x(), margin, "upper bound x expected about 3");
+        assertEquals(4.0f, bounds.upperBound().y(), margin, "upper bound y expected about 4");
+        assertEquals(1.0f, body.minExtent(), delta, "centred circle expected min extent 1");
+        assertEquals(1.0f, body.maxExtent(), delta, "centred circle expected max extent 1");
+        assertEquals(1.0f, body.maxExtentFromOrigin(), delta, "centred circle expected max extent from origin 1");
+    }
+
+    @Test
+    @DisplayName("Body contact and hit event toggles apply to all its shapes")
+    void testEventToggles() {
+        Body body = dynamicBody();
+        Shape a = body.createCircleShape(new ShapeDef(), new Circle(1.0f));
+        Shape b = body.createPolygonShape(new ShapeDef(), Polygon.box(1.0f, 1.0f));
+        assertSame(body, body.enableContactEvents(true).enableHitEvents(true), "toggles expected to return this");
+        assertTrue(a.contactEventsEnabled() && b.contactEventsEnabled(), "contact events expected on for all shapes");
+        assertTrue(a.hitEventsEnabled() && b.hitEventsEnabled(), "hit events expected on for all shapes");
+        body.enableContactEvents(false).enableHitEvents(false);
+        assertFalse(a.contactEventsEnabled() || b.contactEventsEnabled(), "contact events expected off for all shapes");
+        assertFalse(a.hitEventsEnabled() || b.hitEventsEnabled(), "hit events expected off for all shapes");
     }
 }
